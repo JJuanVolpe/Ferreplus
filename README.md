@@ -1,17 +1,19 @@
     
 
-# Proyecto desarrollado para la cátedra de Ingenieria de Software 2
+    # Proyecto desarrollado para la cátedra de Ingenieria de Software 2
 
 Sistema de intercambios ideado para usuarios de una cadena ferretera
 
 # Ferreplus: Sistema desarrollado para cadena ferretera con el objetivo de generar un mayor acercamiento con el cliente
 
+<p align="center">
+
 Este archivo readme [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplus/main/README.md) contiene las especificaciones necesarias para trabajar con el proyecto en conjunto con sus dependencias de forma organizada y clara. Así también está sujeto a mejoras/modificaciones por parte de los integrantes.
 
-[![License](https://img.shields.io/badge/License-CC0-lightgray.svg?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
+<img alt="Logo of group" margin:25px width="50%" src="https://raw.githubusercontent.com/jjuanvolpe/ferreplus/main/myapp/static/logo.png"><br>
+<em>Group Logo</em>
 
-[![DOI](http://img.shields.io/badge/DOI-10.5281%2fzenodo.10633361-blue.svg?style=flat-square)](https://zenodo.org/records/10633361)
-[![Mentioned in Awesome Awesome README](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/matiassingers/awesome-readme)
+</p>
 
 ## Table of contents
 
@@ -38,6 +40,7 @@ Existen 3 roles respecto a los usuarios autenticados: Gerentes, Empleados y Clie
 * Los gerentes gestionan las sucursales y los empleados, a su vez pueden conocer estadísticas a través de la plataforma.
 
 ## Installation
+
 Clone el repositorio:
 
 ```sh
@@ -90,7 +93,6 @@ python manage.py runserver <3000>
 
 Si no agregamos un número, se ejecuta en el puerto por defecto
 
-
 ## Usage
 
 El comando makemigrations se encarga de empaquetar los cambios del modelo en archivos de migración individuales (análogos a los commits).
@@ -106,6 +108,4 @@ Mientras que migrate se encarga de aplicarlos a la base de datos. Es decir se en
 python manage.py migrate
 ```
 
-
 ### To format the Style using autopep press F1 and select format
-
