@@ -75,9 +75,9 @@ Este comando nos permite generar los archivos que permiten especificar las funci
 * apps.py: Permite la configuración de la aplicación específica
 * views.py: Definimos que enviar al navegador para que se vea en pantalla (ej. permite servir archivos html)
 * models.py: Permite crear las clases que se convertirán en tablas (Django se encarga de las modificaciones y creación de las mismas).
-* migrations: Se registran las modificaciones hecha a la BD.
+* migrations: Se registran las modificaciones hechas a la BD.
 
-Para correr el servidor podemos ejecutar el siguiente comando, permitiendo como parámetro el n° de puerto dónde ejecutar:
+Para correr el servidor podemos ejecutar el siguiente comando, permitiendo como parámetro el n° de puerto dónde ejecutaremos el proyecto:
 
 ```sh
 python manage.py runserver <3000>
@@ -89,7 +89,8 @@ Si no agregamos un número, se ejecuta en el puerto por defecto
 ## Usage
 
 El comando makemigrations se encarga de empaquetar los cambios del modelo en archivos de migración individuales (análogos a los commits).
-Detectan los cambios de los modelos de las aplicaciones, aunque podemos especificar en que aplicación hemos realizado cambios y agregarla cómo parámetro opcional
+Detectan los cambios de los modelos de las aplicaciones (Para esto se busca en todas las apps creadas dentro de nuestro proyecto),
+aunque podemos especificar en que aplicación hemos realizado cambios y agregarla cómo parámetro opcional
 
 ```sh
 python manage.py makemigrations
