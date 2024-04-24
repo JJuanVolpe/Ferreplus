@@ -1,5 +1,4 @@
 
-
 # Ferreplus: Sistema ideado para cadena ferretera ubicada en Buenos Aires 🔩 🔧 🔨
 
 ## Desarrollado para la cátedra Ingeniería de Software 2
@@ -7,12 +6,13 @@
 Este archivo [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplus/main/README.md) contiene las especificaciones necesarias para trabajar con el proyecto en conjunto con sus dependencias de forma organizada y clara. Así también está sujeto a mejoras/modificaciones por parte de los integrantes.
 
 
-Este archivo readme [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplus/main/README.md) contiene las especificaciones necesarias para trabajar con el proyecto en conjunto con sus dependencias de forma organizada y clara. Así también está sujeto a mejoras/modificaciones por parte de los integrantes
 
 <p align="center">
 <img alt="Logo of group" width="30%" src="https://raw.githubusercontent.com/jjuanvolpe/ferreplus/main/myapp/static/logo.png"><br>
 <em>Ferreplus logo</em>
 </p>
+
+[![License](https://img.shields.io/badge/License-CC0-lightgray.svg?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
 
 ## Table of contents
 
