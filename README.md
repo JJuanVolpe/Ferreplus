@@ -1,10 +1,8 @@
     
 
-# Proyecto desarrollado para la cátedra de Ingenieria de Software 2
+# Ferreplus: Sistema ideado para usuarios de una cadena ferretera 🔩 🔧 🔨
 
-Sistema de intercambios ideado para usuarios de una cadena ferretera
-
-# Ferreplus: Sistema desarrollado para cadena ferretera con el objetivo de generar un mayor acercamiento con el cliente
+## Desarrollado para la cátedra Ingeniería de Software 2
 
 Este archivo readme [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplus/main/README.md) contiene las especificaciones necesarias para trabajar con el proyecto en conjunto con sus dependencias de forma organizada y clara. Así también está sujeto a mejoras/modificaciones por parte de los integrantes.
 
