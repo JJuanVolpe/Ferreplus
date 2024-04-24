@@ -1,10 +1,8 @@
-
 # Ferreplus: Sistema ideado para cadena ferretera ubicada en Buenos Aires 🔩 🔧 🔨
 
 ## Desarrollado para la cátedra Ingeniería de Software 2
 
 Este archivo [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplus/main/README.md) contiene las especificaciones necesarias para trabajar con el proyecto en conjunto con sus dependencias de forma organizada y clara. Así también está sujeto a mejoras/modificaciones por parte de los integrantes.
-
 
 <p align="center">
 <img alt="Logo of group" width="30%" src="https://raw.githubusercontent.com/jjuanvolpe/ferreplus/main/myapp/static/logo.png"><br>
@@ -45,7 +43,7 @@ Clone el repositorio:
 git clone https://github.com/JJuanVolpe/Ferreplus
 ```
 
-## Prerequisites:
+## Prerequisites
 
 * Django
 * Python 3
@@ -57,7 +55,7 @@ Instale los requerimientos para el proyecto:
 pip install -r requirements.txt
 ```
 
-## Basic-Usage:
+## Basic-Usage
 
 Para crear un proyecto utilizando django ejecutamos:
 
@@ -89,6 +87,9 @@ python manage.py runserver <3000>
 
 Si no agregamos un número, se ejecuta en el puerto por defecto
 
+> [!TIP]
+> To format the Style using autopep press F1 and select format
+
 ## Usage
 
 El comando makemigrations se encarga de empaquetar los cambios del modelo en archivos de migración individuales (análogos a los commits).
@@ -105,6 +106,5 @@ Mientras que migrate se encarga de aplicarlos a la base de datos. Es decir se en
 python manage.py migrate
 ```
 
-### To format the Style using autopep press F1 and select format
-
-***Notar que se deben aplicar los comandos anteriores en el orden correspondiente para poder ejecutar el código actual, debido a que deben crearse los modelos y tablas mediante Python y Django para el correcto funcionamiento del proyecto***
+> [!IMPORTANT]
+> Notar que se deben aplicar los comandos anteriores en el orden correspondiente para poder ejecutar el código actual, debido a que deben crearse los modelos y tablas mediante Python y Django para el correcto funcionamiento del proyecto
