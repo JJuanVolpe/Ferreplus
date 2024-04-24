@@ -103,4 +103,4 @@ python manage.py migrate
 
 ### To format the Style using autopep press F1 and select format
 
-*** Notar que se deben aplicar los comandos anteriores en el orden correspondiente para poder ejecutar el código actual, debido a que deben crearse los modelos y tablas mediante Python y Django para el correcto funcionamiento del proyecto ***
+***Notar que se deben aplicar los comandos anteriores en el orden correspondiente para poder ejecutar el código actual, debido a que deben crearse los modelos y tablas mediante Python y Django para el correcto funcionamiento del proyecto***
