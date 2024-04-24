@@ -10,9 +10,6 @@ Este archivo readme [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/F
 
 [![License](https://img.shields.io/badge/License-CC0-lightgray.svg?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
 
-[![DOI](http://img.shields.io/badge/DOI-10.5281%2fzenodo.10633361-blue.svg?style=flat-square)](https://zenodo.org/records/10633361)
-[![Mentioned in Awesome Awesome README](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/matiassingers/awesome-readme)
-
 ## Table of contents
 
 * [Introduction](#introduction)
@@ -49,8 +46,6 @@ git clone https://github.com/JJuanVolpe/Ferreplus
 * Django
 * Python 3
 * SQLite3
-* [Sqlite interphace](https://sqlitebrowser.org/), resulta una utilidad sencilla para visualizar nuestra BD
-* autopep8
 
 Instale los requerimientos para el proyecto:
 
@@ -67,7 +62,7 @@ django-admin startproject <name-project>
 ```
 
 Sin embargo este repositorio cuenta con el proyecto ya creado, el cuál asume cómo "raíz" llamado myapp.
-Podemos generar aplicaciones altamente escalable conformando nuestro proyecto utilizando diversas "aplicaciones"
+Podemos generar aplicaciones altamente escalables conformando nuestro proyecto con carpetas denominadas "aplicaciones"
 
 Para crear aplicaciones dentro de nuestro proyecto podemos ejecutar:
 
