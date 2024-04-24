@@ -1,6 +1,6 @@
     
 
-# Ferreplus: Sistema ideado para usuarios de una cadena ferretera 🔩 🔧 🔨
+# Ferreplus: Sistema ideado para cadena ferretera ubicada en Buenos Aires 🔩 🔧 🔨
 
 ## Desarrollado para la cátedra Ingeniería de Software 2
 
