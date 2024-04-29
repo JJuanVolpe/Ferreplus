@@ -7,3 +7,6 @@ class CreateNewTask(forms.Form):
 
 class CreateNewProject(forms.Form):
     name = forms.CharField(label="Nombre del Proyect", max_length=200, widget=forms.TextInput(attrs={'class': 'input'}))
+
+class PopupForm(forms.Form):
+    message = forms.CharField(label='Mensaje del Popup', max_length=100)

@@ -1,0 +1,37 @@
+{% extends 'layouts/volverMenuP.html'%}
+
+{% block content %} 
+    <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Mi perfil</title>
+        </head>
+        <body>
+            <h1>Información del usuario</h1>
+            <form method="post">
+                {% csrf_token %}
+                <label for="username">Nombre de usuario:</label><br>
+                <input type="text" id="username" name="username" value="{{ usuario.username }}"><br><br>
+                
+                <label for="email">Correo electrónico:</label><br>
+                <input type="email" id="email" name="email" value="{{ usuario.email }}" readonly><br><br>
+                
+                <label for="first_name">Nombre:</label><br>
+                <input type="text" id="first_name" name="first_name" value="{{ usuario.first_name }}"><br><br>
+                
+                <label for="last_name">Apellido:</label><br>
+                <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}"><br><br>
+                
+                <button type="submit">Guardar cambios</button>
+            </form>
+        </body>
+    </html>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% endblock %}

@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Projects</title>
+    <image>
+        
+    </image>
+    <link rel="stylesheet" href="static/styles/menuPrincipal.css">
+</head>
+<body>
+    <h1 style="font-size: 50px;">
+        Menu Principal
+    </h1>
+
+    <nav>
+        <a href="{% url 'miPefil' %}">
+            <button class="btn">
+                ver perfil
+            </button>
+        </a> 
+    </nav>
+    <main class="container">
+        <div class="row">
+            <form>
+                <p>
+                    <button class="btn">
+                        menu de intercambios
+                    </button>
+                </p>
+                <p>
+                    <button class="btn">
+                        menu de compras
+                    </button>
+                </p>
+            </div>
+            
+        </div>
+    </main>
+    <p>
+        <button class="btn">
+            ver beneficios
+        </button>
+    
+    </p>
+
+</body>
+</html>
