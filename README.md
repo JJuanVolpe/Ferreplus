@@ -4,6 +4,7 @@
 
 Este archivo [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplus/main/README.md) contiene las especificaciones necesarias para trabajar con el proyecto en conjunto con sus dependencias de forma organizada y clara. Así también está sujeto a mejoras/modificaciones por parte de los integrantes.
 
+
 <p align="center">
 <img alt="Logo of group" width="30%" src="https://raw.githubusercontent.com/jjuanvolpe/ferreplus/main/myapp/static/logo.png"><br>
 <em>Ferreplus logo</em>
@@ -14,15 +15,15 @@ Este archivo [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplu
 ## Table of contents
 
 * [Introduction](#introduction)
-* [Prerequisites](#prerequisites)
 * [Installation](#installation)
+* [Prerequisites](#prerequisites)
+* [WorkFlow](#workflow)
 * [Basic Usage](#basic-usage)
-* [Usage](#usage)
+* [Common Commands](#common-commands)
 * [Known issues and limitations](#known-issues-and-limitations)
 * [Getting help](#getting-help)
 * [Contributing](#contributing)
 * [License](#license)
-* [Acknowledgments](#acknowledgments)
 
 ## Introduction
 
@@ -36,14 +37,13 @@ Existen 3 roles respecto a los usuarios autenticados: Gerentes, Empleados y Clie
 * Los gerentes gestionan las sucursales y los empleados, a su vez pueden conocer estadísticas a través de la plataforma.
 
 ## Installation
-
 Clone el repositorio:
 
 ```sh
 git clone https://github.com/JJuanVolpe/Ferreplus
 ```
 
-## Prerequisites
+## Prerequisites:
 
 * Django
 * Python 3
@@ -55,7 +55,41 @@ Instale los requerimientos para el proyecto:
 pip install -r requirements.txt
 ```
 
-## Basic-Usage
+## Basic Commands:
+
+Una vez clonado el repositorio, ejecutamos:
+```sh
+git status
+```
+para conocer el estado del directorio de trabajo y del área del entorno de ensayo,
+mientras que el comando git branch especifica la rama sobre la cuál estamos actualmente:
+```sh
+git branch
+```
+
+
+
+## WorkFlow
+
+La idea es mantener el desarrollo en función de la rama develop.
+Por esto ejecutamos:
+```sh
+git checkout develop
+```
+Luego de ejecutar éste comando vemos que si volvemos a ejecutar "git branch" nos indicará github que estamos sobre la rama indicada.
+
+- Podemos agregar el flag " -b " para indicarle a github que cree la rama que deseamos utilizar.
+  Ejemplo: 
+```sh
+git checkout -b registrar_eventual_trueque
+```
+
+> [!NOTE]
+> Trabajar las features/HU a partir de ramas generadas desde develop,
+  nos permite manejar de forma centralizada las nuevas features a desarrollar
+  en branch individuales permitiendo unificar los cambios en la branch develop
+
+## Basic-Usage:
 
 Para crear un proyecto utilizando django ejecutamos:
 
@@ -79,27 +113,26 @@ Este comando nos permite generar los archivos que permiten especificar las funci
 * models.py: Permite crear las clases que se convertirán en tablas (Django se encarga de las modificaciones y creación de las mismas).
 * migrations: Se registran las modificaciones hechas a la BD.
 
+
+> [!TIP]
+> To format the Style using autopep press F1 and select format
+
+
+## Common Commands:
+
 Para correr el servidor podemos ejecutar el siguiente comando, permitiendo como parámetro el n° de puerto dónde ejecutaremos el proyecto:
 
 ```sh
 python manage.py runserver <3000>
 ```
-
-Si no agregamos un número, se ejecuta en el puerto por defecto
-
-> [!TIP]
-> To format the Style using autopep press F1 and select format
-
-## Usage
+Si no agregamos un número, se ejecuta en el puerto por defecto.
 
 El comando makemigrations se encarga de empaquetar los cambios del modelo en archivos de migración individuales (análogos a los commits).
 Detectan los cambios de los modelos de las aplicaciones (Para esto se busca en todas las apps creadas dentro de nuestro proyecto),
 aunque podemos especificar en que aplicación hemos realizado cambios y agregarla cómo parámetro opcional
-
 ```sh
 python manage.py makemigrations
 ```
-
 Mientras que migrate se encarga de aplicarlos a la base de datos. Es decir se encarga de efectuar los cambios a la BD efectivamente.
 
 ```sh
@@ -107,4 +140,5 @@ python manage.py migrate
 ```
 
 > [!IMPORTANT]
-> Notar que se deben aplicar los comandos anteriores en el orden correspondiente para poder ejecutar el código actual, debido a que deben crearse los modelos y tablas mediante Python y Django para el correcto funcionamiento del proyecto
+> Notar que se deben aplicar los comandos anteriores en el orden correspondiente
+ para que django pueda generar las tablas para el correcto funcionamiento del proyecto
