@@ -19,11 +19,13 @@ Este archivo [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplu
 * [Prerequisites](#prerequisites)
 * [WorkFlow](#workflow)
 * [Basic Usage](#basic-usage)
+<!---
 * [Common Commands](#common-commands)
 * [Known issues and limitations](#known-issues-and-limitations)
 * [Getting help](#getting-help)
 * [Contributing](#contributing)
 * [License](#license)
+-->
 
 ## Introduction
 

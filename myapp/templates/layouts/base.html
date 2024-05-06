@@ -33,9 +33,21 @@
             <li>
                 <a href="{% url 'create_project' %}">Create Project</a>
             </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a href="/signin" class="nav-link">Login</a>
+            </li>
             <li>
                 <a href="{% url 'signup' %}">Sign Up</a>
             </li>
+            <li>
+                <a href="{% url 'contact' %}">Recovery Password</a>
+            </li>
+            {% endif %}
         </ul>
     </nav>
     

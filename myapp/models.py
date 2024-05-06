@@ -24,11 +24,14 @@ class Task(models.Model):
 class Profile(models.Model):
     # otros campos
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile", blank=True, null=True)
-    age = models.PositiveBigIntegerField(null=True, blank=False)
-   
+    edad = models.PositiveBigIntegerField(null=True, blank=False)
+    dni = models.CharField(null=True, blank=False, max_length=10)
+    genero = models.CharField(null=True, blank=True, max_length=10)
+    telefono = models.CharField(null=True, blank=True, max_length=15)
+    
 
     def __str__(self):
-        return "edad:" + str(self.age)
+        return "edad:" + str(self.edad) + ", con dni:" + str(self.dni)  + ", genero: "+ str(self.genero)  + "  y celular:" + str(self.telefono)  + " - & - "
 
 
 @receiver(post_save, sender=User)

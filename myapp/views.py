@@ -3,9 +3,12 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import Task, Profile, Project
-from .forms import CreateNewTask, CreateNewProject
+from .forms import CreateNewTask, CreateNewProject, RecoveryForm
+from django.core.mail import EmailMessage
+
 # Create your views here.
 
 
@@ -96,14 +99,18 @@ def signup(request):
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Este correo está en uso, debe utilizar otro."})
         if incorrect_password(request.POST["password"]):
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "La contraseña debe tener mínimo 8 dígitos y una mayúscula."})
-        if int(request.POST["age"]) < 18:
+        if int(request.POST["edad"]) < 18:
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Debe ser mayor de edad para registarse."})
         try:
             user = User.objects.create_user(
                 request.POST["username"], password=request.POST["password"],
                 email=request.POST["email"],  first_name=request.POST["name"],
-                last_name=request.POST["lastname"])# falta , edad=request.POST["age"]:/
-            user.profile.age = request.POST["age"]
+                last_name=request.POST["lastname"])
+            user.profile.edad = request.POST["edad"]
+            user.profile.dni = request.POST["dni"]
+            user.profile.genero = request.POST["genero"]
+            user.profile.telefono = request.POST["telefono"]
+            #user.save()
             login(request, user)
             return redirect('tasks')
         except IntegrityError:  #Manejo error asociado a la BD 
@@ -119,7 +126,6 @@ def signin(request):
             request, username=request.POST['username'], password=request.POST['password'])
         if user is None:
             return render(request, 'signin.html', {"form": AuthenticationForm, "error": "Username or password is incorrect."})
-
         login(request, user)
         return redirect('tasks')
 
@@ -127,4 +133,28 @@ def signin(request):
 @login_required
 def signout(request):
     logout(request)
-    return redirect('home')
+    return redirect('index')
+
+
+def contact(request):
+    if request.method == 'GET':
+        return render(request, 'contact.html', {'form': RecoveryForm()})
+    else:
+        # Deberia trabajarlo con formularios => contact_form = RecoveryForm(data=request.POST)
+        account_email = request.POST["email"]
+        try:
+            password = "password"
+            if User.objects.filter(email=account_email).exists():
+                user = User.objects.get(email=account_email)
+                user.set_password("password")
+            # Enviar el correo electrónico
+            email = EmailMessage('Mensaje de recuperación de contraseña - Ferreplus 🛠️🧰','{} \n- Su nueva contraseña es: \n\n{}'
+                .format("No compartas esta información, nadie de nuestro equipo te la solicitará.", password),
+                account_email, ['808a2280ba84f8@inbox.mailtrap.io'])
+            email.send()
+            user.save()
+            return redirect(reverse('contact')+'?ok')   #Todo OK
+        except:
+            # Ha habido un error y retorno a ERROR
+            return redirect(reverse('contact')+'?error')
+        
