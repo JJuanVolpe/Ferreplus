@@ -162,7 +162,7 @@ def signup(request):
             user.profile.telefono = request.POST["telefono"]
             #user.save()
             login(request, user)
-            return redirect('tasks')
+            return redirect('menuPrincipal')
         except IntegrityError:  #Manejo error asociado a la BD 
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Username already exists."})
 
@@ -177,7 +177,7 @@ def signin(request):
         if user is None:
             return render(request, 'signin.html', {"form": AuthenticationForm, "error": "Username or password is incorrect."})
         login(request, user)
-        return redirect('tasks')
+        return redirect('menuPrincipal')
 
 
 @login_required
