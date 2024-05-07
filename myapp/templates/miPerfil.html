@@ -1,0 +1,113 @@
+{% extends 'layouts/volverMenuP.html'%}
+
+{% block content %} 
+    <html lang="es">
+        <head>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const btnAbrirModal = document.querySelector("#editarContraseña");
+                    const btnCerrarModal = document.querySelector("#Cerrar_modal");
+                    const modal = document.querySelector("#modal");
+
+                    btnAbrirModal.addEventListener("click",function(){
+                        modal.showModal();
+                    });
+
+                    btnCerrarModal.addEventListener("click", function(){
+                        modal.close();
+                    });
+                });
+            </script>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Mi perfil</title>
+            <style>
+                .contendedor{
+                    height: 50vh;
+                    margin: 5%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    font-family:Arial, Helvetica, sans-serif;
+                }
+                .informacion{
+                    height: 30vh;
+                    margin: 5%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                }
+                .divModal{
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    font-family:Arial, Helvetica, sans-serif;
+                }
+                #modal::backdrop{
+                    background-color: rgba(0,0,0,.45);
+                }
+                #modal{
+                    width: 500px; /* Ancho deseado del modal */
+                    height: 300px; /* Alto deseado del modal */
+                    background-color: #4566d3e5;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="contendedor">
+                <form method="post">
+                    <h1>Información del usuario</h1>
+                    {% csrf_token %} 
+                    <label for="username">Nombre de usuario:</label><br>
+                    <input type="text" id="username" name="username" value="{{ usuario.username }}"><br><br>
+                    
+                    <label for="email">Correo electrónico:</label><br>
+                    <input type="email" id="email" name="email" value="{{ usuario.email }}" readonly><br><br>
+                    
+                    <label for="first_name">Nombre:</label><br>
+                    <input type="text" id="first_name" name="first_name" value="{{ usuario.first_name }}"><br><br>
+                    
+                    <label for="last_name">Apellido:</label><br>
+                    <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}"><br><br>
+                    
+                    <button type="submit">Guardar cambios</button> 
+                    <button type="button" id="editarContraseña">Editar Contraseña</button>  
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </form>
+            </div>  
+                <dialog id="modal">
+                    <div class="divModal">
+                        <h1>Modificar Contraseña</h1>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="modal_form" value="true">
+                            <label for="contraseñaActual">Contraseña actual:</label><br>
+                            <input type="password" id="contraseñaActual" name="contraseñaActual" required><br><br>
+                            
+                            <label for="contraseñaNueva">Nueva contraseña:</label><br>
+                            <input type="password" id="contraseñaNueva" name="contraseñaNueva" required><br><br>
+                            
+                            <label for="repetirContraseñaNueva">Repetir nueva contraseña:</label><br>
+                            <input type="password" id="repetirContraseñaNueva" name="repetirContraseñaNueva" required><br><br>
+                            
+                            <button type="s">Actualizar contraseña</button>
+                            <button type="button" id="Cerrar_modal">Cerrar</button>
+                        </form>
+                    </div>
+                   <div>
+                        <button> Recuperar contraseña </button>
+                   </diV>
+                    
+                </dialog>  
+        </body>
+    </html>
+   
+    {% endblock %}

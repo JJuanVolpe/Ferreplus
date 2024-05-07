@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Projects</title>
+    <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
+    <link rel="stylesheet" href="static/styles/menuPrincipal.css">
+    <style>
+        .contenedorMenu{
+            height: 10vh;
+        }
+        .contenedor{
+            margin: 3%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .menuPrincipal{
+            margin: 3%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .menus{
+            height: 20vh;
+            margin: 3%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .titulo {
+            margin: 3%;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .imagen {
+            margin: 3%;
+            position: fixed;
+            top: 0;
+            right: 0;
+        }
+        .todo{
+            height: 70vh;
+            font-family: Arial, Helvetica, sans-serif;
+
+        }
+        .beneficio{
+            margin: 3%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+    </style>
+</head>  
+<body>
+    <div class="contenedorMenu">
+        <h1 class="titulo">Menu Principal</h1>
+        <img src="../static/image.png" alt="Logo" width="220" class="imagen"> 
+    </div>
+    <div class="todo">    
+        <div class="contenedor">
+            <a href="{% url 'miPefil' %}">
+                <button>Ver Perfil</button>
+            </a>
+        </div>
+        <div class="menus">
+            <button style="width: 5cm;"> Menu de Intercambios </button>
+            <div style="height: 1.0cm;">  </div>
+            <button style="width: 5cm;"> Menu de Compras </button>
+        </div>
+        <div class="beneficio">
+            <button> ver beneficios </button>
+        </div>
+    </div>
+</body>
+</html>
