@@ -72,6 +72,15 @@
                     <label for="last_name">Apellido:</label><br>
                     <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}"><br><br>
                     
+                    <label for="last_name">Edad:</label><br>
+                    <input type="text" id="last_name" name="edad" value="{{ usuario.profile.edad }}"><br><br>
+
+                    <label for="last_name">Genero:</label><br>
+                    <input type="text" id="last_name" name="genero" value="{{ usuario.profile.genero }}"><br><br>
+
+                    <label for="last_name">Numero:</label><br>
+                    <input type="text" id="last_name" name="telefono" value="{{ usuario.profile.telefono }}"><br><br>
+
                     <button type="submit">Guardar cambios</button> 
                     <button type="button" id="editarContraseña">Editar Contraseña</button>  
                     {% if messages %}
