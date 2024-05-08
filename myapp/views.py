@@ -58,6 +58,9 @@ def  miPerfil(request):
                 messages.error(request, 'La contraseña actual es incorrecta.')
         else:
             # El formulario se envió desde el botón "Guardar cambios" fuera del modal
+            usuario.profile.telefono = request.POST['telefono']
+            usuario.profile.genero = request.POST['genero']
+            usuario.profile.edad = request.POST['edad']
             usuario.username = request.POST['username']
             usuario.email = request.POST['email']
             usuario.first_name = request.POST['first_name']
