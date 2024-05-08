@@ -1,7 +1,7 @@
-from django.http import HttpResponse
-from .models import Project, Task
+from django.http import HttpResponse, JsonResponse
+from .models import Project, Sucursal
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CreateNewTask, CreateNewProject
+
 
 # Create your views here.
 
@@ -32,38 +32,58 @@ def projects(request):
     })
 
 
-def tasks(request):
-    # task = Task.objects.get(title=tile)
-    tasks = Task.objects.all()
-    return render(request, 'tasks/tasks.html', {
-        'tasks': tasks
-    })
 
 
-def create_task(request):
-    if request.method == 'GET':
-        return render(request, 'tasks/create_task.html', {
-            'form': CreateNewTask()
-        })
-    else:
-        Task.objects.create(
-            title=request.POST['title'], description=request.POST['description'], project_id=2)
-        return redirect('tasks')
+
+def Sucursales(request):
+    # projects = list(Project.objects.values())
+    sucurs = Sucursal.objects.all()
 
 
-def create_project(request):
-    if request.method == 'GET':
-        return render(request, 'projects/create_project.html', {
-            'form': CreateNewProject()
-        })
-    else:
-        Project.objects.create(name=request.POST["name"])
-        return redirect('projects')
+    def ModificarSucursal(request, id_buscado):
+        if request.method == 'POST':
+            direcc = request.POST.get('direccNueva')
+            sucur = Sucursal.objects.get(id=id_buscado)
+            sucur.title = direcc
+            sucur.save()
+            return redirect('Sucursales.html',{'sucursales' : Sucursal.objects.all()})  # Redirige a la lista de sucursales
 
-def project_detail(request, id):
-    project = get_object_or_404(Project, id=id)
-    tasks = Task.objects.filter(project_id=id)
-    return render(request, 'projects/detail.html', {
-        'project': project,
-        'tasks': tasks
-    })
+
+
+
+
+    return render(request, 'Sucursales.html',{'sucursales' : sucurs})
+    
+
+
+
+
+
+
+
+
+def Menu_intercambios(request):
+    title = 'Menu Intercambio'
+    context = {'title': title}
+    return render(request, 'Menu_De_Intercambios.html', context)
+
+def Historial_Intercambios(request):
+    title = 'Historial de intercambios'
+    context = {'title': title}
+    return render(request, 'Historial_De_Intercambios.html', context)
+
+def Ver_Trueques(request):
+    title = 'Mis trueques'
+    context = {'title': title}
+    return render(request, 'Mis_Trueques.html', context)
+
+def Crear_Trueque(request):
+    title = 'Mis trueques'
+    context = {'title': title}
+    return render(request, 'Crear_Trueques.html', context)
+
+def Menu_Sucursales(request):
+    title = 'Menu de Sucursales'
+    context = {'title': title}
+    return render(request, 'Menu_Sucursales.html', context)
+
