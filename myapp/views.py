@@ -39,25 +39,29 @@ def Sucursales(request):
     # projects = list(Project.objects.values())
     sucurs = Sucursal.objects.all()
 
-
-    def ModificarSucursal(request, id_buscado):
-        if request.method == 'POST':
-            direcc = request.POST.get('direccNueva')
-            sucur = Sucursal.objects.get(id=id_buscado)
-            sucur.title = direcc
-            sucur.save()
-            return redirect('Sucursales.html',{'sucursales' : Sucursal.objects.all()})  # Redirige a la lista de sucursales
-
-
-
-
+    
+    
 
     return render(request, 'Sucursales.html',{'sucursales' : sucurs})
     
 
+def eliminar_sucursal(request, sucursal_id):
+    sucursal = Sucursal.objects.get(id=sucursal_id)
+    sucursal.delete()
+    return redirect('Sucursales')
 
 
 
+def editar_sucursal(request, id_buscado):
+    
+    if request.method == 'POST':
+        print ("id:" + id_buscado)
+        direcc = request.POST.get('NuevaDireccion')
+        print("direcc" + direcc)
+        sucur = Sucursal.objects.get(id=id_buscado)
+        sucur.title = direcc
+        sucur.save()
+    return redirect('Sucursales')
 
 
 
