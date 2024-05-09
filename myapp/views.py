@@ -39,9 +39,6 @@ def Sucursales(request):
     # projects = list(Project.objects.values())
     sucurs = Sucursal.objects.all()
 
-    
-    
-
     return render(request, 'Sucursales.html',{'sucursales' : sucurs})
     
 
@@ -59,8 +56,6 @@ def editar_sucursal(request, sucursal_id):
         sucursal.title = nueva_direccion
         sucursal.save()
     return redirect('Sucursales')
-
-
 
 
 def Menu_intercambios(request):
