@@ -1,30 +1,22 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-    // Selecciona todos los botones que abren el modal
-    const btnsAbrirModal = document.querySelectorAll(".button-style");
-    const btnCerrarModal = document.querySelector("#Cerrar_modal");
-    const modal = document.querySelector("#modal");
+        const btnsAbrirModal = document.querySelectorAll(".button-style");
+        const btnCerrarModal = document.querySelector("#Cerrar_modal");
+        const modal = document.querySelector("#modal");
 
-    // Agrega el evento click a cada botón
-    btnsAbrirModal.forEach(function(btn) {
-        btn.addEventListener("click", function() {
-            // Aquí puedes establecer los datos del modal basados en la sucursal correspondiente
-            modal.showModal();
+        btnsAbrirModal.forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                modal.showModal();
+            });
+        });
+
+        btnCerrarModal.addEventListener("click", function() {
+            modal.close();
         });
     });
-
-    btnCerrarModal.addEventListener("click", function() {
-        modal.close();
-    });
-});
 </script>
 
-
-
-
 <style>
-
-
     body {
         background-color: #4566d3e5;
         margin: 0;
@@ -32,18 +24,17 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh; /* Esto hará que el contenido se centre verticalmente en la pantalla */
+        height: 100vh;
     }
 
-    /* Estilos para la tabla y los botones */
     .table-container {
-        text-align: center; /* Centrar la tabla horizontalmente */
+        text-align: center;
     }
 
     table {
-        margin: 20px auto; /* Agrega margen arriba y abajo y centra la tabla horizontalmente */
+        margin: 20px auto;
         border-collapse: separate;
-        border-spacing: 0 15px; /* Espaciado entre filas de la tabla */
+        border-spacing: 0 15px;
     }
 
     .button-style {
@@ -54,21 +45,8 @@
         cursor: pointer;
         text-align: center;
         display: block;
-        margin: 10px auto; /* Agrega margen arriba y abajo y centra el botón horizontalmente */
-        width: 100%; /* Ancho del botón ajustado al 80% del contenedor */
-        box-sizing: border-box;
-    }
-
-    .botonAgregar {
-        background-color: #8299e4e5;
-        color: rgba(253, 253, 253, 0.973);
-        padding: 10px;
-        border: 2px solid #000000e5;
-        cursor: pointer;
-        text-align: center;
-        display: block;
-        margin: 10px auto; /* Agrega margen arriba y abajo y centra el botón horizontalmente */
-        width: 100%; /* Ancho del botón ajustado al 80% del contenedor */
+        margin: 10px auto;
+        width: 100%;
         box-sizing: border-box;
     }
 
@@ -78,23 +56,18 @@
 
     #Agregar_Sucursal {
         display: block;
-        margin: 20px auto; /* Centra el botón 'Agregar una sucursal' horizontalmente y agrega margen */
-        /* Resto de estilos para el botón 'Agregar una sucursal' */
+        margin: 20px auto;
     }
 
     #modal{
-        width: 500px; /* Ancho deseado del modal /
-        height: 300px;  */
-
+        width: 500px;
         background-color: #4566d3ff;
     }
 
     #modal::backdrop{
         background-color: rgba(0,0,0,.45);
     }
-
 </style>
-
 
 <body>
     <div class="table-container">
@@ -104,36 +77,51 @@
                 {% for suc in sucursales %}
                     <tr>
                         <td>
-                            <button class="button-style" value= "{{ suc.id }}" id="suc.id">{{ suc.title }}</button>
-                            <form action="{% url 'eliminar_sucursal' suc.id %}" method="post">
+                            <button class="button-style editar-btn" data-id="{{ suc.id }}">{{ suc.title }}</button>
+                            <form class="eliminar-form" data-id="{{ suc.id }}" action="{% url 'eliminar_sucursal' suc.id %}" method="post">
                                 {% csrf_token %}
-                                <button type="submit">Eliminar sucursal</button>
+                                <button type="submit" class="eliminar-btn">Eliminar sucursal</button>
                             </form>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody> 
         </table>
-        <button type=button class="botonAgregar" id="Agregar_Sucursal">Agregar una sucursal</button>
+        <button type="button" class="botonAgregar" id="Agregar_Sucursal">Agregar una sucursal</button>
     </div>
-
-
 
     <dialog id="modal">
         <div class="divModal">
-            <h1>Modificar Direccion</h1>
-            <form method="post">
+            <h1>Modificar Dirección</h1>
+            <form id="editar-form" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="modal_form" value="true">
-
-
-                <label for="direccNueva">Nueva direccion:</label><br>
-                <input type="direcc" id="NuevaDireccion" name="NuevaDireccion" required><br><br>
-                
-                <button type="s">Actualizar direccion</button>
+                <label for="direccNueva">Nueva dirección:</label><br>
+                <input type="text" id="direccNueva" name="NuevaDireccion" required><br><br>
+                <button type="submit">Actualizar dirección</button>
                 <button type="button" id="Cerrar_modal">Cerrar</button>
-               
             </form>
         </div>
     </dialog>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const editarForm = document.getElementById('editar-form');
+            const editarButtons = document.querySelectorAll('.editar-btn');
+            const cerrarModalBtn = document.querySelector("#Cerrar_modal");
+            const modal = document.querySelector("#modal");
+
+            editarButtons.forEach(function(btn) {
+                btn.addEventListener("click", function() {
+                    const sucursalId = this.getAttribute('data-id');
+                    modal.showModal();
+                    editarForm.action = `{% url 'editar_sucursal' 0 %}`.replace('0', sucursalId);
+                });
+            });
+
+            cerrarModalBtn.addEventListener("click", function() {
+                modal.close();
+            });
+        });
+    </script>
 </body>

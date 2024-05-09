@@ -52,15 +52,12 @@ def eliminar_sucursal(request, sucursal_id):
 
 
 
-def editar_sucursal(request, id_buscado):
-    
+def editar_sucursal(request, sucursal_id):
     if request.method == 'POST':
-        print ("id:" + id_buscado)
-        direcc = request.POST.get('NuevaDireccion')
-        print("direcc" + direcc)
-        sucur = Sucursal.objects.get(id=id_buscado)
-        sucur.title = direcc
-        sucur.save()
+        nueva_direccion = request.POST.get('NuevaDireccion')
+        sucursal = Sucursal.objects.get(id=sucursal_id)
+        sucursal.title = nueva_direccion
+        sucursal.save()
     return redirect('Sucursales')
 
 
