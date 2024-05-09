@@ -58,6 +58,14 @@ def editar_sucursal(request, sucursal_id):
     return redirect('Sucursales')
 
 
+def agregar_sucursal(request):
+    if request.method == 'POST':
+        nueva_sucursal = request.POST.get('nuevaSucursal')
+        if nueva_sucursal:
+            sucursal = Sucursal.objects.create(title=nueva_sucursal)
+    return redirect('Sucursales')
+
+
 def Menu_intercambios(request):
     title = 'Menu Intercambio'
     context = {'title': title}

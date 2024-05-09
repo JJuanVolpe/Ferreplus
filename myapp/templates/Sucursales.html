@@ -50,6 +50,21 @@
         box-sizing: border-box;
     }
 
+
+    .button-style2 {
+        background-color: #8299e4e5;
+        color: rgba(253, 253, 253, 0.973);
+        padding: 10px;
+        border: 2px solid #000000e5;
+        cursor: pointer;
+        text-align: center;
+        display: block;
+        margin: 10px auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
     .button-style:hover {
         background-color: #126627;
     }
@@ -87,7 +102,12 @@
                 {% endfor %}
             </tbody> 
         </table>
-        <button type="button" class="botonAgregar" id="Agregar_Sucursal">Agregar una sucursal</button>
+        <form id="agregar-form" action="{% url 'agregar_sucursal' %}" method="post">
+            {% csrf_token %}
+            <label for="nuevaSucursal">Nombre de la nueva sucursal:</label><br>
+            <input type="text" id="nuevaSucursal" name="nuevaSucursal" required><br><br>
+            <button class="button-style2" type="submit">Agregar sucursal</button>
+        </form>
     </div>
 
     <dialog id="modal">
