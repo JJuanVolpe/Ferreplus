@@ -5,11 +5,10 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Task, Profile, Project
+from .models import Task, Profile, Project, Task
 from .forms import CreateNewTask, CreateNewProject, RecoveryForm
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
-from .models import Project, Task
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import validate_password
@@ -30,9 +29,8 @@ def menuPrincipal(request):
 
 def  miPerfil(request):
     previous_page = request.META.get('HTTP_REFERER')
-    #usuario = request.user  # Obtenemos el usuario autenticado
-    usuario = User.objects.all()[3]
-  
+    usuario = request.user    # Obtenemos el usuario autenticado
+    #usuario = User.objects.all()[3]
     if request.method == 'POST':
         if 'contraseñaActual' in request.POST:
             # El formulario se envió desde el modal de cambio de contraseña
@@ -58,6 +56,8 @@ def  miPerfil(request):
                 messages.error(request, 'La contraseña actual es incorrecta.')
         else:
             # El formulario se envió desde el botón "Guardar cambios" fuera del modal
+            
+
             usuario.profile.telefono = request.POST['telefono']
             usuario.profile.genero = request.POST['genero']
             usuario.profile.edad = request.POST['edad']
@@ -163,7 +163,7 @@ def signup(request):
             user.profile.dni = request.POST["dni"]
             user.profile.genero = request.POST["genero"]
             user.profile.telefono = request.POST["telefono"]
-            #user.save()
+            user.save()
             login(request, user)
             return redirect('menuPrincipal')
         except IntegrityError:  #Manejo error asociado a la BD 
@@ -180,6 +180,7 @@ def signin(request):
         if user is None:
             return render(request, 'signin.html', {"form": AuthenticationForm, "error": "Username or password is incorrect."})
         login(request, user)
+        return redirect('menuPrincipal')
         return redirect('menuPrincipal')
 
 
