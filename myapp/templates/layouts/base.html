@@ -16,24 +16,6 @@
     
     <nav class="navbar container">
         <ul>
-            <li>
-                <a href="{% url 'index' %}">Home</a>
-            </li>
-            <li>
-                <a href="{% url 'about' %}">About</a>
-            </li>
-            <li>
-                <a href="{% url 'projects' %}">Projects</a>
-            </li>
-            <li>
-                <a href="{% url 'tasks' %}">Tasks</a>
-            </li>
-            <li>
-                <a href="{% url 'create_task' %}">Create task</a>
-            </li>
-            <li>
-                <a href="{% url 'create_project' %}">Create Project</a>
-            </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link" href="/logout">Logout</a>
