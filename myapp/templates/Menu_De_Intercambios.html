@@ -1,0 +1,60 @@
+
+
+<head>
+    
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+
+        body {
+          background-color: #4566d3e5; 
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            width: 200px;
+
+        }
+        .menu button {
+            background-color: #8299e4e5;
+            color: rgba(253, 253, 253, 0.973);
+            padding: 20px;
+            margin: 10px 0px;
+            border: 2px solid #000000e5; /* Estilo de borde sólido, ancho de 2px y color negro */
+            width: 100%; /* Esto hará que todos los botones se expandan al ancho del contenedor .menu */
+            box-sizing: border-box; /* Esto asegura que el padding y el borde se incluyan en el ancho total */
+            cursor: pointer;                                       
+ 
+        }
+        .menu button:hover {
+            background-color: #126627;
+        }
+        .contenido {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="menu">
+        <a href="{% url 'Historial_De_Intercambios' %}">                              
+            <button id="Historial">Ver historial de Intercambios</button>
+        </a>
+        <a href="{% url 'Mis_Trueques' %}">
+            <button id="Mis_Trueques">Ver mis intercambios</button>
+        </a>
+        <a href="{% url 'Crear_Trueques' %}">
+            <button id="Crear_Trueque">Crear intercambio</button>
+        </a>
+        
+    </div>
+
+
+    <div class="contenido">
+        <!-- Aquí irá el texto que quieras mostrar al hacer clic en los botones -->
+    </div>
+
+
+</body>
+</html>

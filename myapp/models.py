@@ -7,15 +7,8 @@ from django.dispatch import receiver
 class Project(models.Model):
     name = models.CharField(max_length=200)
 
-    def __str__(self):
-        return self.name
 
 
-class Task(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    done = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title + ' - ' + self.project.name
@@ -49,3 +42,11 @@ def save_user_profile(sender, instance, **kwargs):
 
 post_save.connect(create_user_profile, sender=User)
 post_save.connect(save_user_profile, sender=User)
+
+
+
+class Sucursal(models.Model):
+    title= models.CharField(max_length=200)
+    project = models.ForeignKey(Project,on_delete=models.CASCADE)
+
+    

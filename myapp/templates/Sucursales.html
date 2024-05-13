@@ -1,0 +1,160 @@
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const btnsAbrirModal = document.querySelectorAll(".button-style");
+        const btnCerrarModal = document.querySelector("#Cerrar_modal");
+        const modal = document.querySelector("#modal");
+
+        btnsAbrirModal.forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                modal.showModal();
+            });
+        });
+
+        btnCerrarModal.addEventListener("click", function() {
+            modal.close();
+        });
+    });
+</script>
+
+
+
+<style>
+    body {
+        background-color: #4566d3e5;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .table-container {
+        text-align: center;
+    }
+
+    table {
+        margin: 20px auto;
+        border-collapse: separate;
+        border-spacing: 0 15px;
+    }
+
+    .button-style {
+        background-color: #8299e4e5;
+        color: rgba(253, 253, 253, 0.973);
+        padding: 10px;
+        border: 2px solid #000000e5;
+        cursor: pointer;
+        text-align: center;
+        display: block;
+        margin: 10px auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    .button-style2 {
+        background-color: #8299e4e5;
+        color: rgba(253, 253, 253, 0.973);
+        padding: 10px;
+        border: 2px solid #000000e5;
+        cursor: pointer;
+        text-align: center;
+        display: block;
+        margin: 10px auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+
+    .button-style:hover {
+        background-color: #126627;
+    }
+
+    #Agregar_Sucursal {
+        display: block;
+        margin: 20px auto;
+    }
+
+    #modal{
+        width: 500px;
+        background-color: #4566d3ff;
+    }
+
+    #modal::backdrop{
+        background-color: rgba(0,0,0,.45);
+    }
+</style>
+
+<body>
+    <div class="table-container">
+        <h1>Listado de sucursales</h1>
+        <table border="0">
+            <tbody>
+                {% for suc in sucursales %}
+                    <tr>
+                        <td>
+                            <button class="button-style editar-btn" data-id="{{ suc.id }}">{{ suc.title }}</button>
+                            <form class="eliminar-form" data-id="{{ suc.id }}" action="{% url 'eliminar_sucursal' suc.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="eliminar-btn">Eliminar sucursal</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody> 
+        </table>
+        <div id="error-message" class="error-message"></div>
+        <form id="agregar-form" action="{% url 'agregar_sucursal' %}" method="post">
+            {% csrf_token %}
+            <label for="nuevaSucursal">Dirección de la nueva sucursal:</label><br>
+            <input type="text" id="nuevaSucursal" name="nuevaSucursal" required><br><br>
+            <button class="button-style2" type="submit">Agregar sucursal</button>
+            <p style="color: black; font-family: 'Montserrat';"></p>
+                {% if messages %}
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                {% endif %}
+            </p>    
+        </form>
+        
+    </div>
+
+
+    <dialog id="modal">
+        <div class="divModal">
+            <h1>Modificar Dirección</h1>
+            <form id="editar-form" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="modal_form" value="true">
+                <label for="direccNueva">Nueva dirección:</label><br>
+                <input type="text" id="direccNueva" name="NuevaDireccion" required><br><br>
+                <button type="submit">Actualizar dirección</button>
+                <button type="button" id="Cerrar_modal">Cerrar</button>
+            </form>
+        </div>
+    </dialog>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const editarForm = document.getElementById('editar-form');
+            const editarButtons = document.querySelectorAll('.editar-btn');
+            const cerrarModalBtn = document.querySelector("#Cerrar_modal");
+            const modal = document.querySelector("#modal");
+
+            editarButtons.forEach(function(btn) {
+                btn.addEventListener("click", function() {
+                    const sucursalId = this.getAttribute('data-id');
+                    modal.showModal();
+                    editarForm.action = `{% url 'editar_sucursal' 0 %}`.replace('0', sucursalId);
+                });
+            });
+
+            cerrarModalBtn.addEventListener("click", function() {
+                modal.close();
+            });
+        });
+    </script>
+</body>
