@@ -16,6 +16,8 @@
     });
 </script>
 
+
+
 <style>
     body {
         background-color: #4566d3e5;
@@ -65,6 +67,7 @@
     }
 
 
+
     .button-style:hover {
         background-color: #126627;
     }
@@ -102,13 +105,23 @@
                 {% endfor %}
             </tbody> 
         </table>
+        <div id="error-message" class="error-message"></div>
         <form id="agregar-form" action="{% url 'agregar_sucursal' %}" method="post">
             {% csrf_token %}
-            <label for="nuevaSucursal">Nombre de la nueva sucursal:</label><br>
+            <label for="nuevaSucursal">Dirección de la nueva sucursal:</label><br>
             <input type="text" id="nuevaSucursal" name="nuevaSucursal" required><br><br>
             <button class="button-style2" type="submit">Agregar sucursal</button>
+            <p style="color: black; font-family: 'Montserrat';"></p>
+                {% if messages %}
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                {% endif %}
+            </p>    
         </form>
+        
     </div>
+
 
     <dialog id="modal">
         <div class="divModal">

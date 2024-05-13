@@ -1,6 +1,8 @@
 from django.http import HttpResponse, JsonResponse
 from .models import Project, Sucursal
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+
 
 
 # Create your views here.
@@ -52,17 +54,29 @@ def eliminar_sucursal(request, sucursal_id):
 def editar_sucursal(request, sucursal_id):
     if request.method == 'POST':
         nueva_direccion = request.POST.get('NuevaDireccion')
-        sucursal = Sucursal.objects.get(id=sucursal_id)
-        sucursal.title = nueva_direccion
-        sucursal.save()
+        if len(nueva_direccion)<35:
+            if not Sucursal.objects.filter(title= nueva_direccion).exists():
+                sucursal = Sucursal.objects.get(id=sucursal_id)
+                sucursal.title = nueva_direccion
+                sucursal.save()
+            else:
+                messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal!')
+        else: 
+            messages.error(request, '¡El campo de la direccion no se puede exceder de los 35 caracteres!')
     return redirect('Sucursales')
 
 
 def agregar_sucursal(request):
     if request.method == 'POST':
         nueva_sucursal = request.POST.get('nuevaSucursal')
-        if nueva_sucursal:
-            sucursal = Sucursal.objects.create(title=nueva_sucursal)
+        if len(nueva_sucursal)<35:
+            if not Sucursal.objects.filter(title= nueva_sucursal).exists():
+                Sucursal.objects.create(title=nueva_sucursal)
+            else:
+                    
+                messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal!')
+        else: 
+            messages.error(request, '¡El campo de la direccion no se puede exceder de los 35 caracteres!')
     return redirect('Sucursales')
 
 
