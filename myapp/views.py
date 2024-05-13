@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Task, Profile, Project, Task
+from .models import Task, Profile, Project, Task, Sucursal
 from .forms import CreateNewTask, CreateNewProject, RecoveryForm
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
@@ -72,67 +72,7 @@ def  miPerfil(request):
         'usuario': usuario}
     )
 
-def about(request):
-    username = 'fazt'
-    return render(request, 'about.html', {
-        'username': username
-    })
 
-
-def hello(request, username):
-    return HttpResponse("<h2>Hello %s</h2>" % username)
-
-
-def projects(request):
-    # projects = list(Project.objects.values())
-    projects = Project.objects.all()
-    return render(request, 'projects/projects.html', {
-        'projects': projects
-    })
-
-
-def tasks(request):
-    # task = Task.objects.get(title=tile)
-    tasks = Task.objects.all()
-    return render(request, 'tasks/tasks.html', {
-        'tasks': tasks
-    })
-
-    
-@login_required
-def create_task(request):
-    if request.method == "GET":
-        return render(request, 'create_task.html', {"form": TaskForm})
-    else:
-        try:
-            form = TaskForm(request.POST)
-            new_task = form.save(commit=False)
-            new_task.user = request.user
-            new_task.save()
-            return redirect('tasks')
-        except ValueError:
-            return render(request, 'create_task.html', {"form": TaskForm, "error": "Error creating task."})
-        #Task.objects.create(
-        #    title=request.POST['title'], description=request.POST['description'], project_id=2)
-        #return redirect('tasks')
-
-
-def create_project(request):
-    if request.method == 'GET':
-        return render(request, 'projects/create_project.html', {
-            'form': CreateNewProject()
-        })
-    else:
-        Project.objects.create(name=request.POST["name"])
-        return redirect('projects')
-
-def project_detail(request, id):
-    project = get_object_or_404(Project, id=id)
-    tasks = Task.objects.filter(project_id=id)
-    return render(request, 'projects/detail.html', {
-        'project': project,
-        'tasks': tasks
-    })
 
 
 def signup(request):
@@ -212,3 +152,71 @@ def contact(request):
             # Ha habido un error y retorno a ERROR
             return redirect(reverse('contact')+'?error')
         
+
+def Sucursales(request):
+    # projects = list(Project.objects.values())
+    sucurs = Sucursal.objects.all()
+
+    return render(request, 'Sucursales.html',{'sucursales' : sucurs})
+    
+
+def eliminar_sucursal(request, sucursal_id):
+    sucursal = Sucursal.objects.get(id=sucursal_id)
+    sucursal.delete()
+    return redirect('Sucursales')
+
+
+
+def editar_sucursal(request, sucursal_id):
+    if request.method == 'POST':
+        nueva_direccion = request.POST.get('NuevaDireccion')
+        if len(nueva_direccion)<35:
+            if not Sucursal.objects.filter(title= nueva_direccion).exists():
+                sucursal = Sucursal.objects.get(id=sucursal_id)
+                sucursal.title = nueva_direccion
+                sucursal.save()
+            else:
+                messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal!')
+        else: 
+            messages.error(request, '¡El campo de la direccion no se puede exceder de los 35 caracteres!')
+    return redirect('Sucursales')
+
+
+def agregar_sucursal(request):
+    if request.method == 'POST':
+        nueva_sucursal = request.POST.get('nuevaSucursal')
+        if len(nueva_sucursal)<35:
+            if not Sucursal.objects.filter(title= nueva_sucursal).exists():
+                Sucursal.objects.create(title=nueva_sucursal)
+            else:
+                    
+                messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal!')
+        else: 
+            messages.error(request, '¡El campo de la direccion no se puede exceder de los 35 caracteres!')
+    return redirect('Sucursales')
+
+
+def Menu_intercambios(request):
+    title = 'Menu Intercambio'
+    context = {'title': title}
+    return render(request, 'Menu_De_Intercambios.html', context)
+
+def Historial_Intercambios(request):
+    title = 'Historial de intercambios'
+    context = {'title': title}
+    return render(request, 'Historial_De_Intercambios.html', context)
+
+def Ver_Trueques(request):
+    title = 'Mis trueques'
+    context = {'title': title}
+    return render(request, 'Mis_Trueques.html', context)
+
+def Crear_Trueque(request):
+    title = 'Mis trueques'
+    context = {'title': title}
+    return render(request, 'Crear_Trueques.html', context)
+
+def Menu_Sucursales(request):
+    title = 'Menu de Sucursales'
+    context = {'title': title}
+    return render(request, 'Menu_Sucursales.html', context)
