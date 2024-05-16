@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Task, Profile, Project, Task, Sucursal
-from .forms import CreateNewTask, CreateNewProject, RecoveryForm
+from .models import Profile, Project, Sucursal
+from .forms import CreateNewProject, RecoveryForm
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.contrib import messages
@@ -56,8 +56,6 @@ def  miPerfil(request):
                 messages.error(request, 'La contraseña actual es incorrecta.')
         else:
             # El formulario se envió desde el botón "Guardar cambios" fuera del modal
-            
-
             usuario.profile.telefono = request.POST['telefono']
             usuario.profile.genero = request.POST['genero']
             usuario.profile.edad = request.POST['edad']
@@ -105,29 +103,39 @@ def signup(request):
             user.profile.telefono = request.POST["telefono"]
             user.save()
             login(request, user)
-            return redirect('menuPrincipal')
+            return redirect('')
         except IntegrityError:  #Manejo error asociado a la BD 
-            return render(request, 'signup.html', {"form": UserCreationForm, "error": "Username already exists."})
-
+            return render(request, 'signup.html', {"form": UserCreationForm, "error": "Nombre de usuario ya existente en el sistema."})
 
 
 def signin(request):
-    if request.method == 'GET':
-        return render(request, 'signin.html', {"form": AuthenticationForm})
-    else:
-        user = authenticate(
-            request, username=request.POST['username'], password=request.POST['password'])
-        if user is None:
-            return render(request, 'signin.html', {"form": AuthenticationForm, "error": "Username or password is incorrect."})
-        login(request, user)
-        return redirect('menuPrincipal')
-        return redirect('menuPrincipal')
+    if request.user.is_authenticated:
+        # Si el usuario ya está autenticado, redirige según su perfil
+        profile = Profile.objects.get(user=request.user)
+        if profile.Es_gerente:
+            return redirect('Sucursales')
+        else:
+            return redirect('menuPrincipal')
 
+    if request.method == 'GET':
+        return render(request, 'signin.html', {"form": AuthenticationForm()})
+    else:
+        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        if user is None:
+            return render(request, 'signin.html', {"form": AuthenticationForm(), "error": "Nombre de usuario o contraseña incorrecto"})
+        else:
+            login(request, user)
+            # Accede al perfil del usuario
+            profile = Profile.objects.get(user=user)
+            if profile.Es_gerente:  # Verifica si el usuario es gerente
+                return redirect('Sucursales')
+            else:    
+                return redirect('menuPrincipal')
 
 @login_required
 def signout(request):
     logout(request)
-    return redirect('index')
+    return redirect('signin')
 
 
 def contact(request):
@@ -154,10 +162,14 @@ def contact(request):
         
 
 def Sucursales(request):
-    # projects = list(Project.objects.values())
-    sucurs = Sucursal.objects.all()
-
-    return render(request, 'Sucursales.html',{'sucursales' : sucurs})
+    profile = Profile.objects.get(user=request.user)  # Obtener el perfil del usuario actual
+    if not profile.Es_gerente:
+        # Si el usuario no es gerente, mostrar un mensaje de error
+        return render(request, 'Sucursales.html', {'error': 'No tienes permisos para acceder a esta página.'})
+    
+    # Si el usuario es gerente, obtener todas las sucursales
+    sucursales = Sucursal.objects.all()
+    return render(request, 'Sucursales.html', {'sucursales': sucursales})
     
 
 def eliminar_sucursal(request, sucursal_id):

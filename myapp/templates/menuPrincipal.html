@@ -44,6 +44,7 @@
             font-weight: bold;
             text-decoration: none;
             font-size: 500;
+            font-family: Arial, Helvetica, sans-serif;
             color: #D9D9D9;
             max-width: max-content;
             background-color: #2d4a81;
@@ -58,7 +59,7 @@
         button:hover, a:hover, input[type="submit"]:hover {
             background-color: rgba(255, 82, 51, 0.926);
             transform: scale(1.05);
-        }
+        }   
         .imagen {
             margin: 3%;
             position: fixed;
@@ -90,7 +91,9 @@
             </a>
         </div>
         <div class="menus">
-            <button style="width: 5cm;"> Menu de Intercambios </button>
+           <a href="{% url 'Menu_De_Intercambios' %}">
+            <button urstyle="width: 5cm;"> Menu de Intercambios </button>
+           </a>
             <div style="height: 1.0cm;">  </div>
             <button style="width: 5cm;"> Menu de Compras </button>
         </div>

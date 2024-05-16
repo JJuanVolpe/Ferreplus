@@ -1,160 +1,150 @@
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const btnsAbrirModal = document.querySelectorAll(".button-style");
-        const btnCerrarModal = document.querySelector("#Cerrar_modal");
-        const modal = document.querySelector("#modal");
-
-        btnsAbrirModal.forEach(function(btn) {
-            btn.addEventListener("click", function() {
-                modal.showModal();
-            });
-        });
-
-        btnCerrarModal.addEventListener("click", function() {
-            modal.close();
-        });
-    });
-</script>
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
+    <style>
+        body {
+            background-color: #2544ace5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ajusta la altura mínima de la página */
+            position: relative; /* Posición relativa para el posicionamiento absoluto */
+        }
 
 
-<style>
-    body {
-        background-color: #4566d3e5;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
+        table {
+            margin: 20px auto;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+        }
 
-    .table-container {
-        text-align: center;
-    }
+        .button-style {
+            background-color: #8299e4e5;
+            color: rgba(253, 253, 253, 0.973);
+            padding: 10px;
+            border: 2px solid #000000e5;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            margin: 10px auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-    table {
-        margin: 20px auto;
-        border-collapse: separate;
-        border-spacing: 0 15px;
-    }
+        .button-style:hover {
+            background-color: #126627;
+        }
 
-    .button-style {
-        background-color: #8299e4e5;
-        color: rgba(253, 253, 253, 0.973);
-        padding: 10px;
-        border: 2px solid #000000e5;
-        cursor: pointer;
-        text-align: center;
-        display: block;
-        margin: 10px auto;
-        width: 100%;
-        box-sizing: border-box;
-    }
+        #modal {
+            width: 500px;
+            background-color: #4566d3ff;
+        }
 
+        #modal::backdrop {
+            background-color: rgba(0, 0, 0, .45);
+        }
+        .table-container {
+            text-align: center;
+            margin: auto;
+            padding: 20px;
+            background-color: #ffffff; /* Fondo blanco */
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+        }
+        .scrollable-div {
+            width: 500px;
+            min-width: 300px;
+            max-height: 300px; /* Altura máxima inicial */
+            overflow-y: auto; /* Desplazamiento vertical */
+            border: 1px solid #050404; /* Borde */
+            background-color: #fff; /* Fondo blanco */
+            border-radius: 5px; /* Bordes redondeados */
+            padding: 10px; /* Espaciado interno */
+        }
 
-    .button-style2 {
-        background-color: #8299e4e5;
-        color: rgba(253, 253, 253, 0.973);
-        padding: 10px;
-        border: 2px solid #000000e5;
-        cursor: pointer;
-        text-align: center;
-        display: block;
-        margin: 10px auto;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-
-
-    .button-style:hover {
-        background-color: #126627;
-    }
-
-    #Agregar_Sucursal {
-        display: block;
-        margin: 20px auto;
-    }
-
-    #modal{
-        width: 500px;
-        background-color: #4566d3ff;
-    }
-
-    #modal::backdrop{
-        background-color: rgba(0,0,0,.45);
-    }
-</style>
-
+        .logOut {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
 <body>
+    <a class="logOut" href="/logout">Cerrar Sesión</a>
     <div class="table-container">
-        <h1>Listado de sucursales</h1>
-        <table border="0">
-            <tbody>
-                {% for suc in sucursales %}
-                    <tr>
-                        <td>
-                            <button class="button-style editar-btn" data-id="{{ suc.id }}">{{ suc.title }}</button>
-                            <form class="eliminar-form" data-id="{{ suc.id }}" action="{% url 'eliminar_sucursal' suc.id %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="eliminar-btn">Eliminar sucursal</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody> 
-        </table>
-        <div id="error-message" class="error-message"></div>
-        <form id="agregar-form" action="{% url 'agregar_sucursal' %}" method="post">
-            {% csrf_token %}
-            <label for="nuevaSucursal">Dirección de la nueva sucursal:</label><br>
-            <input type="text" id="nuevaSucursal" name="nuevaSucursal" required><br><br>
-            <button class="button-style2" type="submit">Agregar sucursal</button>
-            <p style="color: black; font-family: 'Montserrat';"></p>
+        <h1>Listado de Sucursales</h1>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% else %}
+            <div class="scrollable-div" id="scrollable-div">
+                <table>
+                    <tbody>
+                        {% for suc in sucursales %}
+                            <tr>
+                                <td>
+                                    <button class="button-style editar-btn" data-id="{{ suc.id }}">{{ suc.title }}</button>
+                                    <form class="eliminar-form" data-id="{{ suc.id }}" action="{% url 'eliminar_sucursal' suc.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="eliminar-btn">Eliminar sucursal</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %} 
+                    </tbody>
+                </table>
+            </div>
+            <form id="agregar-form" style="padding: 20px;" action="{% url 'agregar_sucursal' %}" method="post">
+                {% csrf_token %}
+                <label for="nuevaSucursal">Dirección de la nueva sucursal:</label><br>
+                <input type="text" id="nuevaSucursal" name="nuevaSucursal" required><br><br>
+                <button class="button-style" type="submit">Agregar sucursal</button>
+                <p style="color: black; font-family: 'Montserrat';"></p>
                 {% if messages %}
                     {% for message in messages %}
                         {{ message }}
                     {% endfor %}
                 {% endif %}
-            </p>    
-        </form>
-        
-    </div>
-
-
-    <dialog id="modal">
-        <div class="divModal">
-            <h1>Modificar Dirección</h1>
-            <form id="editar-form" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="modal_form" value="true">
-                <label for="direccNueva">Nueva dirección:</label><br>
-                <input type="text" id="direccNueva" name="NuevaDireccion" required><br><br>
-                <button type="submit">Actualizar dirección</button>
-                <button type="button" id="Cerrar_modal">Cerrar</button>
             </form>
-        </div>
-    </dialog>
+        {% endif %}
+        <dialog id="modal">
+            <div class="divModal">
+                <h1>Modificar Dirección</h1>
+                <form id="editar-form" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="modal_form" value="true">
+                    <label for="direccNueva">Nueva dirección:</label><br>
+                    <input type="text" id="direccNueva" name="NuevaDireccion" required><br><br>
+                    <button type="submit">Actualizar dirección</button>
+                    <button type="button" id="Cerrar_modal">Cerrar</button>
+                </form>
+            </div>
+        </dialog>
+    </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const editarForm = document.getElementById('editar-form');
-            const editarButtons = document.querySelectorAll('.editar-btn');
-            const cerrarModalBtn = document.querySelector("#Cerrar_modal");
-            const modal = document.querySelector("#modal");
+            const scrollableDiv = document.getElementById('scrollable-div');
+            const agregarForm = document.getElementById('agregar-form');
 
-            editarButtons.forEach(function(btn) {
-                btn.addEventListener("click", function() {
-                    const sucursalId = this.getAttribute('data-id');
-                    modal.showModal();
-                    editarForm.action = `{% url 'editar_sucursal' 0 %}`.replace('0', sucursalId);
-                });
+            // Ajusta la altura máxima del div al cargar la página
+            adjustScrollableDivHeight();
+
+            // Ajusta la altura máxima del div cuando se agregan sucursales
+            agregarForm.addEventListener('submit', function() {
+                setTimeout(adjustScrollableDivHeight, 0); // Espera a que se agreguen las sucursales antes de ajustar la altura
             });
 
-            cerrarModalBtn.addEventListener("click", function() {
-                modal.close();
-            });
+            // Función para ajustar la altura máxima del div scrollable
+            function adjustScrollableDivHeight() {
+                scrollableDiv.style.maxHeight = (window.innerHeight - scrollableDiv.offsetTop - 100) + 'px'; // Ajusta la altura máxima
+            }
         });
     </script>
 </body>
+</html>

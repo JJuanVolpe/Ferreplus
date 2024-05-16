@@ -21,6 +21,7 @@ class Profile(models.Model):
     dni = models.CharField(null=True, blank=False, max_length=10)
     genero = models.CharField(null=True, blank=True, max_length=10)
     telefono = models.CharField(null=True, blank=True, max_length=15)
+    Es_gerente = models.BooleanField(null=False, blank=False,default=False)
     
 
     def __str__(self):
@@ -46,7 +47,6 @@ post_save.connect(save_user_profile, sender=User)
 
 
 class Sucursal(models.Model):
-    title= models.CharField(max_length=200)
-    project = models.ForeignKey(Project,on_delete=models.CASCADE)
+    title= models.CharField(max_length=100)
 
     

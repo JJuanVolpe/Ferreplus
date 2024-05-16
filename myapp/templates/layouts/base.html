@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,8 +12,12 @@
     <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
     <link rel="stylesheet" href="{% static 'styles/global.css' %}">
 </head>
+<style>
+    .navbar{
+        color: aliceblue !;
+    }
+</style>
 <body>
-    
     <nav class="navbar container">
         <ul>
             {% if user.is_authenticated %}
@@ -33,7 +37,6 @@
             <li>
                 <a href="{% url 'contact' %}">Recuperar Contraseña</a>
             </li>
-           
             {% endif %}
         </ul>
     </nav>
