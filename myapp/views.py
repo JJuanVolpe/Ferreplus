@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Project, Sucursal
-from .forms import CreateNewProject, RecoveryForm
+from .models import Profile, Project, Sucursal, intercambios
+from .forms import CreateNewProject, RecoveryForm,crear_intercambio_con_espera_de_ofertas
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.contrib import messages
@@ -71,7 +71,25 @@ def  miPerfil(request):
     )
 
 
-
+def intercambio_con_espera_de_ofertas(request):
+    if request.method == 'POST':
+        # guardar foto en la carpeta
+        # guardar en la base de datos la ubicacion de la foto.
+        # que pasa cuando dos usuarios cargan una imagen con el mismo nombre? guardar con nombrusuario mas el nombre de la foto y si se repite se incrementa en 1 nombrefoto
+        intercambio = intercambios.objects.create(
+        nombre = request.POST['nombre'],
+        estado = request.POST['estado'],
+        categoria = request.POST['categoria'],
+        foto = request.FILES['foto'],
+        descripcion = request.POST['descripcion'],
+        modelo = request.POST['modelo'],
+        marca = request.POST['marca']
+        ) 
+        messages.success(request,"intercambio creado correctamente")
+        return redirect('Mis_Trueques')
+    title = 'intercambio con espera de ofertas'
+    context = {'title': title, 'form' : crear_intercambio_con_espera_de_ofertas()}
+    return render(request, 'intercambio_con_espera_de_ofertas.html', context)
 
 def signup(request):
     def incorrect_password(password):

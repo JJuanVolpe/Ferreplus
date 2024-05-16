@@ -49,4 +49,14 @@ post_save.connect(save_user_profile, sender=User)
 class Sucursal(models.Model):
     title= models.CharField(max_length=100)
 
+class intercambios(models.Model):
+    nombre = models.CharField(max_length=200)
+    estado = models.CharField(max_length=200)
+    categoria = models.CharField(max_length=200)
+    foto = models.ImageField(upload_to="myapp/static/fotos_intercambios")
+    descripcion = models.CharField(max_length=200, default="")
+    modelo = models.CharField(max_length=200, default="")
+    marca = models.CharField(max_length=200,default="")
+
+
     
