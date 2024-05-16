@@ -1,1 +1,19 @@
-<h1>SOMOS EL MENU DE SUCURSALES</h1>
+<!DOCTYPE html>
+{% extends 'layouts/base.html' %}
+
+
+{% block content %}
+
+{% load static %}
+
+{% if sucursales %}
+    <h1>Sucursales disponibles:</h1>
+    {% for suc in sucursales %}
+        <article class="card">
+            <h1>{{suc.title}}</h1>
+        </article>
+    {% endfor %}
+{% else %}
+    <h1>No hay Sucursales Registradas en el sistema todavia.</h1>
+{% endif %}
+

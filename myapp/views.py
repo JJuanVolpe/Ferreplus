@@ -1,8 +1,10 @@
+import random
+import string
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
-from django.db import IntegrityError
+from django.db import Error, IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import Profile, Project, Sucursal, intercambios
@@ -156,6 +158,7 @@ def signout(request):
     return redirect('signin')
 
 
+
 def contact(request):
     if request.method == 'GET':
         return render(request, 'contact.html', {'form': RecoveryForm()})
@@ -163,20 +166,23 @@ def contact(request):
         # Deberia trabajarlo con formularios => contact_form = RecoveryForm(data=request.POST)
         account_email = request.POST["email"]
         try:
-            password = "password"
+            new_password = ''.join([random.choice(string.ascii_letters + string.digits) for _ in range(10)])
             if User.objects.filter(email=account_email).exists():
                 user = User.objects.get(email=account_email)
-                user.set_password("password")
+                user.set_password(new_password)
+            else:
+                raise Error("No existe usuario con ese correo asociado")
             # Enviar el correo electrónico
             email = EmailMessage('Mensaje de recuperación de contraseña - Ferreplus 🛠️🧰','{} \n- Su nueva contraseña es: \n\n{}'
-                .format("No compartas esta información, nadie de nuestro equipo te la solicitará.", password),
-                account_email, ['808a2280ba84f8@inbox.mailtrap.io'])
+                .format("No compartas esta información, nadie de nuestro equipo te la solicitará.", new_password),
+                account_email, ['4023c80b5cbb74@inbox.mailtrap.io'])
             email.send()
             user.save()
             return redirect(reverse('contact')+'?ok')   #Todo OK
         except:
             # Ha habido un error y retorno a ERROR
             return redirect(reverse('contact')+'?error')
+        
         
 
 def Sucursales(request):
@@ -248,5 +254,5 @@ def Crear_Trueque(request):
 
 def Menu_Sucursales(request):
     title = 'Menu de Sucursales'
-    context = {'title': title}
+    context = {'sucursales': Sucursal.objects.all()}
     return render(request, 'Menu_Sucursales.html', context)
