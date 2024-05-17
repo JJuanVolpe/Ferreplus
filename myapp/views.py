@@ -123,7 +123,7 @@ def signup(request):
             user.profile.telefono = request.POST["telefono"]
             user.save()
             login(request, user)
-            return redirect('')
+            return redirect('/')
         except IntegrityError:  #Manejo error asociado a la BD 
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Nombre de usuario ya existente en el sistema."})
 
