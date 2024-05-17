@@ -1,5 +1,6 @@
 import random
 import string
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
@@ -196,9 +197,20 @@ def Sucursales(request):
     return render(request, 'Sucursales.html', {'sucursales': sucursales})
 
   
-def Ver_Trueques(request):
+def Ver_trueques(request):
+    # Obtener el path absoluto del directorio dos carpetas antes de 'views'
+    currentdir = os.path.dirname(os.path.abspath(__file__))  # Directorio actual (views)
+    parent_dir = os.path.dirname(currentdir)  # Un nivel arriba (la carpeta contenedora de 'views')
+    grandparent_dir = os.path.dirname(parent_dir)  # Otro nivel arriba (dos niveles arriba de 'views')
+
+    # Obtener la lista de intercambios
     listadointercambios = intercambios.objects.all()
-    context = {'listadointercambios': listadointercambios}
+
+    # Pasar tanto la lista de intercambios como el path absoluto al contexto
+    context = {
+        'listadointercambios': listadointercambios,
+        'path_absoluto': parent_dir
+    }
     return render(request, 'Mis_Trueques.html', context)
 
 def eliminar_sucursal(request, sucursal_id):

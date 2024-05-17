@@ -85,6 +85,7 @@
         }
 
     </style>
+{% load static %}
 {% block content %}
 {% endblock %}
 </head>
@@ -93,7 +94,7 @@
     {% for inter in listadointercambios %}
     <article class="card">
         <h1>{{inter.nombre}} </h1>
-        <img src="../{{inter.foto}}" alt="../{{inter.foto}}">
+        <img src="{{path_absoluto}}/{{inter.foto}}" alt="{{path_absoluto}}/{{inter.foto}}">
     </article>
     {% endfor %}
 {% else %}
