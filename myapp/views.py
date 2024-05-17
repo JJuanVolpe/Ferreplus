@@ -232,6 +232,12 @@ def agregar_sucursal(request):
     return redirect('Sucursales')
 
 
+def verSucursales(request):
+    sucurales = Sucursal.objects.all()
+    return render(request,'verSucursales.html',{
+        'sucursales':sucurales
+    })
+
 def Menu_intercambios(request):
     title = 'Menu Intercambio'
     context = {'title': title}

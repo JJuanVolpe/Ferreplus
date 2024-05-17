@@ -10,6 +10,7 @@ urlpatterns = [
     path('menuPrincipal/', views.menuPrincipal, name = "menuPrincipal"),
     path('miPerfil/', views.miPerfil, name = "miPefil"),
     path('sucursales/',views.Sucursales,name='Sucursales'),
+    path('verSucursales/',views.verSucursales,name="verSucursales"),
     path('intercambio_con_espera_de_ofertas/',views.intercambio_con_espera_de_ofertas,name="intercambio_con_espera_de_ofertas"),
     path('intercambios/',views.Menu_intercambios,name="Menu_De_Intercambios"),
     path('historial-intercambios/',views.Historial_Intercambios, name="Historial_De_Intercambios"),

@@ -1,0 +1,57 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+    <style>
+        .divcontenedor{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .divsuc{
+            width: 500px;
+            min-width: 350px;
+            max-height: 500px; /* Altura máxima inicial */
+            overflow-y: auto; /* Desplazamiento vertical */
+            border: 1px solid #050404; /* Borde */
+            background-color: #fff; /* Fondo blanco */
+            border-radius: 5px; /* Bordes redondeados */
+            padding: 10px; /* Espaciado interno */
+        }
+        .titulo{
+            color:#1f4e57;
+            font-family:Georgia, 'Times New Roman', Times, serif;
+        }
+        .parrafo{
+            color:#050404;
+            font-family: Arial, Helvetica, sans-serif;
+            
+        }
+        .divider {
+            border: 0;
+            border-top: 1px solid #ccc;
+            margin: 10px 0; /* Espaciado alrededor de la línea divisoria */
+        }
+        .error{
+            color:#ad1e1e;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 32;
+        }
+    </style>
+    <div class="divcontenedor">
+        <h1>Sucursales disponibles en el país</h1>
+        <div class="divsuc">
+            <p class="titulo"> Direccion </p>
+            {% if sucursales %}
+                {% for sucursal in sucursales %}
+                    <hr class="divider">
+                    <p class="parrafo">{{ sucursal.title }}</p>
+                    <img >
+                {% endfor %}
+            {% else %}
+                <hr class="divider">
+                <p class="parrafo">No hay sucursales por el momento</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
