@@ -1,1 +1,101 @@
-<h1> Soy tus trueques</h1>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            background-color: #4566d3e5; 
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            width: 200px;
+            margin-bottom: 20px;
+        }
+        .menu button {
+            background-color: #8299e4e5;
+            color: rgba(253, 253, 253, 0.973);
+            padding: 20px;
+            margin: 10px 0px;
+            border: 2px solid #000000e5;
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;                                       
+        }
+        .menu button:hover {
+            background-color: #126627;
+        }
+        .contenido {
+            margin-top: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        /* para bloquear que descripcion me dejaba moverlo con el mouse*/
+        textarea {
+            resize: none;
+        }
+        /*para modificar como quiero que se vea el mensaje de que se creo el intercambio*/
+        .messages {
+            list-style-type: none ;
+            padding: 1;
+        }
+
+    </style>
+{% block content %}
+{% endblock %}
+</head>
+{% if listadointercambios %}
+    <h1>Intercambios disponibles:</h1>
+    {% for inter in listadointercambios %}
+    <article class="card">
+        <h1>{{inter.nombre}} </h1>
+        <img src="../{{inter.foto}}" alt="../{{inter.foto}}">
+    </article>
+    {% endfor %}
+{% else %}
+    <h1>No hay intercambios registrados en el sistema todavia.</h1>
+{% endif %}

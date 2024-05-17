@@ -194,14 +194,17 @@ def Sucursales(request):
     # Si el usuario es gerente, obtener todas las sucursales
     sucursales = Sucursal.objects.all()
     return render(request, 'Sucursales.html', {'sucursales': sucursales})
-    
+
+  
+def Ver_Trueques(request):
+    listadointercambios = intercambios.objects.all()
+    context = {'listadointercambios': listadointercambios}
+    return render(request, 'Mis_Trueques.html', context)
 
 def eliminar_sucursal(request, sucursal_id):
     sucursal = Sucursal.objects.get(id=sucursal_id)
     sucursal.delete()
     return redirect('Sucursales')
-
-
 
 def editar_sucursal(request, sucursal_id):
     if request.method == 'POST':
@@ -217,7 +220,6 @@ def editar_sucursal(request, sucursal_id):
             messages.error(request, '¡El campo de la direccion no se puede exceder de los 35 caracteres!')
     return redirect('Sucursales')
 
-
 def agregar_sucursal(request):
     if request.method == 'POST':
         nueva_sucursal = request.POST.get('nuevaSucursal')
@@ -231,7 +233,6 @@ def agregar_sucursal(request):
             messages.error(request, '¡El campo de la direccion no se puede exceder de los 35 caracteres!')
     return redirect('Sucursales')
 
-
 def Menu_intercambios(request):
     title = 'Menu Intercambio'
     context = {'title': title}
@@ -242,10 +243,7 @@ def Historial_Intercambios(request):
     context = {'title': title}
     return render(request, 'Historial_De_Intercambios.html', context)
 
-def Ver_Trueques(request):
-    title = 'Mis trueques'
-    context = {'title': title}
-    return render(request, 'Mis_Trueques.html', context)
+
 
 def Crear_Trueque(request):
     title = 'Mis trueques'
