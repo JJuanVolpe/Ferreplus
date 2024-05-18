@@ -240,7 +240,9 @@ def verSucursales(request):
 
 def Menu_intercambios(request):
     title = 'Menu Intercambio'
-    context = {'title': title}
+    trueques = intercambios.objects.all()
+    context = {'title': title,
+               'trueques':trueques}
     return render(request, 'Menu_De_Intercambios.html', context)
 
 def Historial_Intercambios(request):

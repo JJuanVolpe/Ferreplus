@@ -8,6 +8,32 @@
             body {
             background-color: #4566d3e5; 
             }
+            .container {
+            display: flex;
+            width: 100%;
+            }
+            .left, .right {
+                flex: 1;
+                margin: 2%;
+                padding: 20px;
+            }
+            .left {
+                justify-content:left;
+                align-items:flex-start;
+            }
+            .right {
+                background-color: #d3d3d3;
+            }
+            .divTrue{
+            width: 500px;
+            min-width: 350px;
+            max-height: 500px; /* Altura máxima inicial */
+            overflow-y: auto; /* Desplazamiento vertical */
+            border: 1px solid #050404; /* Borde */
+            background-color: #fff; /* Fondo blanco */
+            border-radius: 5px; /* Bordes redondeados */
+            padding: 10px; /* Espaciado interno */
+            }
             .menu {
                 margin: 3%;
                 display: flex;
@@ -40,27 +66,50 @@
         
         </style>
     </head>
-    <body> 
-        <div class="menu">
-            <div style="padding: 5px;">
-            <a href="{% url 'Historial_De_Intercambios' %}" style="padding: 5px;">                              
-                <button id="Historial">Ver historial de Intercambios</button>
-            </a>
-            </div>
-            <div style="padding: 5px;">
-                <a href="{% url 'Mis_Trueques' %}" style="padding: 5px;">
-                    <button id="Mis_Trueques">Ver mis intercambios</button>
-                </a>
-            </div>
-            <div style="padding: 5px;">
-                <a href="{% url 'intercambio_con_espera_de_ofertas' %}" ">
-                    <button id="Crear_Trueque">Crear intercambio</button>
-                </a>
+
+    <body>
+        <a href="{% url 'menuPrincipal' %}">
+            <button>volver</button>
+        </a>
+        <div>
+            <div class="container">
+                <div class="left">
+                    <div class="menu">
+                        <div style="padding: 5px;">
+                        <a href="{% url 'Historial_De_Intercambios' %}" style="padding: 5px;">                              
+                            <button id="Historial">Ver historial de Intercambios</button>
+                        </a>
+                        </div>
+                        <div style="padding: 5px;">
+                            <a href="{% url 'Mis_Trueques' %}" style="padding: 5px;">
+                                <button id="Mis_Trueques">Ver mis intercambios</button>
+                            </a>
+                        </div>
+                        <div style="padding: 5px;">
+                            <a href="{% url 'intercambio_con_espera_de_ofertas' %}">
+                                <button id="Crear_Trueque">Crear intercambio</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="divTrue">
+                        <p class="titulo"> Nombre item </p>
+                        {% if trueques %}
+                            {% for trueque in trueques %}
+                                <hr class="divider">
+                                <p class="parrafo">{{ trueque.nombre }}</p>
+                                <img src="{{ trueque.foto }}">
+                            {% endfor %}
+                        {% else %}
+                            <hr class="divider">
+                            <p class="parrafo">No hay trueques por el momento</p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
-
-
-
-
     </body>
+    </html>
+
 </html>
