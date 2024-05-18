@@ -1,5 +1,6 @@
 import random
 import string
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
@@ -85,7 +86,8 @@ def intercambio_con_espera_de_ofertas(request):
         foto = request.FILES['foto'],
         descripcion = request.POST['descripcion'],
         modelo = request.POST['modelo'],
-        marca = request.POST['marca']
+        marca = request.POST['marca'],
+        usuario = request.user.profile
         ) 
         messages.success(request,"intercambio creado correctamente")
         return redirect('Mis_Trueques')
@@ -102,7 +104,7 @@ def signup(request):
                 if (not i.isdigit() and i.isupper()):   #no es un número y es mayuscula? cumple
                     return False
         return True
-    
+
     if request.method == 'GET':
         return render(request, 'signup.html', {"form": UserCreationForm})
     else:
@@ -123,6 +125,7 @@ def signup(request):
             user.profile.telefono = request.POST["telefono"]
             user.save()
             login(request, user)
+            return redirect('/')
             return redirect('/')
         except IntegrityError:  #Manejo error asociado a la BD 
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Nombre de usuario ya existente en el sistema."})
@@ -194,14 +197,29 @@ def Sucursales(request):
     # Si el usuario es gerente, obtener todas las sucursales
     sucursales = Sucursal.objects.all()
     return render(request, 'Sucursales.html', {'sucursales': sucursales})
-    
+
+  
+def Ver_trueques(request):
+    # Obtener el path absoluto del directorio dos carpetas antes de 'views'
+    currentdir = os.path.dirname(os.path.abspath(__file__))  # Directorio actual (views)
+    parent_dir = os.path.dirname(currentdir)  # Un nivel arriba (la carpeta contenedora de 'views')
+
+    # Obtengo la lista de intercambios del usuario
+    usuario = request.user
+    listadointercambios = intercambios.objects.filter(usuario=usuario.profile)
+    print(listadointercambios)
+
+    # Pasar tanto la lista de intercambios como el path absoluto al contexto
+    context = {
+        'listadointercambios': listadointercambios,
+        'path_absoluto': parent_dir
+    }
+    return render(request, 'Mis_Trueques.html', context)
 
 def eliminar_sucursal(request, sucursal_id):
     sucursal = Sucursal.objects.get(id=sucursal_id)
     sucursal.delete()
     return redirect('Sucursales')
-
-
 
 def editar_sucursal(request, sucursal_id):
     if request.method == 'POST':
@@ -216,7 +234,6 @@ def editar_sucursal(request, sucursal_id):
         else: 
             messages.error(request, '¡El campo de la direccion no se puede exceder de los 35 caracteres!')
     return redirect('Sucursales')
-
 
 def agregar_sucursal(request):
     if request.method == 'POST':
@@ -250,10 +267,7 @@ def Historial_Intercambios(request):
     context = {'title': title}
     return render(request, 'Historial_De_Intercambios.html', context)
 
-def Ver_Trueques(request):
-    title = 'Mis trueques'
-    context = {'title': title}
-    return render(request, 'Mis_Trueques.html', context)
+
 
 def Crear_Trueque(request):
     title = 'Mis trueques'
