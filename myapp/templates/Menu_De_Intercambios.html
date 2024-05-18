@@ -67,6 +67,32 @@
             align-items: center;
             font-family: Arial, Helvetica, sans-serif;
             }
+
+        .trueque-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+    
+        .trueque-table th, .trueque-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    
+        .trueque-table th {
+            background-color: #c0bcbce0;
+            font-weight: bold;
+        }
+    
+        .trueque-foto {
+            max-width: 100px;
+            max-height: 100px;
+        }
+    
+        .divider {
+            margin: 10px 0;
+        }
+
         </style>
     </head>
 
@@ -75,16 +101,16 @@
             <button>volver</button>
         </a>
         <div>
-        <div class="menu">
-            <h1 > Menu de intercambios</h1> 
-        </div>
+            <div class="menu">
+                <h1>Menu de intercambios</h1> 
+            </div>
             <div class="container">
                 <div class="left">
                     <div class="menu">
                         <div style="padding: 5px;">
-                        <a href="{% url 'Historial_De_Intercambios' %}" style="padding: 5px;">                              
-                            <button id="Historial">Ver historial de Intercambios</button>
-                        </a>
+                            <a href="{% url 'Historial_De_Intercambios' %}" style="padding: 5px;">                              
+                                <button id="Historial">Ver historial de Intercambios</button>
+                            </a>
                         </div>
                         <div style="padding: 5px;">
                             <a href="{% url 'Mis_Trueques' %}" style="padding: 5px;">
@@ -100,27 +126,36 @@
                 </div>
                 <div class="right">
                     <div class="divTrue">
-                        <p class="titulo"> Nombre usuario item foto </p>
-                        {% if trueques %}
-                            {% for trueque in trueques %}
-                                <hr class="divider">
-                                <p class="parrafo"> 
-                                    {{ trueque.usuario.user }}
-                                    {{ trueque.nombre }}
-                                    <img src="{{ trueque.foto.url }}" style="max-width: 100px; max-height: 100px;">
-                                </p>
-                                
-                                <p></p>
-                            {% endfor %}
-                        {% else %}
-                            <hr class="divider">
-                            <p class="parrafo">No hay trueques por el momento</p>
-                        {% endif %}
+                        <table class="trueque-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre usuario</th>
+                                    <th>Item</th>
+                                    <th>Estado</th>
+                                    <th>Foto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if trueques %}
+                                    {% for trueque in trueques %}
+                                        <tr>
+                                            <td>{{ trueque.usuario.user }}</td>
+                                            <td>{{ trueque.nombre }}</td>
+                                            <td>{{ truque.estado }}</td>
+                                            <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="3">No hay trueques por el momento</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </body>
-    </html>
 
 </html>
