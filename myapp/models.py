@@ -6,12 +6,8 @@ from django.dispatch import receiver
 # Create your models here.
 class Project(models.Model):
     name = models.CharField(max_length=200)
-
-
-
-
     def __str__(self):
-        return self.title + ' - ' + self.project.name
+        return  ' - ' + self.name
     
     
 class Profile(models.Model):

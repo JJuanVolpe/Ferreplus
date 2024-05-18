@@ -99,7 +99,7 @@
                             {% for trueque in trueques %}
                                 <hr class="divider">
                                 <p class="parrafo">{{ trueque.nombre }}</p>
-                                <img src="{{ trueque.foto }}">
+                                <img src="{{ trueque.foto.url }}">
                             {% endfor %}
                         {% else %}
                             <hr class="divider">
