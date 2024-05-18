@@ -9,6 +9,18 @@
     align-items: center;
     justify-content: center;
   }
+
+  .contenido {
+            margin-top: 200px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #000000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
   .special-button,
   a.special-button,
   input[type="submit"].special-button {
@@ -34,13 +46,22 @@
     background-color: rgba(219, 28, 28, 0.926);
     transform: scale(1.05);
   }
-
+  form{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
   .form-group {
+    
     margin-bottom: 15px;
     width: 100%;
     max-width: 400px;
   }
-
+  label{
+    color:black
+  }
   .form-group label {
     display: block;
     margin-bottom: 5px;
@@ -72,28 +93,29 @@
     margin-bottom: 10px;
   }
 </style>
-
 <div class="iniciarSesion">
-  <h1>Iniciar Sesion</h1>
-  <p>{{ error }}</p>
-  <form action="" method="POST">
-    {% csrf_token %}
-    <div class="form-group">
-      {{ form.username.label_tag }}
-      {{ form.username }}
-    </div>
-    <div class="form-group">
-      {{ form.password.label_tag }}
-      {{ form.password }}
-    </div>
-    <div class="form-actions">
-      <button class="special-button" type="submit">Iniciar sesion</button>
-    </div>
-    <div class="links">
-      <a href="{% url 'contact' %}">Me olvide la contraseña</a>
-      <a href="{% url 'signup' %}">Registrarse</a>
-    </div>
-  </form>
+  <div class="contenido">
+    <h1 style="color: black;">Iniciar Sesion</h1>
+    <p>{{ error }}</p>
+    <form action="" method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+      </div>
+      <div class="form-group">
+        {{ form.password.label_tag }}
+        {{ form.password }}
+      </div>
+      <div class="form-actions">
+        <button class="special-button" type="submit">Iniciar sesion</button>
+      </div>
+      <div class="links">
+        <a href="{% url 'contact' %}">Me olvide la contraseña</a>
+        <a href="{% url 'signup' %}">Registrarse</a>
+      </div>
+    </form>
+  </div>
 </div>
 
 {% endblock %}

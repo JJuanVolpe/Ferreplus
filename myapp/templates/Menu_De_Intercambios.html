@@ -22,7 +22,7 @@
                 align-items:flex-start;
             }
             .right {
-                background-color: #d3d3d3;
+                background-color: #fffefe;
             }
             .divTrue{
             width: 500px;
@@ -61,7 +61,12 @@
                 background-color: rgba(255, 82, 51, 0.926);
                 transform: scale(1.05);
             }   
-        
+            .menu{
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+            }
         </style>
     </head>
 
@@ -70,6 +75,9 @@
             <button>volver</button>
         </a>
         <div>
+        <div class="menu">
+            <h1 > Menu de intercambios</h1> 
+        </div>
             <div class="container">
                 <div class="left">
                     <div class="menu">
@@ -92,14 +100,14 @@
                 </div>
                 <div class="right">
                     <div class="divTrue">
-                        <p class="titulo"> Nombre item </p>
+                        <p class="titulo"> Nombre usuario item foto </p>
                         {% if trueques %}
                             {% for trueque in trueques %}
                                 <hr class="divider">
                                 <p class="parrafo"> 
-                                    {{ trueque.nombre }}
                                     {{ trueque.usuario.user }}
-                                    <img src="{{ trueque.foto.url }}" style="width: 100px;">
+                                    {{ trueque.nombre }}
+                                    <img src="{{ trueque.foto.url }}" style="max-width: 100px; max-height: 100px;">
                                 </p>
                                 
                                 <p></p>
