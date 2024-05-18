@@ -53,10 +53,11 @@ class intercambios(models.Model):
     nombre = models.CharField(max_length=200)
     estado = models.CharField(max_length=200)
     categoria = models.CharField(max_length=200)
-    foto = models.ImageField(upload_to="myapp/static/fotos_intercambios")
+    foto = models.ImageField(upload_to='fotos_intercambios/')
     descripcion = models.CharField(max_length=200, default="")
     modelo = models.CharField(max_length=200, default="")
     marca = models.CharField(max_length=200,default="")
+    usuario = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='intercambios')
 
 
     

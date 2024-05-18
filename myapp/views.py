@@ -86,7 +86,8 @@ def intercambio_con_espera_de_ofertas(request):
         foto = request.FILES['foto'],
         descripcion = request.POST['descripcion'],
         modelo = request.POST['modelo'],
-        marca = request.POST['marca']
+        marca = request.POST['marca'],
+        usuario = request.user.profile
         ) 
         messages.success(request,"intercambio creado correctamente")
         return redirect('Mis_Trueques')
@@ -103,7 +104,7 @@ def signup(request):
                 if (not i.isdigit() and i.isupper()):   #no es un número y es mayuscula? cumple
                     return False
         return True
-    
+
     if request.method == 'GET':
         return render(request, 'signup.html', {"form": UserCreationForm})
     else:
@@ -124,7 +125,7 @@ def signup(request):
             user.profile.telefono = request.POST["telefono"]
             user.save()
             login(request, user)
-            return redirect('')
+            return redirect('/')
         except IntegrityError:  #Manejo error asociado a la BD 
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Nombre de usuario ya existente en el sistema."})
 
@@ -201,10 +202,11 @@ def Ver_trueques(request):
     # Obtener el path absoluto del directorio dos carpetas antes de 'views'
     currentdir = os.path.dirname(os.path.abspath(__file__))  # Directorio actual (views)
     parent_dir = os.path.dirname(currentdir)  # Un nivel arriba (la carpeta contenedora de 'views')
-    grandparent_dir = os.path.dirname(parent_dir)  # Otro nivel arriba (dos niveles arriba de 'views')
 
-    # Obtener la lista de intercambios
-    listadointercambios = intercambios.objects.all()
+    # Obtengo la lista de intercambios del usuario
+    usuario = request.user
+    listadointercambios = intercambios.objects.filter(usuario=usuario.profile)
+    print(listadointercambios)
 
     # Pasar tanto la lista de intercambios como el path absoluto al contexto
     context = {
