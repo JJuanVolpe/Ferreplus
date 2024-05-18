@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>{{ title }}</title>
+        <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
         <style>
 
             body {
@@ -18,15 +19,20 @@
                 padding: 20px;
             }
             .left {
-                justify-content:left;
-                align-items:flex-start;
+                display:flex;
+                justify-content: flex-start;
+                align-items: flex-start;
             }
             .right {
+                display:flex;
+                justify-content: c;
+                align-items: center;
                 font-family: Arial, Helvetica, sans-serif; 
     
             }
             .divTrue{
-            width: 500px;
+            width: 650px;
+            align-items: center;
             min-width: 350px;
             max-height: 500px; /* Altura máxima inicial */
             overflow-y: auto; /* Desplazamiento vertical */
@@ -126,8 +132,9 @@
                     </div>
                 </div>
                 <div class="right">
-                    <h3> Intercambios disponibles </h1>
+                    
                     <div class="divTrue">
+                        <h3> Intercambios disponibles </h3>
                         <table class="trueque-table">
                             <thead>
                                 <tr>
