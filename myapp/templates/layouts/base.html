@@ -28,6 +28,9 @@
                 <a href="{% url 'menuPrincipal' %}">Menu principal</a>
             </li>   
             {% else %}
+            <li>
+                <a href="{% url 'verSucursales' %}">Ver sucursales</a>
+            </li>   
             <li class="nav-item">
                 <a href="{% url 'signin' %}" class="nav-link"> Iniciar sesion</a>
             </li>
@@ -36,9 +39,6 @@
             </li>
             <li>
                 <a href="{% url 'contact' %}">Recuperar Contraseña</a>
-            </li>
-            <li>
-                <a href="{% url 'Menu_Sucursales' %}">Ver Sucursales</a>
             </li>
             {% endif %}
         </ul>

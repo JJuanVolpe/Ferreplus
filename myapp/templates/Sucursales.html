@@ -73,6 +73,7 @@
             color: white;
             text-decoration: none;
         }
+        
     </style>
 </head>
 <body>
@@ -87,7 +88,8 @@
                     <tbody>
                         {% for suc in sucursales %}
                             <tr>
-                                <td>
+                                <td> 
+                                    <p>Direccion</p>
                                     <button class="button-style editar-btn" data-id="{{ suc.id }}">{{ suc.title }}</button>
                                     <form class="eliminar-form" data-id="{{ suc.id }}" action="{% url 'eliminar_sucursal' suc.id %}" method="post">
                                         {% csrf_token %}
