@@ -18,7 +18,7 @@
             display: flex;
             flex-direction: column;
             width: 200px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         .menu button {
             background-color: #8299e4e5;
@@ -34,10 +34,11 @@
             background-color: #126627;
         }
         .contenido {
-            margin-top: 20px;
+            margin-top: 1px;
             text-align: center;
             width: 100%;
-            max-width: 600px;
+            min-width:600px;
+            max-width: 980px;
             padding: 20px;
             background-color: #ffffffe5;
             border-radius: 8px;
@@ -88,29 +89,73 @@
         .card {
             margin-bottom: 20px;
         }
+        .trueque-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .trueque-table th, .trueque-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .trueque-table th {
+            background-color: #c0bcbce0;
+            font-weight: bold;
+        }
+        .trueque-foto {
+            max-width: 300px;
+            max-height: 300px;
+        }
+        .divider {
+            margin: 10px 0;
+        }
     </style>
     {% load static %}
 </head>
-<body>    
-    <a href="{% url 'Menu_De_Intercambios' %}">
+<body>
+    <a href="{% url 'Menu_De_Intercambios' %}" style="display: flex; align-self: flex-start; padding: 3%;">
         <button>volver</button>
     </a>
     <h1>Mis intercambios</h1>
     <div class="contenido">
-        {% block content %}
-        {% endblock %}
-        {% if listadointercambios %}
-            {% for inter in listadointercambios %}
-                <article class="card">
-                    <hr class="divider">
-                    <h1 style="font-family: Arial;">{{ inter.nombre }}
-                        <img src="{{ inter.foto.url }}" alt="{{ inter.nombre }}" style="max-width:200px;max-height:250px;">
-                    </h1>
-                </article>
-            {% endfor %}
-        {% else %}
-            <h1>No hay intercambios registrados en el sistema todavía.</h1>
-        {% endif %}
+        <table class="trueque-table">
+            <thead>
+                <tr>
+                    <th>Nombre usuario</th>
+                    <th>Item</th>
+                    <th>Estado </th>
+                    <th>Categoria</th>
+                    <th>Descripcion</th>
+                    <th>Modelo</th>
+                    <th>Marca</th>
+                    <th>Foto</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if listadointercambios %}
+                    {% for trueque in listadointercambios %}
+                        <tr>
+                            <td>{{ trueque.usuario.user }}</td>
+                            <td>{{ trueque.nombre }}</td>
+                            <td>{{ trueque.estado }}</td>
+                            <td>{{ trueque.categoria }}</td>
+                            <td>{{ trueque.descripcion }}</td>
+                            <td>{{ trueque.modelo }}</td>
+                            <td>{{ trueque.marca }}</td>
+                            <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
+                            <td>
+                                <button onclick="openModal('{{ trueque.id }}')">Editar</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="9">No hay trueques por el momento</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

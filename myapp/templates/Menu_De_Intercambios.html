@@ -22,7 +22,8 @@
                 align-items:flex-start;
             }
             .right {
-                background-color: #fffefe;
+                font-family: Arial, Helvetica, sans-serif; 
+    
             }
             .divTrue{
             width: 500px;
@@ -68,30 +69,30 @@
             font-family: Arial, Helvetica, sans-serif;
             }
 
-        .trueque-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-    
-        .trueque-table th, .trueque-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-    
-        .trueque-table th {
-            background-color: #c0bcbce0;
-            font-weight: bold;
-        }
-    
-        .trueque-foto {
-            max-width: 100px;
-            max-height: 100px;
-        }
-    
-        .divider {
-            margin: 10px 0;
-        }
+            .trueque-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+        
+            .trueque-table th, .trueque-table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+        
+            .trueque-table th {
+                background-color: #c0bcbce0;
+                font-weight: bold;
+            }
+        
+            .trueque-foto {
+                max-width: 100px;
+                max-height: 100px;
+            }
+        
+            .divider {
+                margin: 10px 0;
+            }
 
         </style>
     </head>
@@ -125,6 +126,7 @@
                     </div>
                 </div>
                 <div class="right">
+                    <h3> Intercambios disponibles </h1>
                     <div class="divTrue">
                         <table class="trueque-table">
                             <thead>
@@ -141,7 +143,7 @@
                                         <tr>
                                             <td>{{ trueque.usuario.user }}</td>
                                             <td>{{ trueque.nombre }}</td>
-                                            <td>{{ truque.estado }}</td>
+                                            <td>{{ trueque.estado }}</td>
                                             <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
                                         </tr>
                                     {% endfor %}
