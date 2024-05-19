@@ -155,6 +155,7 @@ def signup(request):
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Nombre de usuario ya existente en el sistema."})
 
 
+
 def signin(request):
     if request.user.is_authenticated:
         # Si el usuario ya está autenticado, redirige según su perfil
@@ -167,10 +168,10 @@ def signin(request):
     if request.method == 'GET':
         return render(request, 'signin.html', {"form": AuthenticationForm()})
     else:
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
-        if user is None:
-            return render(request, 'signin.html', {"form": AuthenticationForm(), "error": "Nombre de usuario o contraseña incorrecto"})
-        else:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
             login(request, user)
             # Accede al perfil del usuario
             profile = Profile.objects.get(user=user)
@@ -178,6 +179,15 @@ def signin(request):
                 return redirect('Sucursales')
             else:    
                 return redirect('menuPrincipal')
+        else:
+            # Verifica si el error fue debido a un nombre de usuario no válido o contraseña incorrecta
+            try:
+                user = Profile.objects.get(user__username=username)
+                error_message = "Contraseña incorrecta"
+            except Profile.DoesNotExist:
+                error_message = "Nombre de usuario no se encuentra registrado"
+                
+            return render(request, 'signin.html', {"form": AuthenticationForm(), "error": error_message})
 
 @login_required
 def signout(request):
