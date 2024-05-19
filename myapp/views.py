@@ -256,37 +256,35 @@ def Ver_trueques(request):
 def eliminar_sucursal(request, sucursal_id):
     sucursal = Sucursal.objects.get(id=sucursal_id)
     sucursal.delete()
+    messages.success(request, '¡La sucursal se ha eliminado correctamente!')
     return redirect('Sucursales')
 
 def editar_sucursal(request, sucursal_id):
     if request.method == 'POST':
-        nueva_direccion = request.POST.get('NuevaDireccion')
-        nueva_ciudad = request.POST.get('ciudadNueva')
-        if len(nueva_direccion)<35:
-            if not Sucursal.objects.filter(address=nueva_direccion, city=nueva_ciudad).exists():
-                sucursal = Sucursal.objects.get(id=sucursal_id)
-                sucursal.address = nueva_direccion
-                sucursal.city = nueva_ciudad
-                sucursal.save()
-            else:
-                messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal!')
-        else: 
-            messages.error(request, '¡El campo de la direccion no se puede exceder de los 35 caracteres!')
+        nueva_direccion = request.POST.get('address')
+        nueva_ciudad = request.POST.get('city')
+        sucursal = Sucursal.objects.get(id=sucursal_id)
+        if sucursal.address == nueva_direccion and sucursal.city == nueva_ciudad:
+             messages.error(request, ' Se ingresaron los mismos datos que ya posee la sucursal')
+        elif not Sucursal.objects.filter(address=nueva_direccion, city=nueva_ciudad).exists():
+            sucursal.address = nueva_direccion
+            sucursal.city = nueva_ciudad
+            sucursal.save()
+            messages.success(request,"¡La sucursal se editó exitosamente!")
+        else:
+            messages.error(request, '¡La direccion y ciudad que se quiere ingresar ya pertenece a otra sucursal!')
     return redirect('Sucursales')
 
 def agregar_sucursal(request):
     if request.method == 'POST':
         nueva_sucursal = request.POST.get('nuevaSucursal')
         nueva_ciudad = request.POST.get('nueva_ciudad')
-
-        if len(nueva_sucursal)<35:
-            if not Sucursal.objects.filter(address=nueva_sucursal, city=nueva_ciudad).exists():
-                Sucursal.objects.create(address=nueva_sucursal, city= nueva_ciudad)
-            else:
-                    
-                messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal!')
-        else: 
-            messages.error(request, '¡El campo de la direccion no se puede exceder de los 35 caracteres!')
+        if not Sucursal.objects.filter(address=nueva_sucursal, city=nueva_ciudad).exists():
+            Sucursal.objects.create(address=nueva_sucursal, city= nueva_ciudad)
+            messages.success(request,'¡La sucursal se agrego correctamente!')
+        else:
+                
+            messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal de la misma ciudad!')
     return redirect('Sucursales')
 
 

@@ -1,125 +1,111 @@
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const btnsAbrirModal = document.querySelectorAll(".button-style");
-        const btnCerrarModal = document.querySelector("#Cerrar_modal");
-        const modal = document.querySelector("#modal");
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de sucursales</title>
+    <style>
+        body {
+            background-color: #4566d3e5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-        btnsAbrirModal.forEach(function(btn) {
-            btn.addEventListener("click", function() {
-                modal.showModal();
-            });
-        });
+        .table-container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            background-color: #ffffffe5;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: relative;
+        }
 
-        btnCerrarModal.addEventListener("click", function() {
-            modal.close();
-        });
-    });
-</script>
+        .scrollable-table {
+            max-height: 300px;
+            overflow-y: auto;
+        }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
 
-<style>
-    body {
-        background-color: #4566d3e5;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
+        th {
+            background-color: #c0bcbce0;
+            font-weight: bold;
+        }
 
-    .table-container {
-        text-align: center;
-    }
+        .button-style {
+            font-weight: bold;
+            text-decoration: none;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #D9D9D9;
+            max-width: max-content;
+            background-color: #2d4a81;
+            padding: 6px 10px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
 
-    table {
-        margin: 20px auto;
-        border-collapse: separate;
-        border-spacing: 0 15px;
-    }
+        .button-style:hover {
+            background-color: #4566d3e5;
+        }
 
-    .button-style {
-        font-weight: bold;
-        text-decoration: none;
-        font-family: Arial, Helvetica, sans-serif;
-        color: #D9D9D9;
-        max-width: max-content;
-        background-color: #2d4a81;
-        padding: 6px 10px;
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        transition: all 0.3s;
-        cursor : pointer;
-    }
-    .button-style:hover {
-        background-color: #4566d3e5;
-    }
+        #Agregar_Sucursal {
+            display: block;
+            margin: 20px auto;
+        }
 
-    #Agregar_Sucursal {
-        display: block;
-        margin: 20px auto;
-    }
+        #modal {
+            width: 500px;
+            background-color: rgb(225, 228, 240);
+        }
 
-    #modal{
-        width: 500px;
-        background-color: rgb(225, 228, 240);
-    }
+        #modal::backdrop {
+            background-color: rgba(0, 0, 0, .45);
+        }
 
-    #modal::backdrop{
-        background-color: rgba(0,0,0,.45);
-    }
-
-    .divSuc{
-        margin-top: 1px;
-        text-align: center;
-        width: 100%;
-        min-width:600px;
-        max-width: 980px;
-        padding: 20px;
-        background-color: #ffffffe5;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        max-height: 60vh; /* Limitar la altura máxima */
-        overflow-y: auto; /* Hacer el contenido desplazable */  
-    }
-    .trueque-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .trueque-table th, .trueque-table td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    .trueque-table th {
-        background-color: #c0bcbce0;
-        font-weight: bold;
-    }
-    .logOut {
+        .logOut {
             position: absolute;
             top: 10px;
             right: 10px;
             color: white;
             text-decoration: none;
         }
+
+        .message {
+            color: rgb(12, 17, 12);
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
     </style>
+</head>
 <body>
     <a class="logOut" href="/logout">Cerrar Sesión</a>
     <div class="table-container">
         <h1>Listado de sucursales</h1>
-        {% if error %}
-            <p style="color: red;">{{ error }}</p>
-        {% else %}
-        <div class="divSuc">
-            <table class="trueque-table">
+        <div class="scrollable-table">
+            <table>
                 <thead>
                     <tr>
                         <th>Direccion</th>
                         <th>Ciudad</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -128,13 +114,13 @@
                             <tr>
                                 <td>{{ suc.address }}</td>
                                 <td>{{ suc.city }}</td>
-
-                                <td><button class="button-style editar-btn" data-id="{{ suc.id }}">Editar</button></td>
                                 <td>
-                                    <form class="eliminar-form" data-id="{{ suc.id }}" action="{% url 'eliminar_sucursal' suc.id %}" method="post">
+                                    <button class="button-style editar-btn" data-id="{{ suc.id }}" data-address="{{ suc.address }}" data-city="{{ suc.city }}">Editar</button>
+                                    <form class="eliminar-form" action="{% url 'eliminar_sucursal' suc.id %}" method="post" style="display: inline;">
                                         {% csrf_token %}
-                                        <button type="submit" class="eliminar-btn">Eliminar sucursal</button>
+                                        <button type="submit" class="button-style">Eliminar</button>
                                     </form>
+                                </td>
                             </tr>
                         {% endfor %}
                     {% else %}
@@ -144,39 +130,35 @@
                     {% endif %}
                 </tbody>
             </table>
-            <div id="error-message" class="error-message"></div>
-            <form id="agregar-form" action="{% url 'agregar_sucursal' %}" method="post">
-                {% csrf_token %}
-                <label for="nuevaSucursal">Dirección de la nueva sucursal:</label><br>
-                <input type="text" id="nuevaSucursal" name="nuevaSucursal" required><br><br>
-                <label for="nueva_ciudad">Ciudad de la nueva sucursal:</label><br>
-                <input type="text" id="nueva_ciudad" name="nueva_ciudad" required><br><br>
-                <button class="button-style2" type="submit">Agregar sucursal</button>
-                <p style="color: rgb(180, 19, 19); font-family: 'Montserrat';"></p>
-                    {% if messages %}
-                        {% for message in messages %}
-                            {{ message }}
-                        {% endfor %}
-                    {% endif %}
-                </p>    
-            </form>
         </div>
+        <form id="agregar-form" action="{% url 'agregar_sucursal' %}" method="post">
+            {% csrf_token %}
+            <label for="nuevaSucursal">Dirección de la nueva sucursal:</label><br>
+            <input type="text" id="nuevaSucursal" name="nuevaSucursal" required><br><br>
+            <label for="nueva_ciudad">Ciudad de la nueva sucursal:</label><br>
+            <input type="text" id="nueva_ciudad" name="nueva_ciudad" required><br><br>
+            <button class="button-style" type="submit">Agregar sucursal</button>
+        </form>
+        {% if messages %}
+            <div class="message">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
         {% endif %}
-        
     </div>
-
 
     <dialog id="modal">
         <div class="divModal">
-            <h1>Modificar Dirección</h1>
+            <h1>Modificar Sucursal</h1>
             <form id="editar-form" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="modal_form" value="true">
-                <label for="direccNueva">Nueva dirección:</label><br>
-                <input type="text" id="direccNueva" name="NuevaDireccion" required>
-                <label for="ciudadNueva">Nueva ciudad:</label><br>
-                <input type="text" id="ciudadNueva" name="ciudadNueva" required><br><br>
-                <button type="submit">Actualizar dirección</button>
+                <label for="address">Nueva dirección:</label><br>
+                <input type="text" id="address" name="address" required><br>
+                <label for="city">Nueva ciudad:</label><br>
+                <input type="text" id="city" name="city" required><br><br>
+                <button type="submit">Actualizar Sucursal</button>
                 <button type="button" id="Cerrar_modal">Cerrar</button>
             </form>
         </div>
@@ -188,10 +170,18 @@
             const editarButtons = document.querySelectorAll('.editar-btn');
             const cerrarModalBtn = document.querySelector("#Cerrar_modal");
             const modal = document.querySelector("#modal");
+            const addressInput = document.getElementById('address');
+            const cityInput = document.getElementById('city');
 
             editarButtons.forEach(function(btn) {
                 btn.addEventListener("click", function() {
                     const sucursalId = this.getAttribute('data-id');
+                    const sucursalAddress = this.getAttribute('data-address');
+                    const sucursalCity = this.getAttribute('data-city');
+
+                    addressInput.value = sucursalAddress;
+                    cityInput.value = sucursalCity;
+
                     modal.showModal();
                     editarForm.action = `{% url 'editar_sucursal' 0 %}`.replace('0', sucursalId);
                 });
@@ -203,3 +193,4 @@
         });
     </script>
 </body>
+</html>
