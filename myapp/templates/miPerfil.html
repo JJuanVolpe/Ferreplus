@@ -97,20 +97,11 @@
                     <input type="text" id="last_name" name="edad" value="{{ usuario.profile.edad }}" required><br><br>
 
                     <label for="genero">Genero:</label><br>
-                    <div class="mb-2">
-                        <label>
-                            <input type="radio" name="genero" value="Masculino" {% if user.profile.genero == 'Masculino' %}checked{% endif %}>
-                            Masculino
-                        </label><br>
-                        <label>
-                            <input type="radio" name="genero" value="Femenino" {% if user.profile.genero == 'Femenino' %}checked{% endif %}>
-                            Femenino
-                        </label><br>
-                        <label>
-                            <input type="radio" name="genero" value="Otro" {% if user.profile.genero == 'Otro' %}checked{% endif %}>
-                            Otro
-                        </label><br>
-                    </div>
+                    <select id="genero" name="genero" class="form-control" required>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino" selected>Femenino</option>
+                        <option value="Otro">Otro</option>
+                    </select>
                     <label for="numero">Numero:</label><br>
                     <input type="text" id="numero" name="telefono" value="{{ usuario.profile.telefono }}"><br><br>
 
