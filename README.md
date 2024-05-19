@@ -7,7 +7,6 @@ Este archivo [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplu
 
 <p align="center">
 <img alt="Logo of group" width="30%" src="https://raw.githubusercontent.com/jjuanvolpe/ferreplus/develop/static/logo.png"><br>
-<em>Ferreplus logo</em>
 </p>
 
 [![License](https://img.shields.io/badge/License-CC0-lightgray.svg?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
