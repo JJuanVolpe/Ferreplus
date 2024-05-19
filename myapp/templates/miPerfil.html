@@ -4,6 +4,14 @@
     <html lang="es">
         <head>
             <script>
+                function validarqueseanletras(event) {
+                    const tecla = event.key;
+                    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/.test(tecla)) {
+                        event.preventDefault();
+                    }
+                }
+            </script>
+            <script>
                 document.addEventListener("DOMContentLoaded", function() {
                     const btnAbrirModal = document.querySelector("#editarContraseña");
                     const btnCerrarModal = document.querySelector("#Cerrar_modal");
@@ -88,13 +96,13 @@
                     <input type="email" id="email" name="email" value="{{ usuario.email }}" readonly><br><br>
                     
                     <label for="first_name">Nombre:</label><br>
-                    <input type="text" id="first_name" name="first_name" value="{{ usuario.first_name }}" required><br><br>
+                    <input type="text" id="first_name" name="first_name" value="{{ usuario.first_name }}" onkeypress="validarqueseanletras(event)" required><br><br>
                     
                     <label for="last_name">Apellido:</label><br>
-                    <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}" required><br><br>
+                    <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}" onkeypress="validarqueseanletras(event)" required><br><br>
                     
                     <label for="last_name">Edad:</label><br>
-                    <input type="text" id="last_name" name="edad" value="{{ usuario.profile.edad }}" required><br><br>
+                    <input type="number" id="last_name" name="edad" value="{{ usuario.profile.edad }}" required><br><br>
 
                     <label for="genero">Genero:</label><br>
                     <select id="genero" name="genero" class="form-control" required>
@@ -103,7 +111,7 @@
                         <option value="Otro">Otro</option>
                     </select><br><br>
                     <label for="numero">Numero:</label><br>
-                    <input type="text" id="numero" name="telefono" value="{{ usuario.profile.telefono }}"><br><br>
+                    <input type="number" id="numero" name="telefono" value="{{ usuario.profile.telefono }}"> <br><br>
 
                     <button type="submit">Guardar cambios</button> 
                     <button type="button" id="editarContraseña">Editar Contraseña</button>  
