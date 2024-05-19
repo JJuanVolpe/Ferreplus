@@ -200,20 +200,28 @@ def Sucursales(request):
 
   
 def Ver_trueques(request):
-    # Obtener el path absoluto del directorio dos carpetas antes de 'views'
-    currentdir = os.path.dirname(os.path.abspath(__file__))  # Directorio actual (views)
-    parent_dir = os.path.dirname(currentdir)  # Un nivel arriba (la carpeta contenedora de 'views')
-
-    # Obtengo la lista de intercambios del usuario
+    # Obtener la lista de intercambios del usuario
     usuario = request.user
     listadointercambios = intercambios.objects.filter(usuario=usuario.profile)
-    print(listadointercambios)
-
+    
     # Pasar tanto la lista de intercambios como el path absoluto al contexto
     context = {
         'listadointercambios': listadointercambios,
-        'path_absoluto': parent_dir
     }
+    print("hola")
+    if request.method == 'POST':
+        trueque = intercambios.objects.get(id=request.POST['trueque_id'])
+        trueque.categoria= request.POST['categoria']
+        trueque.descripcion= request.POST['descripcion']
+        trueque.marca= request.POST['marca']
+        trueque.estado= request.POST['estado']
+        trueque.nombre= request.POST['nombre']
+        trueque.modelo= request.POST['modelo']
+        if 'foto' in request.FILES:
+            foto = request.FILES['foto']
+            # Si se proporciona una foto, asignarla al campo 'foto' del trueque
+            trueque.foto = foto
+        trueque.save()
     return render(request, 'Mis_Trueques.html', context)
 
 def eliminar_sucursal(request, sucursal_id):
