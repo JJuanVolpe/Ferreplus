@@ -15,7 +15,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile", blank=True, null=True)
     edad = models.PositiveBigIntegerField(null=True, blank=False)
     dni = models.CharField(null=True, blank=False, max_length=10)
-    genero = models.CharField(null=True, blank=True, max_length=10)
+    genero = models.CharField(null=True, blank=True, max_length=10  )
     telefono = models.CharField(null=True, blank=True, max_length=15)
     Es_gerente = models.BooleanField(null=False, blank=False,default=False)
     

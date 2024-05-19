@@ -47,10 +47,20 @@
             <input type="password" name="password" id="password" class="form-control" placeholder="Escriba su contraseña" required>
           </div>
           <div class="mb-2">
-            <label for="genero">Genero:</label>
-            <input type="text" name="genero" id="genero" class="form-control" placeholder="Ingrese el genero percibido">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gender" id="inlineRadio1" value="M">
+              <label class="form-check-label" for="inlineRadio1">Masculino</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gender" id="inlineRadio2" value="F">
+              <label class="form-check-label" for="inlineRadio2" name>Femenino</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gender" id="inlineRadio3" value="O"  >
+              <label class="form-check-label" for="inlineRadio3">Otro</label>
+            </div>
           </div>
-          <div class="mb-2">
+          <div class="mb-2" style="display: flexbox; display:center;">
             <label for="telefono">Teléfono:</label>
             <input type="text" name="telefono" id="telefono" class="form-control" placeholder="Ingrese su telefono">
           </div>

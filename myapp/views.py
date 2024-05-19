@@ -107,7 +107,12 @@ def signup(request):
 
     if request.method == 'GET':
         return render(request, 'signup.html', {"form": UserCreationForm})
-    else:
+    else:  
+        print("A%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%HASTA ACA LLEGUE FLAAAAMA%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+
+        gender = request.POST.get('gender')
+        print("ACA YASE DEEBERIA HABER ROTO ====>" + gender)
+        print("GENERO INGRESADO?==========================================>" + request.POST['gender'])
         if User.objects.filter(email=request.POST["email"]).exists():
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Este correo está en uso, debe utilizar otro."})
         if incorrect_password(request.POST["password"]):
@@ -115,17 +120,17 @@ def signup(request):
         if int(request.POST["edad"]) < 18:
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Debe ser mayor de edad para registarse."})
         try:
+            
             user = User.objects.create_user(
                 request.POST["username"], password=request.POST["password"],
                 email=request.POST["email"],  first_name=request.POST["name"],
                 last_name=request.POST["lastname"])
             user.profile.edad = request.POST["edad"]
             user.profile.dni = request.POST["dni"]
-            user.profile.genero = request.POST["genero"]
+            user.profile.genero = request.POST["gender"]
             user.profile.telefono = request.POST["telefono"]
             user.save()
             login(request, user)
-            return redirect('/')
             return redirect('/')
         except IntegrityError:  #Manejo error asociado a la BD 
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Nombre de usuario ya existente en el sistema."})
