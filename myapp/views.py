@@ -118,38 +118,7 @@ def intercambio_con_espera_de_ofertas(request):
         title = 'intercambio con espera de ofertas'
         context = {'title': title, 'form': crear_intercambio_con_espera_de_ofertas()}
         return render(request, 'intercambio_con_espera_de_ofertas.html', context)
-"""
-
-@login_required
-def intercambio_con_espera_de_ofertas(request):
-    message = None
-    if request.method == 'POST':
-        form = crear_intercambio_con_espera_de_ofertas(request.POST, request.FILES)
-        if form.is_valid():
-            # guardar foto en la carpeta
-            # guardar en la base de datos la ubicacion de la foto.
-            # que pasa cuando dos usuarios cargan una imagen con el mismo nombre? guardar con nombrusuario mas el nombre de la foto y si se repite se incrementa en 1 nombrefoto
-            intercambio = intercambios.objects.create(
-                nombre=request.POST['nombre'],
-                estado=request.POST['estado'],
-                categoria=request.POST['categoria'],
-                foto=request.FILES['foto'],
-                descripcion=request.POST['descripcion'],
-                modelo=request.POST['modelo'],
-                marca=request.POST['marca'],
-                usuario=request.user.profile
-            )
-            message = messages.success(request, "intercambio creado correctamente, y se le notificara las ofertas que reciba via mail")
-            return redirect('Mis_Trueques', context={'message':message})
-        else:
-            messages.error(request, "Error creando trueque. Por favor, asegúrate de llenar todos los campos obligatorios.")
-    else:
-        form = crear_intercambio_con_espera_de_ofertas()
     
-    title = 'intercambio con espera de ofertas'
-    context = {'title': title, 'form': form}
-    return render(request, 'intercambio_con_espera_de_ofertas.html', context)
-"""
 
 def signup(request):
     def incorrect_password(password):
