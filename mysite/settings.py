@@ -155,6 +155,9 @@ EMAIL_HOST_USER = '4023c80b5cbb74'
 EMAIL_HOST_PASSWORD = 'de6e7195951fc3'
 EMAIL_PORT = '2525'
 
+
+#Configuración establecida para imágenes y archivos de tipo imágenes.
+
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

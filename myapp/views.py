@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 from django.db import Error, IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Project, Sucursal, intercambios
-from .forms import CreateNewProject, RecoveryForm,crear_intercambio_con_espera_de_ofertas
+from .models import Profile, Sucursal, intercambios
+from .forms import RecoveryForm,crear_intercambio_con_espera_de_ofertas
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.contrib import messages
@@ -33,7 +33,6 @@ def menuPrincipal(request):
 def  miPerfil(request):
     previous_page = request.META.get('HTTP_REFERER')
     usuario = request.user    # Obtenemos el usuario autenticado
-    #usuario = User.objects.all()[3]
     if request.method == 'POST':
         if 'contraseñaActual' in request.POST:
             # El formulario se envió desde el modal de cambio de contraseña
@@ -121,7 +120,7 @@ def signup(request):
                 last_name=request.POST["lastname"])
             user.profile.edad = request.POST["edad"]
             user.profile.dni = request.POST["dni"]
-            user.profile.genero = request.POST["genero"]
+            user.profile.genero = request.POST["gender"]
             user.profile.telefono = request.POST["telefono"]
             user.save()
             login(request, user)
@@ -134,7 +133,7 @@ def signin(request):
     if request.user.is_authenticated:
         # Si el usuario ya está autenticado, redirige según su perfil
         profile = Profile.objects.get(user=request.user)
-        if profile.Es_gerente:
+        if profile.es_gerente:
             return redirect('Sucursales')
         else:
             return redirect('menuPrincipal')
@@ -149,7 +148,7 @@ def signin(request):
             login(request, user)
             # Accede al perfil del usuario
             profile = Profile.objects.get(user=user)
-            if profile.Es_gerente:  # Verifica si el usuario es gerente
+            if profile.es_gerente:  # Verifica si el usuario es gerente
                 return redirect('Sucursales')
             else:    
                 return redirect('menuPrincipal')
@@ -189,7 +188,7 @@ def contact(request):
 
 def Sucursales(request):
     profile = Profile.objects.get(user=request.user)  # Obtener el perfil del usuario actual
-    if not profile.Es_gerente:
+    if not profile.es_gerente:
         # Si el usuario no es gerente, mostrar un mensaje de error
         return render(request, 'Sucursales.html', {'error': 'No tienes permisos para acceder a esta página.'})
     
@@ -207,7 +206,6 @@ def Ver_trueques(request):
     context = {
         'listadointercambios': listadointercambios,
     }
-    print("hola")
     if 'eliminar' in request.POST:
         # Acción para eliminar el trueque
         trueque = intercambios.objects.get(id=request.POST['trueque_id'])
@@ -238,9 +236,9 @@ def editar_sucursal(request, sucursal_id):
     if request.method == 'POST':
         nueva_direccion = request.POST.get('NuevaDireccion')
         if len(nueva_direccion)<35:
-            if not Sucursal.objects.filter(title= nueva_direccion).exists():
+            if not Sucursal.objects.filter(address= nueva_direccion).exists():
                 sucursal = Sucursal.objects.get(id=sucursal_id)
-                sucursal.title = nueva_direccion
+                sucursal.address = nueva_direccion
                 sucursal.save()
             else:
                 messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal!')
@@ -251,9 +249,11 @@ def editar_sucursal(request, sucursal_id):
 def agregar_sucursal(request):
     if request.method == 'POST':
         nueva_sucursal = request.POST.get('nuevaSucursal')
+        nueva_ciudad = request.POST.get('nueva_ciudad')
+
         if len(nueva_sucursal)<35:
-            if not Sucursal.objects.filter(title= nueva_sucursal).exists():
-                Sucursal.objects.create(title=nueva_sucursal)
+            if not Sucursal.objects.filter(address=nueva_sucursal).exists():
+                Sucursal.objects.create(address=nueva_sucursal, city= nueva_ciudad)
             else:
                     
                 messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal!')

@@ -93,14 +93,26 @@
                     <label for="last_name">Apellido:</label><br>
                     <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}"><br><br>
                     
-                    <label for="last_name">Edad:</label><br>
-                    <input type="text" id="last_name" name="edad" value="{{ usuario.profile.edad }}"><br><br>
+                    <label for="edad">Edad:</label><br>
+                    <input type="text" id="edad" name="edad" value="{{ usuario.profile.edad }}"><br><br>
 
-                    <label for="last_name">Genero:</label><br>
-                    <input type="text" id="last_name" name="genero" value="{{ usuario.profile.genero }}"><br><br>
-
-                    <label for="last_name">Numero:</label><br>
-                    <input type="text" id="last_name" name="telefono" value="{{ usuario.profile.telefono }}"><br><br>
+                    <label for="genero">Genero:</label><br>
+                    <div class="mb-2">
+                        <label>
+                            <input type="radio" name="genero" value="Masculino" {% if user.profile.genero == 'Masculino' %}checked{% endif %}>
+                            Masculino
+                        </label><br>
+                        <label>
+                            <input type="radio" name="genero" value="Femenino" {% if user.profile.genero == 'Femenino' %}checked{% endif %}>
+                            Femenino
+                        </label><br>
+                        <label>
+                            <input type="radio" name="genero" value="Otro" {% if user.profile.genero == 'Otro' %}checked{% endif %}>
+                            Otro
+                        </label><br>
+                    </div>
+                    <label for="numero">Numero:</label><br>
+                    <input type="text" id="numero" name="telefono" value="{{ usuario.profile.telefono }}"><br><br>
 
                     <button type="submit">Guardar cambios</button> 
                     <button type="button" id="editarContraseña">Editar Contraseña</button>  
