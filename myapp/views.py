@@ -186,10 +186,10 @@ def contact(request):
             return redirect(reverse('contact')+'?error')
         
         
-
+@login_required
 def Sucursales(request):
     profile = Profile.objects.get(user=request.user)  # Obtener el perfil del usuario actual
-    if not profile.Es_gerente:
+    if  not profile.Es_gerente :
         # Si el usuario no es gerente, mostrar un mensaje de error
         return render(request, 'Sucursales.html', {'error': 'No tienes permisos para acceder a esta página.'})
     
