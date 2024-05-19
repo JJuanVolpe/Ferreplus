@@ -16,6 +16,10 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.shortcuts import render, redirect
+from django.contrib.auth import update_session_auth_hash
+import re  # Importación del módulo r
+
 
 # Create your views here.
 
@@ -30,30 +34,42 @@ def index(request):
 def menuPrincipal(request):
     return render(request, 'menuPrincipal.html')
 
+
 def miPerfil(request):
     previous_page = request.META.get('HTTP_REFERER')
-    usuario = request.user    # Obtenemos el usuario autenticado
+    usuario = request.user  # Obtenemos el usuario autenticado
+
     if request.method == 'POST':
         if 'contraseñaActual' in request.POST:
             # El formulario se envió desde el modal de cambio de contraseña
             contraseña_actual = request.POST.get('contraseñaActual')
             nueva_contraseña = request.POST.get('contraseñaNueva')
             repetir_nueva_contraseña = request.POST.get('repetirContraseñaNueva')
-            
+
             # Verificar si la contraseña actual coincide con la del usuario
             if usuario.check_password(contraseña_actual):
-                try:
-                    validate_password(nueva_contraseña, user=usuario)
-                except ValidationError as error:
-                    messages.error(request, error.messages[0])
-                else:  # Solo si la validación de la contraseña pasa sin excepciones
-                    if nueva_contraseña == repetir_nueva_contraseña:
-                        # Actualizar la contraseña del usuario
-                        usuario.set_password(nueva_contraseña)
-                        usuario.save()
-                        messages.success(request, 'La contraseña se ha actualizado correctamente.')
+                if contraseña_actual == nueva_contraseña:
+                    messages.error(request, 'La nueva contraseña no puede ser igual a la actual.')
+                else:
+                    # Validar la nueva contraseña con los requisitos específicos
+                    if len(nueva_contraseña) < 8:
+                        messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y 8 caracteres.')
+                    elif not re.search(r'[A-Z]', nueva_contraseña):
+                        messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
                     else:
-                        messages.error(request, 'Las nuevas contraseñas no coinciden.')
+                        try:
+                            validate_password(nueva_contraseña, user=usuario)
+                        except ValidationError as error:
+                            messages.error(request, error.messages[0])
+                        else:  # Solo si la validación de la contraseña pasa sin excepciones
+                            if nueva_contraseña == repetir_nueva_contraseña:
+                                # Actualizar la contraseña del usuario
+                                usuario.set_password(nueva_contraseña)
+                                usuario.save()
+                                update_session_auth_hash(request, usuario)  # Mantener la sesión activa
+                                messages.success(request, 'La contraseña se ha actualizado correctamente.')
+                            else:
+                                messages.error(request, 'Las nuevas contraseñas no coinciden.')
             else:
                 messages.error(request, 'La contraseña actual es incorrecta.')
         else:
@@ -74,11 +90,11 @@ def miPerfil(request):
                     messages.success(request, 'Los cambios se han guardado correctamente.')
             except ValueError:
                 messages.error(request, 'Por favor, ingrese una edad válida.')
+
     return render(request, 'miPerfil.html', {
         'previous_page': previous_page, 
         'usuario': usuario}
     )
-
 
 def intercambio_con_espera_de_ofertas(request):
     if request.method == 'POST':
@@ -127,7 +143,7 @@ def signup(request):
                 last_name=request.POST["lastname"])
             user.profile.edad = request.POST["edad"]
             user.profile.dni = request.POST["dni"]
-            user.profile.genero = request.POST["gender"]
+            user.profile.genero = request.POST['genero']
             user.profile.telefono = request.POST["telefono"]
             user.save()
             login(request, user)
