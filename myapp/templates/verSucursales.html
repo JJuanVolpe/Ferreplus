@@ -45,7 +45,7 @@
             {% if sucursales %}
                 {% for sucursal in sucursales %}
                     <hr class="divider">
-                    <p class="parrafo">{{ sucursal.title }}</p>
+                    <p class="parrafo">{{ sucursal.address }} - ciudad: {{ sucursal.city }}</p>
                     <img >
                 {% endfor %}
             {% else %}

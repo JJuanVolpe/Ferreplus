@@ -151,6 +151,8 @@
     </a>
     <h1>Mis intercambios</h1>
     <div class="contenido">
+        {% if listadointercambios %}
+
         <table class="trueque-table">
             <thead>
                 <tr>
@@ -166,8 +168,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% if listadointercambios %}
-                    {% for trueque in listadointercambios %}
+                {% for trueque in listadointercambios %}
                         <tr>
                             <td>{{ trueque.nombre }}</td>
                             <td>{{ trueque.estado }}</td>

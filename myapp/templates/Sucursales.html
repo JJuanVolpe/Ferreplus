@@ -119,13 +119,16 @@
                 <thead>
                     <tr>
                         <th>Direccion</th>
+                        <th>Ciudad</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% if sucursales %}
                         {% for suc in sucursales %}
                             <tr>
-                                <td>{{ suc.title }}</td>
+                                <td>{{ suc.address }}</td>
+                                <td>{{ suc.city }}</td>
+
                                 <td><button class="button-style editar-btn" data-id="{{ suc.id }}">Editar</button></td>
                                 <td>
                                     <form class="eliminar-form" data-id="{{ suc.id }}" action="{% url 'eliminar_sucursal' suc.id %}" method="post">
@@ -146,6 +149,8 @@
                 {% csrf_token %}
                 <label for="nuevaSucursal">Dirección de la nueva sucursal:</label><br>
                 <input type="text" id="nuevaSucursal" name="nuevaSucursal" required><br><br>
+                <label for="nueva_ciudad">Ciudad de la nueva sucursal:</label><br>
+                <input type="text" id="nueva_ciudad" name="nueva_ciudad" required><br><br>
                 <button class="button-style2" type="submit">Agregar sucursal</button>
                 <p style="color: rgb(180, 19, 19); font-family: 'Montserrat';"></p>
                     {% if messages %}

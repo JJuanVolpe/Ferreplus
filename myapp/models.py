@@ -4,12 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 # Create your models here.
-class Project(models.Model):
-    name = models.CharField(max_length=200)
-    def __str__(self):
-        return  ' - ' + self.name
-    
-    
+
 class Profile(models.Model):
     # otros campos
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile", blank=True, null=True)
@@ -17,7 +12,7 @@ class Profile(models.Model):
     dni = models.CharField(null=True, blank=False, max_length=10)
     genero = models.CharField(null=True, blank=True, max_length=10)
     telefono = models.CharField(null=True, blank=True, max_length=15)
-    Es_gerente = models.BooleanField(null=False, blank=False,default=False)
+    es_gerente = models.BooleanField(null=False, blank=False,default=False)
     
 
     def __str__(self):
@@ -43,13 +38,14 @@ post_save.connect(save_user_profile, sender=User)
 
 
 class Sucursal(models.Model):
-    title= models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
+    city = models.CharField(max_length=40, null=True)
 
 class intercambios(models.Model):
     nombre = models.CharField(max_length=200)
     estado = models.CharField(max_length=200)
     categoria = models.CharField(max_length=200)
-    foto = models.ImageField(upload_to='fotos_intercambios/')
+    foto = models.ImageField(upload_to='static/fotos_intercambios/')
     descripcion = models.CharField(max_length=200, default="")
     modelo = models.CharField(max_length=200, default="")
     marca = models.CharField(max_length=200,default="")
