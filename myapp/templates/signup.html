@@ -50,13 +50,13 @@
             <label for="genero">Genero:</label><br>
             <select id="genero" name="genero" class="form-control" required>
               <option value="Masculino">Masculino</option>
-              <option value="Femenino" selected>Femenino</option>
+              <option value="Femenino">Femenino</option>
               <option value="Otro" >Otro</option>
           </select>
           </div>
-          <div class="mb-2">
+          <div class="mb-2">   
             <label for="telefono">Teléfono:</label>
-            <input type="text" name="telefono" id="telefono" class="form-control" placeholder="Ingrese su telefono">
+            <input type="tel" name="telefono" id="telefono" class="form-control" placeholder="Ingrese su teléfono" pattern="[0-9]+" title="Ingrese solo números">
           </div>
           <button class="btn btn-primary">Registrar</button>
           <a href="{% url 'signin' %}" style="color: rgb(22, 33, 196);">¿Tenes un usuario ya creado? Inicia sesion</a>

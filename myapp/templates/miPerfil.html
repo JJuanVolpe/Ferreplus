@@ -108,9 +108,9 @@
 
                     <label for="genero">Genero:</label><br>
                     <select id="genero" name="genero" class="form-control" required>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Femenino" selected>Femenino</option>
-                        <option value="Otro">Otro</option>
+                        <option value="Masculino" {% if usuario.profile.genero == 'Masculino' %}selected{% endif %}>Masculino</option>
+                        <option value="Femenino" {% if usuario.profile.genero == 'Femenino' %}selected{% endif %}>Femenino</option>
+                        <option value="Otro" {% if usuario.profile.genero == 'Otro' %}selected{% endif %}>Otro</option>
                     </select><br><br>
                     <label for="numero">Numero:</label><br>
                     <input type="number" id="numero" name="telefono" value="{{ usuario.profile.telefono }}"> <br><br>
