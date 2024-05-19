@@ -1,6 +1,7 @@
 import random
 import string
 import os
+from time import sleep
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
@@ -96,26 +97,59 @@ def miPerfil(request):
         'usuario': usuario}
     )
 
+@login_required
 def intercambio_con_espera_de_ofertas(request):
     if request.method == 'POST':
-        # guardar foto en la carpeta
-        # guardar en la base de datos la ubicacion de la foto.
-        # que pasa cuando dos usuarios cargan una imagen con el mismo nombre? guardar con nombrusuario mas el nombre de la foto y si se repite se incrementa en 1 nombrefoto
         intercambio = intercambios.objects.create(
-        nombre = request.POST['nombre'],
-        estado = request.POST['estado'],
-        categoria = request.POST['categoria'],
-        foto = request.FILES['foto'],
-        descripcion = request.POST['descripcion'],
-        modelo = request.POST['modelo'],
-        marca = request.POST['marca'],
-        usuario = request.user.profile
-        ) 
-        messages.success(request,"intercambio creado correctamente")
+            nombre=request.POST['nombre'],
+            estado=request.POST['estado'],
+            categoria=request.POST['categoria'],
+            foto=request.FILES['foto'],
+            descripcion=request.POST['descripcion'],
+            modelo=request.POST['modelo'],
+            marca=request.POST['marca'],
+            usuario=request.user.profile
+        )
+        # Agrega un mensaje de éxito
+        messages.success(request, "El intercambio se ha creado correctamente. Se le notificarán las ofertas que reciba por correo electrónico.")
+        # Redirige a la página de Mis_Trueques
         return redirect('Mis_Trueques')
+    else:
+        title = 'intercambio con espera de ofertas'
+        context = {'title': title, 'form': crear_intercambio_con_espera_de_ofertas()}
+        return render(request, 'intercambio_con_espera_de_ofertas.html', context)
+"""
+
+@login_required
+def intercambio_con_espera_de_ofertas(request):
+    message = None
+    if request.method == 'POST':
+        form = crear_intercambio_con_espera_de_ofertas(request.POST, request.FILES)
+        if form.is_valid():
+            # guardar foto en la carpeta
+            # guardar en la base de datos la ubicacion de la foto.
+            # que pasa cuando dos usuarios cargan una imagen con el mismo nombre? guardar con nombrusuario mas el nombre de la foto y si se repite se incrementa en 1 nombrefoto
+            intercambio = intercambios.objects.create(
+                nombre=request.POST['nombre'],
+                estado=request.POST['estado'],
+                categoria=request.POST['categoria'],
+                foto=request.FILES['foto'],
+                descripcion=request.POST['descripcion'],
+                modelo=request.POST['modelo'],
+                marca=request.POST['marca'],
+                usuario=request.user.profile
+            )
+            message = messages.success(request, "intercambio creado correctamente, y se le notificara las ofertas que reciba via mail")
+            return redirect('Mis_Trueques', context={'message':message})
+        else:
+            messages.error(request, "Error creando trueque. Por favor, asegúrate de llenar todos los campos obligatorios.")
+    else:
+        form = crear_intercambio_con_espera_de_ofertas()
+    
     title = 'intercambio con espera de ofertas'
-    context = {'title': title, 'form' : crear_intercambio_con_espera_de_ofertas()}
+    context = {'title': title, 'form': form}
     return render(request, 'intercambio_con_espera_de_ofertas.html', context)
+"""
 
 def signup(request):
     def incorrect_password(password):
@@ -288,11 +322,13 @@ def agregar_sucursal(request):
 
 
 def verSucursales(request):
-    sucursales = Sucursal.objects.all()
-    print()
+    sucursales = []
+    if request.user == 'AnonymousUser':
+        sucursales = Sucursal.objects.all()
     return render(request,'verSucursales.html',{
         'sucursales':sucursales
     })
+
 
 def Menu_intercambios(request):
     title = 'Menu Intercambio'

@@ -41,16 +41,16 @@
     <div class="divcontenedor">
         <h1>Sucursales disponibles en el país</h1>
         <div class="divsuc">
-            <p class="titulo"> Direccion </p>
             {% if sucursales %}
-                {% for sucursal in sucursales %}
-                    <hr class="divider">
-                    <p class="parrafo">{{ sucursal.address }} - ciudad: {{ sucursal.city }}</p>
-                    <img >
-                {% endfor %}
+                <p class="titulo"> Direccion </p>
+                    {% for sucursal in sucursales %}
+                        <hr class="divider">
+                        <p class="parrafo">{{ sucursal.address }} - ciudad: {{ sucursal.city }}</p>
+                        <img >
+                    {% endfor %}
             {% else %}
-                <hr class="divider">
-                <p class="parrafo">No hay sucursales por el momento</p>
+                <hr class="divider" style="align-content: center;">
+                <p class="parrafo">No hay sucursales por el momento cargadas en el sistema</p>
             {% endif %}
         </div>
     </div>

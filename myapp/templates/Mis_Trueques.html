@@ -1,39 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const modal = document.querySelector("#modal");
-            const btnCerrarModal = document.querySelector("#Cerrar_modal");
-
-            document.querySelectorAll(".editarTrueque").forEach(btn => {
-                btn.addEventListener("click", function() {
-                    const truequeId = this.getAttribute("data-id");
-                    const nombre = this.getAttribute("data-nombre");
-                    const estado = this.getAttribute("data-estado");
-                    const categoria = this.getAttribute("data-categoria");
-                    const descripcion = this.getAttribute("data-descripcion");
-                    const modelo = this.getAttribute("data-modelo");
-                    const marca = this.getAttribute("data-marca");
-
-                    // Llenar los campos del formulario con los datos del trueque
-                    document.getElementById('truequeId').value = truequeId;
-                    document.getElementById('nombre').value = nombre;
-                    document.getElementById('estado').value = estado;
-                    document.getElementById('categoria').value = categoria;
-                    document.getElementById('descripcion').value = descripcion;
-                    document.getElementById('modelo').value = modelo;
-                    document.getElementById('marca').value = marca;
-
-                    modal.showModal();
-                });
-            });
-
-            btnCerrarModal.addEventListener("click", function(){
-                modal.close();
-            });
-        });
-    </script>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
     <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
@@ -150,6 +117,20 @@
         <button>volver</button>
     </a>
     <h1>Mis intercambios</h1>
+    <!-- Agrega este bloque en tu template -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert" id="success-message">
+                {{ message }}
+            </div>
+            <script>
+                // Oculta el mensaje después de 5 segundos
+                setTimeout(function(){
+                    document.getElementById('success-message').style.display = 'none';
+                }, 5000); // 5000 milisegundos = 5 segundos
+            </script>
+        {% endfor %}
+    {% endif %}
     <div class="contenido">
         {% if listadointercambios %}
 
@@ -237,7 +218,7 @@
                     <input type="file" id="foto" name="foto" class="form-control" accept=".jpg, .jpeg, .png" >
                 </div>
                 <div>
-                    <button type="submit">Guardar Cambios</button>
+                    <button type="submit" id="submit">Guardar Cambios</button>
                     <button type="button" id="Cerrar_modal">Cerrar</button>
                 </div> 
             </form>
