@@ -30,7 +30,7 @@ def index(request):
 def menuPrincipal(request):
     return render(request, 'menuPrincipal.html')
 
-def  miPerfil(request):
+def miPerfil(request):
     previous_page = request.META.get('HTTP_REFERER')
     usuario = request.user    # Obtenemos el usuario autenticado
     if request.method == 'POST':
@@ -58,15 +58,22 @@ def  miPerfil(request):
                 messages.error(request, 'La contraseña actual es incorrecta.')
         else:
             # El formulario se envió desde el botón "Guardar cambios" fuera del modal
-            usuario.profile.telefono = request.POST['telefono']
-            usuario.profile.genero = request.POST['genero']
-            usuario.profile.edad = request.POST['edad']
-            usuario.username = request.POST['username']
-            usuario.email = request.POST['email']
-            usuario.first_name = request.POST['first_name']
-            usuario.last_name = request.POST['last_name']
-            usuario.save()  # Guardar los cambios en la base de datos
-            messages.success(request, 'Los cambios se han guardado correctamente.')
+            try:
+                edad = int(request.POST['edad'])
+                if edad < 18:
+                    messages.error(request, 'La edad debe ser mayor o igual a 18 años.')
+                else:
+                    usuario.profile.telefono = request.POST['telefono']
+                    usuario.profile.genero = request.POST['genero']
+                    usuario.profile.edad = edad
+                    usuario.username = request.POST['username']
+                    usuario.email = request.POST['email']
+                    usuario.first_name = request.POST['first_name']
+                    usuario.last_name = request.POST['last_name']
+                    usuario.save()  # Guardar los cambios en la base de datos
+                    messages.success(request, 'Los cambios se han guardado correctamente.')
+            except ValueError:
+                messages.error(request, 'Por favor, ingrese una edad válida.')
     return render(request, 'miPerfil.html', {
         'previous_page': previous_page, 
         'usuario': usuario}
