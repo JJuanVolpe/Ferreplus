@@ -6,7 +6,7 @@ Este archivo [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplu
 
 
 <p align="center">
-<img alt="Logo of group" width="30%" src="https://raw.githubusercontent.com/jjuanvolpe/ferreplus/main/static/logo.png"><br>
+<img alt="Logo of group" width="30%" src="https://raw.githubusercontent.com/jjuanvolpe/ferreplus/develop/static/logo.png"><br>
 <em>Ferreplus logo</em>
 </p>
 
