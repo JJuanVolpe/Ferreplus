@@ -38,8 +38,8 @@ post_save.connect(save_user_profile, sender=User)
 
 
 class Sucursal(models.Model):
-    address = models.CharField(max_length=100)
-    city = models.CharField(max_length=40, null=True)
+    address = models.CharField(max_length=100,default="")
+    city = models.CharField(max_length=40, null=True,default="")
 
 class intercambios(models.Model):
     nombre = models.CharField(max_length=200)

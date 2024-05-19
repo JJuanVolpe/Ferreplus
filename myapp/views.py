@@ -258,10 +258,12 @@ def eliminar_sucursal(request, sucursal_id):
 def editar_sucursal(request, sucursal_id):
     if request.method == 'POST':
         nueva_direccion = request.POST.get('NuevaDireccion')
+        nueva_ciudad = request.POST.get('ciudadNueva')
         if len(nueva_direccion)<35:
-            if not Sucursal.objects.filter(address= nueva_direccion).exists():
+            if not Sucursal.objects.filter(address=nueva_direccion, city=nueva_ciudad).exists():
                 sucursal = Sucursal.objects.get(id=sucursal_id)
                 sucursal.address = nueva_direccion
+                sucursal.city = nueva_ciudad
                 sucursal.save()
             else:
                 messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal!')
@@ -275,7 +277,7 @@ def agregar_sucursal(request):
         nueva_ciudad = request.POST.get('nueva_ciudad')
 
         if len(nueva_sucursal)<35:
-            if not Sucursal.objects.filter(address=nueva_sucursal).exists():
+            if not Sucursal.objects.filter(address=nueva_sucursal, city=nueva_ciudad).exists():
                 Sucursal.objects.create(address=nueva_sucursal, city= nueva_ciudad)
             else:
                     
@@ -286,9 +288,10 @@ def agregar_sucursal(request):
 
 
 def verSucursales(request):
-    sucurales = Sucursal.objects.all()
+    sucursales = Sucursal.objects.all()
+    print()
     return render(request,'verSucursales.html',{
-        'sucursales':sucurales
+        'sucursales':sucursales
     })
 
 def Menu_intercambios(request):
