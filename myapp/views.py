@@ -7,8 +7,8 @@ from django.contrib.auth.models import User
 from django.db import Error, IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Project, Sucursal, intercambios
-from .forms import CreateNewProject, RecoveryForm,crear_intercambio_con_espera_de_ofertas
+from .models import Profile, Sucursal, intercambios
+from .forms import RecoveryForm,crear_intercambio_con_espera_de_ofertas
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.contrib import messages
@@ -221,9 +221,11 @@ def editar_sucursal(request, sucursal_id):
 def agregar_sucursal(request):
     if request.method == 'POST':
         nueva_sucursal = request.POST.get('nuevaSucursal')
+        nueva_ciudad = request.POST.get('nueva_ciudad')
+
         if len(nueva_sucursal)<35:
-            if not Sucursal.objects.filter(title= nueva_sucursal).exists():
-                Sucursal.objects.create(title=nueva_sucursal)
+            if not Sucursal.objects.filter(title=nueva_sucursal).exists():
+                Sucursal.objects.create(title=nueva_sucursal, address= nueva_ciudad)
             else:
                     
                 messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal!')

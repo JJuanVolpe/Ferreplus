@@ -9,3 +9,4 @@ sqlparse==0.4.2
 toml==0.10.2
 tzdata==2022.2
 whitenoise==6.2.0
+Pillow==10.3.0

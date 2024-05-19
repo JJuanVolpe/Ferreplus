@@ -88,7 +88,7 @@
                         {% for suc in sucursales %}
                             <tr>
                                 <td>
-                                    <button class="button-style editar-btn" data-id="{{ suc.id }}">{{ suc.title }}</button>
+                                    <button class="button-style editar-btn" data-id="{{ suc.id }}">{{ suc.title }} , ubicada en ciudad:{{ suc.address}}</button>
                                     <form class="eliminar-form" data-id="{{ suc.id }}" action="{% url 'eliminar_sucursal' suc.id %}" method="post">
                                         {% csrf_token %}
                                         <button type="submit" class="eliminar-btn">Eliminar sucursal</button>
@@ -103,6 +103,8 @@
                 {% csrf_token %}
                 <label for="nuevaSucursal">Dirección de la nueva sucursal:</label><br>
                 <input type="text" id="nuevaSucursal" name="nuevaSucursal" required><br><br>
+                <label for="nueva_ciudad">Ciudad de la nueva sucursal:</label><br>
+                <input type="text" id="nueva_ciudad" name="nueva_ciudad" required><br><br>
                 <button class="button-style" type="submit">Agregar sucursal</button>
                 <p style="color: black; font-family: 'Montserrat';"></p>
                 {% if messages %}
