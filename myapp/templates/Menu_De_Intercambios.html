@@ -25,21 +25,20 @@
             }
             .right {
                 display:flex;
-                justify-content: c;
                 align-items: center;
                 font-family: Arial, Helvetica, sans-serif; 
     
             }
             .divTrue{
-            width: 650px;
-            align-items: center;
-            min-width: 350px;
-            max-height: 500px; /* Altura máxima inicial */
-            overflow-y: auto; /* Desplazamiento vertical */
-            border: 1px solid #050404; /* Borde */
-            background-color: #fff; /* Fondo blanco */
-            border-radius: 5px; /* Bordes redondeados */
-            padding: 10px; /* Espaciado interno */
+                width: 700px;
+                align-items: center;
+                min-width: 350px;
+                max-height: 500px; /* Altura máxima inicial */
+                overflow-y: auto; /* Desplazamiento vertical */
+                border: 1px solid #050404; /* Borde */
+                background-color: #fff; /* Fondo blanco */
+                border-radius: 5px; /* Bordes redondeados */
+                padding: 10px; /* Espaciado interno */
             }
             .menu {
                 margin: 3%;
@@ -69,10 +68,10 @@
                 transform: scale(1.05);
             }   
             .menu{
-            display:flex;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, Helvetica, sans-serif;
+                display:flex;
+                justify-content: center;
+                align-items: center;
+                font-family: Arial, Helvetica, sans-serif;
             }
 
             .trueque-table {
@@ -104,10 +103,11 @@
     </head>
 
     <body>
-        <a href="{% url 'menuPrincipal' %}">
-            <button>volver</button>
-        </a>
+        
         <div>
+            <a href="{% url 'menuPrincipal' %}">
+                <button>volver</button>
+            </a>
             <div class="menu">
                 <h1>Menu de intercambios</h1> 
             </div>
