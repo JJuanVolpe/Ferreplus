@@ -302,9 +302,7 @@ def agregar_sucursal(request):
 
 
 def verSucursales(request):
-    sucursales = []
-    if request.user == 'AnonymousUser':
-        sucursales = Sucursal.objects.all()
+    sucursales = Sucursal.objects.all()
     return render(request,'verSucursales.html',{
         'sucursales':sucursales
     })

@@ -45,7 +45,7 @@
                 <p class="titulo"> Direccion </p>
                     {% for sucursal in sucursales %}
                         <hr class="divider">
-                        <p class="parrafo">{{ sucursal.address }} - ciudad: {{ sucursal.city }}</p>
+                        <p class="parrafo">direccion {{ sucursal.address }} - ciudad: {{ sucursal.city }}</p>
                         <img >
                     {% endfor %}
             {% else %}

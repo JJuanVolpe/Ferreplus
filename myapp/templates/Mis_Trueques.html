@@ -142,12 +142,25 @@
         .divider {
             margin: 10px 0;
         }
+        .botonVolv{
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+            color: #ffffff;
+            background-color: #2d4a81;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
     </style>
     {% load static %}
 </head>
 <body>
-    <a href="{% url 'Menu_De_Intercambios' %}" style="display: flex; align-self: flex-start; padding: 3%;">
-        <button>volver</button>
+    <a href="{% url 'Menu_De_Intercambios' %}" style="position: absolute; top: 20px; left: 20px;">
+        <button class="botonVolv">volver</button>
     </a>
     <h1>Mis intercambios</h1>
     <!-- Agrega este bloque en tu template -->
