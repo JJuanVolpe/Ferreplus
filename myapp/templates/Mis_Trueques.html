@@ -1,6 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButtons = document.querySelectorAll('.editarTrueque');
+            const modal = document.getElementById('modal');
+            const closeModalButton = document.getElementById('Cerrar_modal');
+    
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const truequeId = this.getAttribute('data-id');
+                    const nombre = this.getAttribute('data-nombre');
+                    const estado = this.getAttribute('data-estado');
+                    const categoria = this.getAttribute('data-categoria');
+                    const descripcion = this.getAttribute('data-descripcion');
+                    const modelo = this.getAttribute('data-modelo');
+                    const marca = this.getAttribute('data-marca');
+    
+                    document.getElementById('truequeId').value = truequeId;
+                    document.getElementById('nombre').value = nombre;
+                    document.getElementById('estado').value = estado;
+                    document.getElementById('categoria').value = categoria;
+                    document.getElementById('descripcion').value = descripcion;
+                    document.getElementById('modelo').value = modelo;
+                    document.getElementById('marca').value = marca;
+    
+                    modal.showModal();
+                });
+            });
+    
+            closeModalButton.addEventListener('click', function() {
+                modal.close();
+            });
+        });
+    </script>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
     <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
