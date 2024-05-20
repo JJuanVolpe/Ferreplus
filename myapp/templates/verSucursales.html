@@ -2,56 +2,101 @@
 
 {% block content %}
     <style>
-        .divcontenedor{
+        body{
+            color: #000000
+        }
+        .divcontenedor {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            background-color: #f0f2f5;
+            min-height: 100px;
+            max-height: 600px;
         }
-        .divsuc{
-            width: 500px;
-            min-width: 350px;
-            max-height: 500px; /* Altura máxima inicial */
-            overflow-y: auto; /* Desplazamiento vertical */
-            border: 3px solid #030303; /* Borde */
-            background-color: #fff; /* Fondo blanco */
-            border-radius: 5px; /* Bordes redondeados */
-            padding: 10px; /* Espaciado interno */
+        .divsuc {
+            margin-top: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 980px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-height: 600px;
+            overflow-y: auto;
         }
-        .titulo{
-            color:#1f4e57;
-            font-family:Georgia, 'Times New Roman', Times, serif;
+        h1 {
+            color: #1f4e57;
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            font-size: 2.5em;
         }
-        .parrafo{
-            color:#050404;
+        .parrafo {
+            color: #050404;
             font-family: Arial, Helvetica, sans-serif;
-            
+            font-size: 1.2em;
         }
         .divider {
             border: 0;
             border-top: 1px solid #ccc;
-            margin: 10px 0; /* Espaciado alrededor de la línea divisoria */
+            margin: 20px 0;
         }
-        .error{
-            color:#ad1e1e;
+        .error {
+            color: #ad1e1e;
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 32;
+            font-size: 1.5em;
+        }
+        .trueque-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 20px 0;
+        }
+        .trueque-table th, .trueque-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .trueque-table th {
+            background-color: #c0bcbce0;
+            font-weight: bold;
+        }
+        .trueque-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .trueque-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .trueque-table th {
+            background-color: #2d4a81;
+            color: white;
         }
     </style>
     <div class="divcontenedor">
         <h1>Sucursales disponibles en el país</h1>
         <div class="divsuc">
-            {% if sucursales %}
-                <p class="titulo"> Direccion </p>
+            <table class="trueque-table">
+                {% if sucursales %}
+                <thead>
+                    <tr>
+                        <th>Dirección</th>
+                        <th>Ciudad</th>
+                    </tr>
+                </thead>
+                <tbody>
                     {% for sucursal in sucursales %}
-                        <hr class="divider">
-                        <p class="parrafo">direccion {{ sucursal.address }} - ciudad: {{ sucursal.city }}</p>
-                        <img >
+                    <tr>
+                        <td>{{ sucursal.address }}</td>
+                        <td>{{ sucursal.city }}</td>
+                    </tr>
                     {% endfor %}
-            {% else %}
-                <hr class="divider" style="align-content: center;">
-                <p class="parrafo">No hay sucursales por el momento cargadas en el sistema</p>
-            {% endif %}
+                </tbody>
+                {% else %}
+                    <div class="divider"></div>
+                    <p class="parrafo">No hay sucursales por el momento cargadas en el sistema</p>
+                {% endif %}
+            </table>
         </div>
     </div>
 {% endblock %}
