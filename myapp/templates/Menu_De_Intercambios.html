@@ -1,170 +1,169 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>{{ title }}</title>
-        <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
-        <style>
-
-            body {
-            background-color: #4566d3e5; 
-            }
-            .container {
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
+    <style>
+        body {
+            background-color: #4566d3e5;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px;
+        }
+        .left, .right {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
-            }
-            .left, .right {
-                flex: 1;
-                margin: 2%;
-                padding: 20px;
-            }
-            .left {
-                display:flex;
-                justify-content: flex-start;
-                align-items: flex-start;
-            }
-            .right {
-                display:flex;
-                align-items: center;
-                font-family: Arial, Helvetica, sans-serif; 
-    
-            }
-            .divTrue{
-                width: 700px;
-                align-items: center;
-                min-width: 350px;
-                max-height: 500px; /* Altura máxima inicial */
-                overflow-y: auto; /* Desplazamiento vertical */
-                border: 1px solid #050404; /* Borde */
-                background-color: #fff; /* Fondo blanco */
-                border-radius: 5px; /* Bordes redondeados */
-                padding: 10px; /* Espaciado interno */
-            }
-            .menu {
-                margin: 3%;
-                display: flex;
-                flex-direction:column;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            button, a, input[type="submit"] {
-                font-weight: bold;
-                text-decoration: none;
-                font-size: 12;
-                color: #D9D9D9;
-                max-width: max-content;
-                background-color: #2d4a81;
-                padding: 6px 10px;
-                text-align: center;
-                border: none;
-                border-radius: 5px;
-                transition: all 0.3s;
-                cursor : pointer;
-            }
-
-            button:hover, a:hover, input[type="submit"]:hover {
-                background-color: rgba(255, 82, 51, 0.926);
-                transform: scale(1.05);
-            }   
-            .menu{
-                display:flex;
-                justify-content: center;
-                align-items: center;
-                font-family: Arial, Helvetica, sans-serif;
-            }
-
-            .trueque-table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-        
-            .trueque-table th, .trueque-table td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
-        
-            .trueque-table th {
-                background-color: #c0bcbce0;
-                font-weight: bold;
-            }
-        
-            .trueque-foto {
-                max-width: 100px;
-                max-height: 100px;
-            }
-        
-            .divider {
-                margin: 10px 0;
-            }
-
-        </style>
+        }
+        .menu button, .menu a {
+            width: 200px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+            color: #ffffff;
+            background-color: #2d4a81;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .menu button:hover, .menu a:hover {
+            background-color: rgba(255, 82, 51, 0.926);
+            transform: scale(1.05);
+        }
+        .menu h1 {
+            margin-bottom: 20px;
+            color: #2d4a81;
+        }
+        .trueque-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .trueque-table th, .trueque-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .trueque-table th {
+            background-color: #c0bcbce0;
+            font-weight: bold;
+        }
+        .trueque-foto {
+            max-width: 100px;
+            max-height: 100px;
+        }
+        .botonVolv{
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+            color: #ffffff;
+            background-color: #2d4a81;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .divTrue {
+            width: 100%;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #050404;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
-
-    <body>
-        
-        <div>
-            <a href="{% url 'menuPrincipal' %}">
-                <button>volver</button>
-            </a>
+<body>
+    <a href="{% url 'menuPrincipal' %}" style="position: absolute; top: 20px; right: 20px;">
+        <button class="botonVolv">
+            Volver
+        </button>
+    </a>
+    <div class="container">
+        <div class="left">
+            
             <div class="menu">
-                <h1>Menu de intercambios</h1> 
-            </div>
-            <div class="container">
-                <div class="left">
-                    <div class="menu">
-                        <div style="padding: 5px;">
-                            <a href="{% url 'Historial_De_Intercambios' %}" style="padding: 5px;">                              
-                                <button id="Historial">Ver historial de Intercambios</button>
-                            </a>
-                        </div>
-                        <div style="padding: 5px;">
-                            <a href="{% url 'Mis_Trueques' %}" style="padding: 5px;">
-                                <button id="Mis_Trueques">Ver mis intercambios</button>
-                            </a>
-                        </div>
-                        <div style="padding: 5px;">
-                            <a href="{% url 'intercambio_con_espera_de_ofertas' %}">
-                                <button id="Crear_Trueque">Crear intercambio</button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="right">
-                    
-                    <div class="divTrue">
-                        <h3> Intercambios disponibles </h3>
-                        <table class="trueque-table">
-                            <thead>
-                                <tr>
-                                    <th>Nombre usuario</th>
-                                    <th>Item</th>
-                                    <th>Estado</th>
-                                    <th>Foto</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if trueques %}
-                                    {% for trueque in trueques %}
-                                        <tr>
-                                            <td>{{ trueque.usuario.user }}</td>
-                                            <td>{{ trueque.nombre }}</td>
-                                            <td>{{ trueque.estado }}</td>
-                                            <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
-                                        </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="3">No hay trueques por el momento</td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <h1>Menú de Intercambios</h1>
+                <a href="{% url 'Historial_De_Intercambios' %}">
+                    <button id="Historial">Ver historial de Intercambios</button>
+                </a>
+                <a href="{% url 'Mis_Trueques' %}">
+                    <button id="Mis_Trueques">Ver mis intercambios</button>
+                </a>
+                <a href="{% url 'intercambio_con_espera_de_ofertas' %}">
+                    <button id="Crear_Trueque">Crear intercambio</button>
+                </a>
             </div>
         </div>
-    </body>
-
+        <div class="right">
+            <div class="divTrue">
+                <h3>Intercambios disponibles</h3>
+                <table class="trueque-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre usuario</th>
+                            <th>Item</th>
+                            <th>Estado</th>
+                            <th>Foto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if trueques %}
+                            {% for trueque in trueques %}
+                                <tr>
+                                    <td>{{ trueque.usuario.user }}</td>
+                                    <td>{{ trueque.nombre }}</td>
+                                    <td>{{ trueque.estado }}</td>
+                                    <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4">No hay trueques por el momento</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
 </html>

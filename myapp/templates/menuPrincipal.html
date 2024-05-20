@@ -1,90 +1,97 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu principal</title>
+    <title>Menu Principal</title>
     <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
     <link rel="stylesheet" href="../static/styles/menuPrincipal.css">
     <style>
-        .contenedorMenu{
-            height: 10vh;
-        }
-        .contenedor{
-            margin: 3%;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-        
-        .menuPrincipal{
-            margin: 3%;
+        body {
+            background-color: #4566d3e5;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            min-height: 100vh;
+            color: #fff;
         }
-        .menus{
-            height: 20vh;
-            margin: 3%;
+        .contenedorMenu {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: #2d4a81;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+        .contenedorMenu h1 {
+            margin: 0;
+            padding-left: 40px;
+        }
+        .contenedorMenu img {
+            width: 220px;
+            padding-right: 40px;
+        }
+        .todo {
+            width: 90%;
+            max-width: 800px;
+            background-color: #2d4a81;
+            border-radius: 8px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-end;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
-        .titulo {
-            margin: 3%;
-            position: fixed;
-            top: 0;
-            left: 0;
+        .contenedor, .menus, .beneficio {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
         }
         button, a, input[type="submit"] {
             font-weight: bold;
             text-decoration: none;
-            font-size: 500;
+            font-size: 16px;
             font-family: Arial, Helvetica, sans-serif;
-            color: #D9D9D9;
-            max-width: max-content;
-            background-color: #2d4a81;
-            padding: 6px 10px;
+            color: #ffffff;
+            width: 100%;
+            max-width: 300px;
+            background-color: #003f7f;
+            padding: 15px;
             text-align: center;
             border: none;
             border-radius: 5px;
             transition: all 0.3s;
-            cursor : pointer;
+            cursor: pointer;
+            margin: 10px 0;
         }
-
         button:hover, a:hover, input[type="submit"]:hover {
-            background-color: rgba(255, 82, 51, 0.926);
+            background-color: #ff5233;
             transform: scale(1.05);
-        }   
-        .imagen {
-            margin: 3%;
-            position: fixed;
-            top: 0;
-            right: 0;
         }
-        .todo{
-            height: 70vh;
-            font-family: Arial, Helvetica, sans-serif;
-
+        .menus {
+            flex-direction: row;
+            justify-content: space-around;
+            width: 100%;
         }
-        .beneficio{
-            margin: 3%;
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
+        .menus a, .menus button {
+            width: 45%;
         }
     </style>
-</head>  
+</head>
 <body>
     <div class="contenedorMenu">
         <h1 class="titulo">Menu Principal</h1>
-        <img src="../static/image.png" alt="Logo de la ferreteria" width="220" class="imagen"> 
+        <img src="../static/image.png" alt="Logo de la ferreteria" class="imagen"> 
     </div>
-    <div class="todo">    
+    <div class="todo">
         <div class="contenedor">
             <a href="{% url 'miPefil' %}">
                 <button>Ver Perfil</button>
@@ -92,13 +99,16 @@
         </div>
         <div class="menus">
            <a href="{% url 'Menu_De_Intercambios' %}">
-            <button style="width: 7cm;"> Menu de Intercambios </button>
+                <button>Menu de Intercambios</button>
            </a>
-            <div style="height: 1.0cm;">  </div>
-            <button style="width: 7cm;"> Menu de Compras </button>
+            <a href="#">
+                <button>Menu de Compras</button>
+            </a>
         </div>
         <div class="beneficio">
-            <button> ver beneficios </button>
+            <a href="#">
+                <button>Ver Beneficios</button>
+            </a>
         </div>
     </div>
 </body>
