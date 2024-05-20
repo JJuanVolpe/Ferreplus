@@ -13,6 +13,7 @@ class Profile(models.Model):
     genero = models.CharField(null=True, blank=True, max_length=10)
     telefono = models.CharField(null=True, blank=True, max_length=15)
     es_gerente = models.BooleanField(null=False, blank=False,default=False)
+    es_empleado = models.BooleanField(null=False, blank=False,default=False)
     
 
     def __str__(self):

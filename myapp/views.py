@@ -177,6 +177,8 @@ def signin(request):
             profile = Profile.objects.get(user=user)
             if profile.es_gerente:  # Verifica si el usuario es gerente
                 return redirect('Sucursales')
+            elif profile.es_empleado:
+                return redirect("menuEmpleado")
             else:    
                 return redirect('menuPrincipal')
         else:
@@ -331,3 +333,6 @@ def Menu_Sucursales(request):
     title = 'Menu de Sucursales'
     context = {'sucursales': Sucursal.objects.all()}
     return render(request, 'Menu_Sucursales.html', context)
+
+def menu_empleado(request):
+    return render(request,'menuEmpleado.htm')
