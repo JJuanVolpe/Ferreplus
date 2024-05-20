@@ -54,7 +54,7 @@ def miPerfil(request):
                 else:
                     # Validar la nueva contraseña con los requisitos específicos
                     if len(nueva_contraseña) < 8:
-                        messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y 8 caracteres.')
+                        messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
                     elif not re.search(r'[A-Z]', nueva_contraseña):
                         messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
                     else:
