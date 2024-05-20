@@ -118,7 +118,9 @@
     </a>
     <h1>Mis intercambios</h1>
     <!-- Agrega este bloque en tu template -->
-    {% if messages %}
+    
+    <div class="contenido">
+        {% if messages %}
         {% for message in messages %}
             <div class="alert alert-success" role="alert" id="success-message">
                 {{ message }}
@@ -131,7 +133,6 @@
             </script>
         {% endfor %}
     {% endif %}
-    <div class="contenido">
         {% if listadointercambios %}
 
         <table class="trueque-table">
@@ -173,6 +174,8 @@
                     {% endfor %}
                 {% else %}
                     <tr>
+                        <br>
+                        <br>
                         <td colspan="9">No hay trueques por el momento</td>
                     </tr>
                 {% endif %}
