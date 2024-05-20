@@ -178,7 +178,7 @@ def signin(request):
             if profile.es_gerente:  # Verifica si el usuario es gerente
                 return redirect('Sucursales')
             elif profile.es_empleado:
-                return redirect("menuEmpleado")
+                return redirect('menuEmpleado')
             else:    
                 return redirect('menuPrincipal')
         else:
@@ -335,4 +335,4 @@ def Menu_Sucursales(request):
     return render(request, 'Menu_Sucursales.html', context)
 
 def menu_empleado(request):
-    return render(request,'menuEmpleado.htm')
+    return render(request,'menuEmpleado.html')
