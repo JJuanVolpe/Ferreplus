@@ -214,7 +214,7 @@ def contact(request):
             # Enviar el correo electrónico
             email = EmailMessage('Mensaje de recuperación de contraseña - Ferreplus 🛠️🧰','{} \n- Su nueva contraseña es: \n\n{}'
                 .format("No compartas esta información, nadie de nuestro equipo te la solicitará.", new_password),
-                account_email, ['4023c80b5cbb74@inbox.mailtrap.io'])
+                account_email, ['da79fcc5174cf2@inbox.mailtrap.io'])
             email.send()
             user.save()
             return redirect(reverse('contact')+'?ok')   #Todo OK
