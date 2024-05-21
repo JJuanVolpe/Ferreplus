@@ -58,19 +58,14 @@ def miPerfil(request):
                     elif not re.search(r'[A-Z]', nueva_contraseña):
                         messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
                     else:
-                        try:
-                            validate_password(nueva_contraseña, user=usuario)
-                        except ValidationError as error:
-                            messages.error(request, error.messages[0])
-                        else:  # Solo si la validación de la contraseña pasa sin excepciones
-                            if nueva_contraseña == repetir_nueva_contraseña:
-                                # Actualizar la contraseña del usuario
-                                usuario.set_password(nueva_contraseña)
-                                usuario.save()
-                                update_session_auth_hash(request, usuario)  # Mantener la sesión activa
-                                messages.success(request, 'La contraseña se ha actualizado correctamente.')
-                            else:
-                                messages.error(request, 'Las nuevas contraseñas no coinciden.')
+                        if nueva_contraseña == repetir_nueva_contraseña:
+                            # Actualizar la contraseña del usuario
+                            usuario.set_password(nueva_contraseña)
+                            usuario.save()
+                            update_session_auth_hash(request, usuario)  # Mantener la sesión activa
+                            messages.success(request, 'La contraseña se ha actualizado correctamente.')
+                        else:
+                            messages.error(request, 'Las nuevas contraseñas no coinciden.')
             else:
                 messages.error(request, 'La contraseña actual es incorrecta.')
         else:
