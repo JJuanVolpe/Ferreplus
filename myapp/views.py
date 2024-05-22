@@ -243,7 +243,7 @@ def Ver_trueques(request):
         # Acción para eliminar el trueque
         trueque = intercambios.objects.get(id=request.POST['trueque_id'])
         trueque.delete()
-        messages.success(request, '¡El trueque se ha eliminado correctamente!')
+        messages.success(request, '¡El intercambio se ha eliminado correctamente!')
         return redirect('Mis_Trueques')
     elif request.method == 'POST':
         trueque = intercambios.objects.get(id=request.POST['trueque_id'])
