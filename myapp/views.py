@@ -114,9 +114,7 @@ def intercambio_con_espera_de_ofertas(request):
         context = {'title': title, 'form': crear_intercambio_con_espera_de_ofertas()}
         return render(request, 'intercambio_con_espera_de_ofertas.html', context)
     
-
-def signup(request):
-    def incorrect_password(password):
+def incorrect_password(password):
         if len(password) < 8:
             return True
         else:
@@ -124,7 +122,9 @@ def signup(request):
                 if (not i.isdigit() and i.isupper()):   #no es un número y es mayuscula? cumple
                     return False
         return True
-
+        
+def signup(request):
+    
     if request.method == 'GET':
         return render(request, 'signup.html', {"form": UserCreationForm})
     else:
@@ -187,11 +187,31 @@ def signin(request):
             return render(request, 'signin.html', {"form": AuthenticationForm(), "error": error_message})
 
 
+
 def gestionarEmpleados(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "El correo electrónico ya está en uso.")
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, "El nombre de usuario ya está en uso.")
+        else:
+            user = User.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name)
+            user.profile.edad = request.POST["edad"]
+            user.profile.dni = request.POST["dni"]
+            user.profile.genero = request.POST['genero']
+            user.profile.telefono = request.POST["telefono"]
+            user.profile.es_empleado = True
+            user.save()
+            messages.success(request, "Usuario creado exitosamente.")
+
+    # Manejar la obtención de empleados
     empleados = Profile.objects.filter(es_empleado=True)
-    return render(request,'Empleados.html',{
-        'empleados':empleados
-    })
+    return render(request, 'Empleados.html', {'empleados': empleados})
 
 @login_required
 def signout(request):
