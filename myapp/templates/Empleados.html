@@ -1,12 +1,50 @@
 {% extends "navegacionGerente.html" %}
 
-{% block content %}
-
 <!DOCTYPE html>
 <html>
-    <body>
-        <h1>Menu Sucursales</h1>
-    </body>
-</html>
+<head>
+    {% block extra_styles %}
+    <style>
+        main.container {
+            flex-direction: column;
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <h1>Menu Empleados</h1>
 
-{% endblock %}
+    <div class="table-container">
+        <div class="scrollable-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>DNI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if empleados %}
+                        {% for empleado in empleados %}
+                            <tr>    
+                                <td>{{ empleado.user.first_name }}</td>
+                                <td>{{ empleado.user.last_name }}</td>
+                                <td>{{ empleado.dni }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3">No se encontraron empleados</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <button class="button-style">Crear Empleado</button>
+    </div>
+    {% endblock %}
+</body>
+</html>

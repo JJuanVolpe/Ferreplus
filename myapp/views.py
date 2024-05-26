@@ -186,6 +186,13 @@ def signin(request):
                 
             return render(request, 'signin.html', {"form": AuthenticationForm(), "error": error_message})
 
+
+def gestionarEmpleados(request):
+    empleados = Profile.objects.filter(es_empleado=True)
+    return render(request,'Empleados.html',{
+        'empleados':empleados
+    })
+
 @login_required
 def signout(request):
     logout(request)
@@ -315,8 +322,6 @@ def Historial_Intercambios(request):
     context = {'title': title}
     return render(request, 'Historial_De_Intercambios.html', context)
 
-def gestionarEmpleados(request):
-    return render(request,'Empleados.html')
 
 def Crear_Trueque(request):
     title = 'Mis trueques'
@@ -329,4 +334,5 @@ def Menu_Sucursales(request):
     return render(request, 'Menu_Sucursales.html', context)
 
 def menu_empleado(request):
+
     return render(request,'menuEmpleado.html')

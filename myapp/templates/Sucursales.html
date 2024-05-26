@@ -4,6 +4,7 @@
 
 {% block extra_styles %}
 <style>
+    
     .table-container {
         text-align: center;
         width: 100%;
@@ -14,79 +15,10 @@
         padding: 20px;
         position: relative;
     }
-
-    .scrollable-table {
-        max-height: 300px;
-        overflow-y: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #c0bcbce0;
-        font-weight: bold;
-    }
-
-    .button-style {
-        font-weight: bold;
-        text-decoration: none;
-        font-family: Arial, Helvetica, sans-serif;
-        color: #D9D9D9;
-        max-width: max-content;
-        background-color: #2d4a81;
-        padding: 6px 10px;
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        transition: all 0.3s;
-        cursor: pointer;
-    }
-
-    .button-style:hover {
-        background-color: #4566d3e5;
-    }
-
-    #Agregar_Sucursal {
-        display: block;
-        margin: 20px auto;
-    }
-
-    #modal {
-        width: 500px;
-        background-color: rgb(225, 228, 240);
-    }
-
-    #modal::backdrop {
-        background-color: rgba(0, 0, 0, .45);
-    }
-
-    .logOut {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        color: white;
-        text-decoration: none;
-    }
-
-    .message {
-        color: rgb(12, 17, 12);
-        font-weight: bold;
-        margin-top: 20px;
-    }
 </style>
 {% endblock %}
 
 {% block content %}
-
 <div class="table-container">
     <h1>Listado de sucursales</h1>
     <div class="scrollable-table">
