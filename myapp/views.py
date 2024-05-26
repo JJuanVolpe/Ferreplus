@@ -315,7 +315,8 @@ def Historial_Intercambios(request):
     context = {'title': title}
     return render(request, 'Historial_De_Intercambios.html', context)
 
-
+def gestionarEmpleados(request):
+    return render(request,'Empleados.html')
 
 def Crear_Trueque(request):
     title = 'Mis trueques'
