@@ -4,6 +4,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 # Create your models here.
+class Sucursal(models.Model):
+    address = models.CharField(max_length=100,default="")
+    city = models.CharField(max_length=40, null=True,default="")
 
 class Profile(models.Model):
     # otros campos
@@ -14,8 +17,7 @@ class Profile(models.Model):
     telefono = models.CharField(null=True, blank=True, max_length=15)
     es_gerente = models.BooleanField(null=False, blank=False,default=False)
     es_empleado = models.BooleanField(null=False, blank=False,default=False)
-    
-
+    sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE,related_name="sucursal",null=True) 
     def __str__(self):
         return "edad:" + str(self.edad) + ", con dni:" + str(self.dni)  + ", genero: "+ str(self.genero)  + "  y celular:" + str(self.telefono)  + " - & - "
 
@@ -38,9 +40,6 @@ post_save.connect(save_user_profile, sender=User)
 
 
 
-class Sucursal(models.Model):
-    address = models.CharField(max_length=100,default="")
-    city = models.CharField(max_length=40, null=True,default="")
 
 class intercambios(models.Model):
     nombre = models.CharField(max_length=200)

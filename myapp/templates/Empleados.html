@@ -29,12 +29,11 @@
             box-sizing: border-box;
             margin-bottom: 10px;
         }
-        button, a, input[type="submit"] {
+        .buttonSpecial, a.buttonSpecial, input[type="submit"].buttonSpecial {
             font-weight: bold;
             text-decoration: none;
             font-size: 16px;
             color: #ffffff;
-            width: 100%;
             background-color: #003f7f;
             padding: 15px;
             text-align: center;
@@ -44,7 +43,7 @@
             cursor: pointer;
             margin: 10px 0;
         }
-        button:hover, a:hover, input[type="submit"]:hover {
+        .buttonSpecial:hover, a.buttonSpecial:hover, input[type="submit"].buttonSpecial:hover {
             background-color: #ff5233;
             transform: scale(1.05);
         }
@@ -75,6 +74,7 @@
     <h1>Menu Empleados</h1>
 
     <div class="table-container">
+    {% if sucursales %}
         <div class="scrollable-table">
             <table>
                 <thead>
@@ -82,6 +82,7 @@
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>DNI</th>
+                        <th>Sucursal</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,6 +92,7 @@
                                 <td>{{ empleado.user.first_name }}</td>
                                 <td>{{ empleado.user.last_name }}</td>
                                 <td>{{ empleado.dni }}</td>
+                                <td>{{ empleado.sucursal.address }}  {{ empleado.sucursal.city }}</td>
                             </tr>
                         {% endfor %}
                     {% else %}
@@ -100,16 +102,20 @@
                     {% endif %}
                 </tbody>
             </table>
-        </div>
-        <br>
-        <button class="button-style" id="openModalBtn">Crear Empleado</button>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+            <br>
+            <button class="buttonSpecial" id="openModalBtn">Crear Empleado</button>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <a>{{ message }}</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            <a> Debe registar una sucursal para poder registrar Empleados</a>
         {% endif %}
+        </div>
+        
     </div>
 
     <dialog id="modal">
@@ -141,12 +147,17 @@
                     <option value="Femenino">Femenino</option>
                     <option value="Otro">Otro</option>
                 </select>
-    
+                <label for="sucursal">Sucursal</label>
+                <select id="sucursal" name="sucursal" required>
+                    {% for sucursal in sucursales %}
+                        <option value="{{ sucursal.id }} " selected>{{ sucursal.address }} {{ sucursal.city }}</option>
+
+                    {% endfor %}
                 <label for="telefono">Número:</label>
                 <input type="number" id="telefono" name="telefono">
     
-                <button type="submit">Guardar cambios</button>
-                <button type="button" id="closeModalBtn">Cancelar</button>
+                <button class="buttonSpecial",type="submit">Guardar cambios</button>
+                <button class="buttonSpecial",type="button" id="closeModalBtn">Cancelar</button>
             </form>
         </div>
     </dialog>

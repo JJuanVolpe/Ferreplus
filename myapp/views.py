@@ -206,12 +206,15 @@ def gestionarEmpleados(request):
             user.profile.genero = request.POST['genero']
             user.profile.telefono = request.POST["telefono"]
             user.profile.es_empleado = True
+            user.profile.sucursal = Sucursal.objects.get(id=request.POST["sucursal"])
             user.save()
             messages.success(request, "Usuario creado exitosamente.")
 
     # Manejar la obtención de empleados
     empleados = Profile.objects.filter(es_empleado=True)
-    return render(request, 'Empleados.html', {'empleados': empleados})
+    sucursales = Sucursal.objects.all()
+    return render(request, 'Empleados.html', {'empleados': empleados,
+                                              "sucursales": sucursales})
 
 @login_required
 def signout(request):
@@ -280,10 +283,9 @@ def Ver_trueques(request):
         trueque.estado= request.POST['estado']
         trueque.nombre= request.POST['nombre']
         trueque.modelo= request.POST['modelo']
-        if 'foto' in request.FILES:
-            foto = request.FILES['foto']
-            # Si se proporciona una foto, asignarla al campo 'foto' del trueque
-            trueque.foto = foto
+        foto = request.FILES['foto']
+        # Si se proporciona una foto, asignarla al campo 'foto' del trueque
+        trueque.foto = foto
         trueque.save()
     
     return render(request, 'Mis_Trueques.html', context)
