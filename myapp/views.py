@@ -186,7 +186,9 @@ def signin(request):
                 
             return render(request, 'signin.html', {"form": AuthenticationForm(), "error": error_message})
 
-
+def editarEmpleado(request):
+    #empleado = Profile.objects.get(id=empleado_id)
+    return render(request, 'editarEmpleado.html')
 
 def gestionarEmpleados(request):
     if request.method == 'POST':

@@ -17,7 +17,7 @@ class Profile(models.Model):
     telefono = models.CharField(null=True, blank=True, max_length=15)
     es_gerente = models.BooleanField(null=False, blank=False,default=False)
     es_empleado = models.BooleanField(null=False, blank=False,default=False)
-    sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE,related_name="sucursal",null=True) 
+    sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE,related_name="sucursal",null=True,blank=True) 
     def __str__(self):
         return "edad:" + str(self.edad) + ", con dni:" + str(self.dni)  + ", genero: "+ str(self.genero)  + "  y celular:" + str(self.telefono)  + " - & - "
 
