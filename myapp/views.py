@@ -186,12 +186,30 @@ def signin(request):
                 
             return render(request, 'signin.html', {"form": AuthenticationForm(), "error": error_message})
 
-def editarEmpleado(request):
-    #empleado = Profile.objects.get(id=empleado_id)
-    return render(request, 'editarEmpleado.html')
+def editarEmpleado(request,empleado_id):
+    empleado = Profile.objects.get(id=empleado_id)
+    sucursales = Sucursal.objects.all()
+    if 'guardarEdicion' in request.POST:
+        print("hola1")
+        empleado.user.first_name = request.POST.get('first_name')
+        empleado.user.last_name = request.POST.get('last_name')
+        empleado.edad = request.POST["edad"]
+        empleado.dni = request.POST["dni"]
+        empleado.genero = request.POST['genero']
+        empleado.telefono = request.POST["telefono"]
+        empleado.sucursal = Sucursal.objects.get(id=request.POST["sucursal"])
+        empleado.save()
+        messages.success(request, "Empleado Editado Exitosamente")
+        print("llegue")
+        redirect('Empleados.html')
+        print("llegue")
+    return render(request, 'editarEmpleado.html',{"empleado":empleado,
+                                                "sucursales":sucursales})
+    
+   
 
 def gestionarEmpleados(request):
-    if request.method == 'POST':
+    if 'guardarEmpleado' in request.POST:
         username = request.POST.get('username')
         email = request.POST.get('email')
         first_name = request.POST.get('first_name')
