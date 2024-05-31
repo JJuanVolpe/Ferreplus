@@ -190,7 +190,6 @@ def editarEmpleado(request,empleado_id):
     empleado = Profile.objects.get(id=empleado_id)
     sucursales = Sucursal.objects.all()
     if 'guardarEdicion' in request.POST:
-        print("hola1")
         empleado.user.first_name = request.POST.get('first_name')
         empleado.user.last_name = request.POST.get('last_name')
         empleado.edad = request.POST["edad"]
@@ -198,11 +197,11 @@ def editarEmpleado(request,empleado_id):
         empleado.genero = request.POST['genero']
         empleado.telefono = request.POST["telefono"]
         empleado.sucursal = Sucursal.objects.get(id=request.POST["sucursal"])
+        empleado.user.save()
         empleado.save()
         messages.success(request, "Empleado Editado Exitosamente")
         print("llegue")
-        redirect('Empleados.html')
-        print("llegue")
+        return redirect('gestionarEmpleados')
     return render(request, 'editarEmpleado.html',{"empleado":empleado,
                                                 "sucursales":sucursales})
     
