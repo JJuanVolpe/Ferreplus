@@ -9,8 +9,8 @@ from django.contrib.auth.models import User
 from django.db import Error, IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Sucursal, intercambios
-from .forms import RecoveryForm,crear_intercambio_con_espera_de_ofertas
+from .models import Profile, Sucursal, intercambios, Product
+from .forms import RecoveryForm, crear_intercambio_con_espera_de_ofertas, ProductForm
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.contrib import messages
@@ -339,10 +339,61 @@ def Menu_intercambios(request):
                'trueques':trueques}
     return render(request, 'Menu_De_Intercambios.html', context)
 
+
 def Historial_Intercambios(request):
     title = 'Historial de intercambios'
-    context = {'title': title}
+    trueques = intercambios.objects
+    t_cancelados = trueques.filter(status="CANCELADO")
+    t_efectuados = trueques.filter(status="EFECTUADO")
+    context = {
+        'title': title,
+        'trueques': trueques.all(), 
+        'trueques_cancelados': t_cancelados,
+        'trueques_efectuados': t_efectuados,
+        'form': ProductForm()
+    }
     return render(request, 'Historial_De_Intercambios.html', context)
+
+
+def create_trade(request, trueque_id):
+    if request.method == 'POST':
+        trueque = get_object_or_404(intercambios, id=trueque_id)
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form_category = form.cleaned_data['categoria']
+            if form_category != trueque.categoria:
+                messages.error(request, 'La categoria del objeto ingresado debe corresponderse con la del objeto a intercambiar.')
+            elif request.user == trueque.usuario.user: # No debo dejar que un usuario postule a un trueque de el mismo
+                messages.error(request, 'No puede postular un objeto para un trueque creado por usted.')
+            else:
+                Product.objects.create(nombre=form.cleaned_data['nombre'], estado=form.cleaned_data['estado'],
+                                       categoria=form.cleaned_data['categoria'], foto=form.cleaned_data['foto'],
+                                       descripcion=form.cleaned_data['descripcion'], postulante=request.user.profile,
+                                       trueque_postulado=trueque)
+                
+                #form.save()
+                messages.success(request, 'El objeto ha sido creado y postulado con éxito.')
+                #Aquí se debe enviar mail al usuario de que se generó postulación al trueque que hizo?
+    return Historial_Intercambios(request=request)
+
+
+
+def ver_objetos_postulados(request, trueque_id):
+
+    trueque = get_object_or_404(intercambios, id=trueque_id)
+    title = 'Objetos ofrecidos para el objeto postulado a intercambiar'
+    trueques = intercambios.objects
+    objetos_postulados = Product.objects.filter(trueque_postulado=trueque)
+    context = {
+        'title': title,
+        'trueque': trueque, 
+    }
+    if (objetos_postulados.exists()):
+        context['objetos_postulados'] = objetos_postulados
+    else:
+        messages.error(request, 'No hay objetos postulados para este item selecionado todavia')
+    return render(request, 'ver_objetos_postulados.html', context)
+
 
 
 def Crear_Trueque(request):

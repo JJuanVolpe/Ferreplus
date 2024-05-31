@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+#from .models import Category
 
 # Create your models here.
 class Sucursal(models.Model):
@@ -19,7 +20,7 @@ class Profile(models.Model):
     es_empleado = models.BooleanField(null=False, blank=False,default=False)
     sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE,related_name="sucursal",null=True) 
     def __str__(self):
-        return "edad:" + str(self.edad) + ", con dni:" + str(self.dni)  + ", genero: "+ str(self.genero)  + "  y celular:" + str(self.telefono)  + " - & - "
+        return "username of prof:" + self.user.username  + " edad:" + str(self.edad) + ", con dni:" + str(self.dni)  + ", genero: "+ str(self.genero)  + "  y celular:" + str(self.telefono)
 
 
 
@@ -50,6 +51,20 @@ class intercambios(models.Model):
     modelo = models.CharField(max_length=200, default="")
     marca = models.CharField(max_length=200,default="")
     usuario = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='intercambios')
+    status = models.CharField(max_length=200, null=True, default="NUEVO", blank=True)
 
 
-    
+    def __str__(self):
+        return "intercambio:" + str(self.nombre) + ", con categoria:" + str(self.categoria)  + ", del usuario: "+ str(self.usuario.dni)  + "  y status:" + str(self.status) 
+
+
+
+class Product(models.Model):
+    nombre = models.CharField(max_length=200)
+    estado = models.CharField(max_length=200)
+    categoria = models.CharField(max_length=200)
+    foto = models.ImageField(upload_to='static/fotos_intercambios/')
+    descripcion = models.CharField(max_length=200, default="")
+    postulante = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='postulante', null=True, blank=True)
+    trueque_postulado = models.ForeignKey(intercambios, on_delete=models.CASCADE, null=True, blank=True)
+

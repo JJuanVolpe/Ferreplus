@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if messages %}
+    <div class="message">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% else %}
+        <title>{{ title }}</title>
+    {% endif %}
+    
+</head>
+<body>
+    {% if objetos_postulados %}
+        <h2>Listado de Objetos Ofrecidos para el trueque del objeto: {{ trueque.nombre }},  {{ trueque.marca }}</h2>
+        <div class="container">
+            {% for obj in objetos_postulados %}
+                <span>{{obj.nombre}}</span>
+                <span>{{obj.estado}}</span>
+                <span>{{obj.categoria}}</span>
+            {% endfor %}
+        </div>
+    {% else %}
+        <title>{{ title }}</title>
+    {% endif %}
+    
+
+</body>
+</html>
