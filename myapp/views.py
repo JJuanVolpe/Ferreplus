@@ -283,9 +283,9 @@ def Ver_trueques(request):
         trueque.estado= request.POST['estado']
         trueque.nombre= request.POST['nombre']
         trueque.modelo= request.POST['modelo']
-        foto = request.FILES['foto']
         # Si se proporciona una foto, asignarla al campo 'foto' del trueque
-        trueque.foto = foto
+        if 'foto' in request.FILES:
+            trueque.foto = request.FILES['foto']
         trueque.save()
     
     return render(request, 'Mis_Trueques.html', context)
