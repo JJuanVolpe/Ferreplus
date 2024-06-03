@@ -58,6 +58,8 @@ body {
     flex-grow: 0; /* Evita que los paneles crezcan */
     width: calc((100% - 40px) / 3); /* Calcula el ancho para que los 3 paneles ocupen el ancho disponible, dejando un espacio de 20px entre ellos */
     margin: 0 10px; /* Ajusta el margen horizontal para dar espacio entre los paneles */
+    max-height: 750px;
+    overflow: auto;
   }
   .panel-objects-postuled {
     background-color: #ffffff;
