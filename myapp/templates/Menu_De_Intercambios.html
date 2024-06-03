@@ -128,6 +128,77 @@
             padding: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        /* Estilos generales del modal */
+.modal {
+    display: none; /* Por defecto, ocultar el modal */
+    position: fixed; /* Posición fija para mantener el modal en la vista */
+    z-index: 1; /* Colocar el modal por encima del resto del contenido */
+    left: 0;
+    top: 0;
+    width: 100%; /* Ajustar el ancho al 100% de la ventana */
+    height: 100%; /* Ajustar la altura al 100% de la ventana */
+    overflow: auto; /* Agregar desplazamiento si el contenido es más grande que el modal */
+    background-color: rgba(0,0,0,0.4); /* Fondo semitransparente para el modal */
+}
+
+/* Estilos para el contenido del modal */
+.modal-content {
+    background-color: #fefefe; /* Fondo blanco para el contenido del modal */
+    margin: 15% auto; /* Margen superior e inferior y centrar horizontalmente */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Ancho del contenido del modal */
+    max-width: 600px; /* Ancho máximo del contenido del modal */
+    border-radius: 10px; /* Borde redondeado */
+}
+
+/* Estilos para el botón de cerrar */
+.closeModalBtn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.closeModalBtn:hover,
+.closeModalBtn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Estilos adicionales para el formulario dentro del modal */
+#crear-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#crear-form input[type="text"],
+#crear-form input[type="file"],
+#crear-form textarea {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.buttonSpecial {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.buttonSpecial:hover {
+    background-color: #45a049;
+}
     </style>
 </head>
 
@@ -190,26 +261,25 @@
                             <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
                             <td>
                                 <div>
-                                    {% csrf_token %}
-                                    <!-- Aquí puedes añadir los campos del formulario para el intercambio -->
-                                    <button type="button" class="btn-trueque openModalBtn">Proponer Intercambio</button>
-                                    <dialog class="modal">
-                                        <div class="modal-content">
-                                            <h1>Postular Objeto Para Intercambio</h1>
-                                            <form action="{% url 'create_trade' trueque.id %}" method="post"
-                                                enctype="multipart/form-data">
-                                                {% csrf_token %}
-                                                {{ form.as_p }}
-                                                <button class="buttonSpecial" type="submit">Guardar cambios</button>
-                                                <button class="buttonSpecial closeModalBtn"
-                                                    type="button">Cancelar</button>
-                                            </form>
-                                        </div>
-                                    </dialog>
-                                </div>
+                                {% csrf_token %}
+                                <!-- Aquí puedes añadir los campos del formulario para el intercambio -->
+                                <button type="button" class="btn-trueque openModalBtn">Proponer Intercambio</button>
+                                <dialog class="modal">
+                                    <div class="modal-content">
+                                        <h1>Postular Objeto Para Intercambio</h1>
+                                        <form action="{% url 'create_trade' trueque.id %}" method="post" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            {{ form.as_p }}
+                                            <button class="buttonSpecial" type="submit">Guardar cambios</button>
+                                            <button class="buttonSpecial closeModalBtn" type="button">Cancelar</button>
+                                        </form>
+                                    </div>
+                                </dialog>
+                                </div>  
                             </td>
                         </tr>
                         {% endfor %}
+
                     </tbody>
                 </table>
                 {% else %}
@@ -221,21 +291,25 @@
         </div>
     </div>
     <script>
-
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const openModalBtns = document.querySelectorAll('.openModalBtn');
             const closeModalBtns = document.querySelectorAll('.closeModalBtn');
             const modals = document.querySelectorAll('.modal');
 
-            openModalBtns.forEach(function (btn) {
-                btn.addEventListener('click', function () {
+            openModalBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    // Cerrar todos los modales abiertos antes de abrir el nuevo
+                    modals.forEach(function(modal) {
+                        modal.style.display = "none";
+                    });
+
                     const modal = this.parentElement.querySelector('.modal');
                     modal.style.display = "block";
                 });
             });
 
-            closeModalBtns.forEach(function (btn) {
-                btn.addEventListener('click', function () {
+            closeModalBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
                     const modal = this.closest('.modal');
                     modal.style.display = "none";
                 });
