@@ -8,6 +8,13 @@ from django.dispatch import receiver
 class Sucursal(models.Model):
     address = models.CharField(max_length=100,default="")
     city = models.CharField(max_length=40, null=True,default="")
+    def delete(self, *args, **kwargs):
+        profiles = Profile.objects.filter(sucursal=self)
+        for profile in profiles:
+            if profile.user:
+                profile.user.delete()
+            profile.delete()
+        super().delete(*args, **kwargs)
 
 class Profile(models.Model):
     # otros campos
@@ -18,7 +25,7 @@ class Profile(models.Model):
     telefono = models.CharField(null=True, blank=True, max_length=15)
     es_gerente = models.BooleanField(null=False, blank=False,default=False)
     es_empleado = models.BooleanField(null=False, blank=False,default=False)
-    sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE,related_name="sucursal",null=True) 
+    sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE,related_name="sucursal",null=True,blank=True) 
     def __str__(self):
         return "username of prof:" + self.user.username  + " edad:" + str(self.edad) + ", con dni:" + str(self.dni)  + ", genero: "+ str(self.genero)  + "  y celular:" + str(self.telefono)
 
