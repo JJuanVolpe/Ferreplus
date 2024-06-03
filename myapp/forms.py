@@ -1,4 +1,5 @@
 from django import forms
+from .models import Product
 
 
 class crear_intercambio_con_espera_de_ofertas(forms.Form):
@@ -10,6 +11,11 @@ class crear_intercambio_con_espera_de_ofertas(forms.Form):
     modelo = forms.CharField(label="modelo",max_length=200)
     marca = forms.CharField(label="marca",max_length=200)
     
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['nombre', 'estado', 'categoria', 'foto', 'descripcion']
 
 class CreateNewProject(forms.Form):
     name = forms.CharField(label="Nombre del Proyect", max_length=200, widget=forms.TextInput(attrs={'class': 'input'}))

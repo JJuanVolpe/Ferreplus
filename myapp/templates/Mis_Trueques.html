@@ -167,18 +167,18 @@
     
     <div class="contenido">
         {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-success" role="alert" id="success-message">
-                {{ message }}
-            </div>
-            <script>
-                // Oculta el mensaje después de 5 segundos
-                setTimeout(function(){
-                    document.getElementById('success-message').style.display = 'none';
-                }, 5000); // 5000 milisegundos = 5 segundos
-            </script>
-        {% endfor %}
-    {% endif %}
+            {% for message in messages %}
+                <div class="alert alert-success" role="alert" id="success-message">
+                    {{ message }}
+                </div>
+                <script>
+                    // Oculta el mensaje después de 5 segundos
+                    setTimeout(function(){
+                        document.getElementById('success-message').style.display = 'none';
+                    }, 5000); // 5000 milisegundos = 5 segundos
+                </script>
+            {% endfor %}
+        {% endif %}
         {% if listadointercambios %}
 
         <table class="trueque-table">
@@ -191,6 +191,7 @@
                     <th>Modelo</th>
                     <th>Marca</th>
                     <th>Foto</th>
+                    <th>Acciones</th>
                     <th>Acciones</th>
                     <th>Acciones</th>
                 </tr>
@@ -214,6 +215,14 @@
                                     {% csrf_token %}
                                     <input type="hidden" name="trueque_id" value="{{ trueque.id }}">
                                     <button type="submit" name="eliminar">Eliminar</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="GET" action="{% url 'ver_objetos_postulados' trueque.id %}" style="display: inline;">
+                                    <input type="hidden" name="trueque_id" value="{{ trueque.id }}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="trueque_id" value="{{ trueque.id }}">
+                                    <button type="submit" name="Ver Postulaciones">Ver Postulaciones</button>
                                 </form>
                             </td>
                         </tr>
