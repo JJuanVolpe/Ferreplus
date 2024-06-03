@@ -72,6 +72,22 @@ body {
     margin-top: 15px; /* Ajusta el margen horizontal para dar espacio entre los paneles */
   }
   
+h2 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Sombra para el texto */
+    position: relative;
+    display: inline-block;
+}
+
+h2::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: rgba(0, 0, 110, 0.581); /* Cambia el color del subrayado (rojo con 50% de opacidad) */
+    position: absolute;
+    bottom: -5px; /* Ajusta la distancia desde el texto */
+    left: 0;
+}
   .product-container {
       display: grid;
       width: 50%;

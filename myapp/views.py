@@ -1,3 +1,4 @@
+from itertools import groupby
 import random
 import string
 import os
@@ -360,16 +361,19 @@ def Menu_intercambios(request):
     return render(request, 'Menu_De_Intercambios.html', context)
 
 
-def Historial_Intercambios(request):
+def Historial_Intercambios(request): #Queda por hacer
     title = 'Historial de intercambios'
-    trueques = intercambios.objects
-    t_cancelados = trueques.filter(status="CANCELADO")
-    t_efectuados = trueques.filter(status="EFECTUADO")
+    trueques = intercambios.objects.all().order_by('status')
+    
+    trueque_data = {
+        status: list(items) 
+        for status, items in groupby(trueques, key=lambda x: x.status)
+    }
     context = {
         'title': title,
-        'trueques': trueques.all(), 
-        'trueques_cancelados': t_cancelados,
-        'trueques_efectuados': t_efectuados
+        'trueques_pendientes': trueque_data.get("PENDIENTE", []), 
+        'trueques_realizados': trueque_data.get("REALIZADO", []),
+        'trueques_cancelados': trueque_data.get("CANCELADO", [])
     }
     return render(request, 'Historial_De_Intercambios.html', context)
 

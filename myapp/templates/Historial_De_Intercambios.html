@@ -28,17 +28,17 @@
  {% endif %}
 
         
-<div class="panel-container">
+  <div class="panel-container">
     <div class="panel">
-    <h2>Trueques Pendientes</h2>
-      {% if trueques %}
-        {% for trueque in trueques %}
+      <h2>Trueques Pendientes</h2>
+      {% if trueques_pendientes %}
+        {% for trueque in trueques_pendientes %}
             <div class="product-container">
               <div class="product-image">
                 <img src="{{ trueque.foto.url }}" class="trueque-foto" alt="Descripción de la imagen">
               </div>
               <div class="product-details">
-                    <span>{{ trueque.nombre }}</span> &nbsp; - &nbsp; <span>{{ trueque.marca }}</span>
+                    <span>{{ trueque.nombre }}</span>
               </div>
               <div class="product-atributos-container">
                 <span class="attribute-label">Categoria:</span>
@@ -50,51 +50,63 @@
               </div>
             </div>
         {% endfor %}
-    
-    {% else %}
-      <h3>No hay trueques disponibles publicados</h3>
-    {% endif %}
+      {% else %}
+        <h3>No hay trueques Pendientes publicados</h3>
+      {% endif %}
     </div>
 
     <div class="panel">
-    <h2>Trueques Realizados</h2>
-    <div class="product-container">
-        <span class="product-attribute">
-          <span>Nombre:</span>
-          <span class="attribute-value">{{ producto.nombre }}</span>
-        </span>
-        <span class="product-attribute">
-          <span class="attribute-label">Precio:</span>
-          <span class="attribute-value">${{ producto.precio }}</span>
-        </span>
-        <span class="product-attribute">
-          <span class="attribute-label">Descripción:</span><br>
-          <span class="attribute-value">{{ producto.descripcion }}</span>
-        </span>
-
-      </div>
+      <h2>Trueques Realizados</h2>
+      {% if trueques_realizados %}
+        {% for trueque in trueques_realizados %}
+            <div class="product-container">
+              <div class="product-image">
+                <img src="{{ trueque.foto.url }}" class="trueque-foto" alt="Descripción de la imagen">
+              </div>
+              <div class="product-details">
+                    <span>{{ trueque.nombre }}</span>
+              </div>
+              <div class="product-atributos-container">
+                <span class="attribute-label">Categoria:</span>
+                <span class="attribute-value" style="color: brown;">{{ trueque.categoria }}</span><br>
+                <span class="attribute-label">Modelo:</span>
+                <span class="attribute-value">{{ trueque.modelo }}</span><br>
+                <span class="attribute-label">Descripcion:</span>
+                <span class="attribute-value">{{ trueque.descripcion }}</span><br>
+              </div>
+            </div>
+        {% endfor %}
+      {% else %}
+        <h3>No hay trueques realizados actualmente</h3>
+      {% endif %}
     </div>
 
     <div class="panel">
-    <h2>Trueques Cancelados/Eliminados</h2>
-    <p>Contenido del tercer panel.</p>
+      <h2>Trueques Cancelados</h2>
+      {% if trueques_cancelados %}
+        {% for trueque in trueques_cancelados %}
+            <div class="product-container">
+              <div class="product-image">
+                <img src="{{ trueque.foto.url }}" class="trueque-foto" alt="Descripción de la imagen">
+              </div>
+              <div class="product-details">
+                    <span>{{ trueque.nombre }}</span>
+              </div>
+              <div class="product-atributos-container">
+                <span class="attribute-label">Categoria:</span>
+                <span class="attribute-value" style="color: brown;">{{ trueque.categoria }}</span><br>
+                <span class="attribute-label">Modelo:</span>
+                <span class="attribute-value">{{ trueque.modelo }}</span><br>
+                <span class="attribute-label">Descripcion:</span>
+                <span class="attribute-value">{{ trueque.descripcion }}</span><br>
+              </div>
+            </div>
+        {% endfor %}
+      {% else %}
+        <h3>No hay trueques Cancelados actualmente</h3>
+      {% endif %}
     </div>
 </div>
-
-
-<!--
-  <dialog id="modal" class="modal">
-  <div class="modal-content">
-    <h1>Postular Objeto Para Intercambio</h1>
-      <form id="crear-form" method="post" action="{% url 'Historial_De_Intercambios' %}"  enctype="multipart/form-data">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button class="buttonSpecial" type="submit">Guardar cambios</button>
-          <button class="buttonSpecial" type="button" id="closeModalBtn">Cancelar</button>
-      </form>
-  </div>
-</dialog>
--->
 <script>
 
   document.addEventListener("DOMContentLoaded", function() {
