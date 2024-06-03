@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
@@ -15,13 +16,16 @@
             justify-content: center;
             min-height: 100vh;
         }
+
         .container {
             display: flex;
             width: 90%;
             max-width: 1200px;
             margin: 20px;
         }
-        .left, .right {
+
+        .left,
+        .right {
             flex: 1;
             margin: 10px;
             padding: 20px;
@@ -29,23 +33,28 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         .left {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         .right {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         .menu {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
         }
-        .menu button, .menu a {
+
+        .menu button,
+        .menu a {
             width: 200px;
             font-weight: bold;
             text-decoration: none;
@@ -60,33 +69,42 @@
             cursor: pointer;
             margin: 10px 0;
         }
-        .menu button:hover, .menu a:hover {
+
+        .menu button:hover,
+        .menu a:hover {
             background-color: rgba(255, 82, 51, 0.926);
             transform: scale(1.05);
         }
+
         .menu h1 {
             margin-bottom: 20px;
             color: #2d4a81;
         }
+
         .trueque-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-        .trueque-table th, .trueque-table td {
+
+        .trueque-table th,
+        .trueque-table td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         .trueque-table th {
             background-color: #c0bcbce0;
             font-weight: bold;
         }
+
         .trueque-foto {
             max-width: 100px;
             max-height: 100px;
         }
-        .botonVolv{
+
+        .botonVolv {
             font-weight: bold;
             text-decoration: none;
             font-size: 14px;
@@ -99,6 +117,7 @@
             transition: all 0.3s;
             cursor: pointer;
         }
+
         .divTrue {
             width: 100%;
             max-height: 500px;
@@ -111,6 +130,7 @@
         }
     </style>
 </head>
+
 <body>
     <a href="{% url 'menuPrincipal' %}" style="position: absolute; top: 20px; left: 20px;">
         <button class="botonVolv">
@@ -119,7 +139,7 @@
     </a>
     <div class="container">
         <div class="left">
-            
+
             <div class="menu">
                 <h1>Menú de Intercambios</h1>
                 <a href="{% url 'Historial_De_Intercambios' %}">
@@ -137,19 +157,19 @@
             <h3>Intercambios disponibles</h3>
             <div class="divTrue">
                 {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-success" role="alert" id="success-message">
-                            {{ message }}
-                        </div>
-                        <script>
-                            // Oculta el mensaje después de 5 segundos
-                            setTimeout(function(){
-                                document.getElementById('success-message').style.display = 'none';
-                            }, 5000); // 5000 milisegundos = 5 segundos
-                        </script>
-                    {% endfor %}
+                {% for message in messages %}
+                <div class="alert alert-success" role="alert" id="success-message">
+                    {{ message }}
+                </div>
+                <script>
+                    // Oculta el mensaje después de 5 segundos
+                    setTimeout(function () {
+                        document.getElementById('success-message').style.display = 'none';
+                    }, 5000); // 5000 milisegundos = 5 segundos
+                </script>
+                {% endfor %}
                 {% endif %}
-    
+
                 {% if trueques %}
                 <table class="trueque-table">
                     <thead>
@@ -162,56 +182,66 @@
                         </tr>
                     </thead>
                     <tbody>
-                            {% for trueque in trueques %}
-                                <tr>
-                                    <td>{{ trueque.usuario.user }}</td>
-                                    <td>{{ trueque.nombre }}</td>
-                                    <td>{{ trueque.estado }}</td>
-                                    <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
-                                    <td><div>
-                                        {% csrf_token %}
-                                        <!-- Aquí puedes añadir los campos del formulario para el intercambio -->
-                                        <button type="button" class="btn-trueque" id="openModalBtn">Proponer Intercambio</button>
-                                        <dialog id="modal" class="modal">
-                                          <div class="modal-content">
+                        {% for trueque in trueques %}
+                        <tr>
+                            <td>{{ trueque.usuario.user }}</td>
+                            <td>{{ trueque.nombre }}</td>
+                            <td>{{ trueque.estado }}</td>
+                            <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
+                            <td>
+                                <div>
+                                    {% csrf_token %}
+                                    <!-- Aquí puedes añadir los campos del formulario para el intercambio -->
+                                    <button type="button" class="btn-trueque openModalBtn">Proponer Intercambio</button>
+                                    <dialog class="modal">
+                                        <div class="modal-content">
                                             <h1>Postular Objeto Para Intercambio</h1>
-                                              <form id="crear-form" action="{% url 'create_trade' trueque.id %}" method="post" enctype="multipart/form-data">
-                                                  {% csrf_token %}
-                                                  {{ form.as_p }}
-                                                  <button class="buttonSpecial" type="submit">Guardar cambios</button>
-                                                  <button class="buttonSpecial" type="button" id="closeModalBtn">Cancelar</button>
-                                              </form>
-                                          </div>
-                                        </dialog>
-                                        </div>  
-                                    </td>
-                                </tr>
-                            {% endfor %}
+                                            <form action="{% url 'create_trade' trueque.id %}" method="post"
+                                                enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                {{ form.as_p }}
+                                                <button class="buttonSpecial" type="submit">Guardar cambios</button>
+                                                <button class="buttonSpecial closeModalBtn"
+                                                    type="button">Cancelar</button>
+                                            </form>
+                                        </div>
+                                    </dialog>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
                 {% else %}
                 <tr>
                     <td colspan="4">No hay intercambios por el momento</td>
                 </tr>
-            {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>
     <script>
 
-        document.addEventListener("DOMContentLoaded", function() {
-          const openModalBtn = document.getElementById('openModalBtn');
-          const closeModalBtn = document.getElementById('closeModalBtn');
-          const modal = document.getElementById('modal');
-      
-          openModalBtn.addEventListener('click', function() {
-              modal.style.display = "block";
-          });
-      
-          closeModalBtn.addEventListener('click', function() {
-              modal.style.display = "none";
-          });
-      });
-      </script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const openModalBtns = document.querySelectorAll('.openModalBtn');
+            const closeModalBtns = document.querySelectorAll('.closeModalBtn');
+            const modals = document.querySelectorAll('.modal');
+
+            openModalBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const modal = this.parentElement.querySelector('.modal');
+                    modal.style.display = "block";
+                });
+            });
+
+            closeModalBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const modal = this.closest('.modal');
+                    modal.style.display = "none";
+                });
+            });
+        });
+    </script>
 </body>
+
 </html>
