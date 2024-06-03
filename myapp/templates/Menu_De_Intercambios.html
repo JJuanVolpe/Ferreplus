@@ -199,7 +199,67 @@
 .buttonSpecial:hover {
     background-color: #45a049;
 }
-    </style>
+.modal-content form {
+    background-color: #f2f2f2; /* Fondo gris claro */
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.modal-content form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.modal-content form input[type="text"],
+.modal-content form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box; /* Para incluir el padding en el ancho */
+}
+
+.modal-content form button {
+    background-color: #4CAF50; /* Color de fondo verde */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.modal-content form button:hover {
+    background-color: #45a049; /* Cambio de color al pasar el ratón */
+}
+
+.modal-content form .buttonSpecial {
+    margin-right: 10px;
+}
+
+.modal-content form .closeModalBtn {
+    background-color: #f44336; /* Color de fondo rojo */
+}
+
+.btn-postular {
+    background-color: #ff7f0e; /* Color de fondo naranja */
+    color: white; /* Color del texto */
+    padding: 10px 20px; /* Relleno */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cursor al pasar el ratón */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.btn-postular:hover {
+    background-color: #ff9900; /* Cambio de color al pasar el ratón */
+}
+
+.btn-postular:focus {
+    outline: none; /* Elimina el borde al enfocar */
+}
+</style>
 </head>
 
 <body>
@@ -263,7 +323,7 @@
                                 <div>
                                 {% csrf_token %}
                                 <!-- Aquí puedes añadir los campos del formulario para el intercambio -->
-                                <button type="button" class="btn-trueque openModalBtn">Proponer Intercambio</button>
+                                <button type="button" class="btn-postular openModalBtn">Proponer Intercambio</button>
                                 <dialog class="modal">
                                     <div class="modal-content">
                                         <h1>Postular Objeto Para Intercambio</h1>
