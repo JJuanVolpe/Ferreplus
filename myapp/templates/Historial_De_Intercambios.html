@@ -26,6 +26,8 @@
                 </script>
             {% endfor %}
         {% endif %}
+
+        
 <div class="panel-container">
     {% if trueques %}
     <div class="panel">
@@ -36,8 +38,7 @@
                 <img src="{{ trueque.foto.url }}" class="trueque-foto" alt="Descripción de la imagen">
               </div>
               <div class="product-details">
-                    <span>{{ trueque.nombre }}</span>
-                    <span>{{ trueque.marca }}</span>
+                    <span>{{ trueque.nombre }}</span> &nbsp; - &nbsp; <span>{{ trueque.marca }}</span>
               </div>
               <div class="product-atributos-container">
                 <span class="attribute-label">Categoria:</span>

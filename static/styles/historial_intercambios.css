@@ -21,6 +21,26 @@ body {
     cursor: pointer;
   }
   
+  
+  .contenedor {
+    max-width: fit-content;
+    min-width: 300px;
+    background-color: #ffffff;
+    padding: 25px;
+    margin: 25px;
+    border-radius: 8px; /* Opcional: para bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Opcional: para una sombra ligera */
+  }
+
+  .articulo {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .articulo:last-child {
+    margin-bottom: 0;
+  }
   .panel-container {
     display: flex;
     margin-bottom: 20px;
@@ -39,25 +59,43 @@ body {
     width: calc((100% - 40px) / 3); /* Calcula el ancho para que los 3 paneles ocupen el ancho disponible, dejando un espacio de 20px entre ellos */
     margin: 0 10px; /* Ajusta el margen horizontal para dar espacio entre los paneles */
   }
-  
-    
-    /* Estilos para el contenedor principal en estilaod numero 2 */
-   .product-container {
-    display: grid;
-    width: 50%;
-    margin: 0 auto;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 20px;
+  .panel-objects-postuled {
+    background-color: #ffffff;
+    border-radius: 18px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    position: relative;
+    border: 2px solid #2d4a81;
+    text-align: center;
+    margin-bottom: 15px;
+    flex-grow: 0; /* Evita que los paneles crezcan */
+    margin-top: 15px; /* Ajusta el margen horizontal para dar espacio entre los paneles */
+  }
+  
+  .product-container {
+      display: grid;
+      width: 50%;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+  }
+  
+  .product-details {
+      display: flex;
+      justify-content: center; /* Centra horizontalmente */
+      align-items: center; /* Centra verticalmente */
+      font-size: 14px;
+      color: #666;
+      border-top: 1px solid #ccc;
+      padding: 10px 0;
   }
   .product-atributos-container {
     width: 100%; /* Ocupa todo el ancho disponible */
     overflow: hidden; /* Oculta cualquier contenido que pueda extenderse más allá de los límites del contenedor */
     box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1); /* Agrega una sombra fina por arriba */
-    justify-content: left; /* Centra los elementos horizontalmente */
-    align-items: left; /* Centra los elementos verticalmente */
+    justify-content: center;
+    align-items: center; /* Centra los elementos verticalmente */
     font-size: 13px; /* Tamaño de fuente */
     color: #666; /* Color de texto */
     border-top: 2px solid #ccc; /* Línea superior */
@@ -74,23 +112,12 @@ body {
   .trueque-foto {
     width: auto; /* Ajusta el ancho de la imagen automáticamente según el tamaño del contenedor */
     max-width: 100%; /* Establece el ancho máximo de la imagen para que no exceda el ancho del contenedor */
-    max-height: auto; /* Ajusta la altura máxima de la imagen automáticamente */
+    max-height: 100%; /* Ajusta la altura máxima de la imagen automáticamente */
     display: block; /* Elimina el espacio en línea debajo de la imagen */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Agrega una sombra gris debajo de la imagen */
     border-radius: 5px; /* Opcional: si deseas bordes redondeados para la imagen */
   }
   
-  .product-details {
-    display: grid; /* Utiliza un sistema de cuadrícula */
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Crea columnas automáticas con un ancho mínimo de 100px */
-    gap: 10px; /* Espacio entre los elementos */
-    justify-content: left; /* Centra los elementos horizontalmente */
-    align-items: left; /* Centra los elementos verticalmente */
-    font-size: 14px; /* Tamaño de fuente */
-    color: #666; /* Color de texto */
-    border-top: 1px solid #ccc; /* Línea superior */
-    padding: 10px 0; /* Relleno */
-  }
   /* Estilos para los elementos de producto */
   .product-attribute {
     display: flex;
@@ -98,25 +125,30 @@ body {
   }
   
   .attribute-label {
+    margin-left: 10px;
+    margin-right: 10px;
+    justify-content: center; /* Centra horizontalmente */
+    padding-bottom: 5px;
     display: block;
     font-weight: bold;
     color: #333;
   }
   
   .attribute-value {
+    padding-bottom: 25px;
+    justify-content: center; /* Centra horizontalmente */
     color: #666;
   }
   
-    .product-container {
-  
-      width: 50%;
-      margin: 0 auto;
-      margin-bottom: 25px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+  .product-container {
+    width: 50%;
+    margin: 0 auto;
+    margin-bottom: 25px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
   
     /* Estilos para los elementos de producto */
     .product-attribute {
@@ -153,7 +185,37 @@ body {
   .btn-trueque:hover {
     background-color: #0056b3; /* Azul más oscuro */
   }
-  
+  .btn {
+    padding: 10px 10px; /* Tamaño más pequeño */
+    display: inline-flexbox;
+    align-items: stretch;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px; /* Tamaño de fuente más pequeño */
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 8px; /* Bordes redondeados */
+    border: none;
+    color: white;
+}
+
+.btn-aceptar {
+    background-color: #4CAF50; /* Verde */
+}
+
+.btn-rechazar {
+    background-color: #f44336; /* Rojo */
+}
+.btn-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    margin-left: -10px;
+    max-width: fit-content;
+    min-width: fit-content;
+}
   /* Estilos para el modal */
   .modal {
     display: none;

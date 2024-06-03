@@ -381,7 +381,7 @@ def create_trade(request, trueque_id):
 def ver_objetos_postulados(request, trueque_id):
 
     trueque = get_object_or_404(intercambios, id=trueque_id)
-    title = 'Objetos ofrecidos para el objeto postulado a intercambiar'
+    title = 'Listado ofrecido para intercambiar objeto:' +  trueque.nombre + ', marca: ' + trueque.marca
     trueques = intercambios.objects
     objetos_postulados = Product.objects.filter(trueque_postulado=trueque)
     context = {

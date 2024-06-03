@@ -1,33 +1,46 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% if messages %}
-    <div class="message">
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    </div>
-    {% else %}
-        <title>{{ title }}</title>
-    {% endif %}
-    
+    <link rel="stylesheet" href="{% static 'styles/historial_intercambios.css' %}">
 </head>
 <body>
-    {% if objetos_postulados %}
-        <h2>Listado de Objetos Ofrecidos para el trueque del objeto: {{ trueque.nombre }},  {{ trueque.marca }}</h2>
-        <div class="container">
-            {% for obj in objetos_postulados %}
-                <span>{{obj.nombre}}</span>
-                <span>{{obj.estado}}</span>
-                <span>{{obj.categoria}}</span>
-            {% endfor %}
-        </div>
-    {% else %}
-        <title>{{ title }}</title>
-    {% endif %}
-    
-
+    <a href="{% url 'Menu_De_Intercambios' %}" style="position: absolute; top: 20px; left: 20px;">
+        <button class="botonVolv">volver</button>
+    </a>
+    <h2>{{title}}</h2>
+    <div class="contenedor">
+            {% if objetos_postulados %}
+                {% for obj in objetos_postulados %}
+                        <div class="panel-objects-postuled">
+                            <div class="panel-container" style="display: inline-flexbox;">
+                                <div class="product-container">
+                                    <div class="product-image">
+                                        <img src="{{ obj.foto.url }}" class="trueque-foto" alt="Descripción de la imagen">
+                                    </div>
+                                    <div class="product-details">
+                                        {{ obj.nombre }}
+                                    </div>
+                                    <div class="product-atributos-container">
+                                        <span class="attribute-label">Categoria: {{ obj.categoria }}</span>
+                                        <span class="attribute-label">Descripcion:</span>
+                                        <span class="attribute-value">{{ obj.descripcion }}</span><br>
+                                    </div>
+                                    <div class="btn-container">
+                                        <button class="btn btn-aceptar">Aceptar</button><!-- Acciones sobre el trueque-->
+                                        <button class="btn btn-rechazar">Rechazar</button>    
+                                    </div>
+                                </div>
+                                
+                            </div>                            
+                        </div>
+                {% endfor %}
+            {% else %}
+                <h3>Actualmente no existen objetos postulados para intercambiar con el objeto</h3>
+            {% endif %}
+    </div>    
 </body>
 </html>
