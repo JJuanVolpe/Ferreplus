@@ -7,6 +7,13 @@ from django.dispatch import receiver
 class Sucursal(models.Model):
     address = models.CharField(max_length=100,default="")
     city = models.CharField(max_length=40, null=True,default="")
+    def delete(self, *args, **kwargs):
+        profiles = Profile.objects.filter(sucursal=self)
+        for profile in profiles:
+            if profile.user:
+                profile.user.delete()
+            profile.delete()
+        super().delete(*args, **kwargs)
 
 class Profile(models.Model):
     # otros campos

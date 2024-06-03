@@ -31,13 +31,13 @@
             font-size: 16px;
             color: #ffffff;
             background-color: #003f7f;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
             border: none;
             border-radius: 5px;
             transition: all 0.3s;
             cursor: pointer;
-            margin: 10px 0;
+            margin: 4px 0;
         }
         .buttonSpecial:hover, a.buttonSpecial:hover, input[type="submit"].buttonSpecial:hover {
             background-color: #ff5233;
@@ -67,9 +67,10 @@
 </head>
 <body>
     {% block content %}
-    <h1>Menu Empleados</h1>
+    
 
     <div class="table-container">
+    <h1>Menu Empleados</h1>
     {% if sucursales %}
         <div class="scrollable-table">
             <table>
@@ -91,7 +92,7 @@
                                 <td>{{ empleado.dni }}</td>
                                 <td>{{ empleado.sucursal.address }}  {{ empleado.sucursal.city }}</td>
                                <td><form method="get" action="{% url 'editar_empleado' empleado.id %}">
-                                        <button type="submit">Editar</button>
+                                        <button  class="buttonSpecial" type="submit">Editar</button>
                                     </form>
                                </td>
                             </tr>

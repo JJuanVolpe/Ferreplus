@@ -99,7 +99,8 @@
                 {% endfor %}
             </select>
             <button class="buttonSpecial" type="submit" name="guardarEdicion">Guardar cambios</button>
-            <button class="buttonSpecial" type="button">Cancelar</button>
+            
+            <a href="{% url 'gestionarEmpleados' %}"  class="buttonSpecial" type="button">Cancelar</a>
         </form>
     </div>
     {% endblock %}
