@@ -205,7 +205,7 @@
                             <td>{{ trueque.descripcion }}</td>
                             <td>{{ trueque.modelo }}</td>
                             <td>{{ trueque.marca }}</td>
-                            <td><img src="{{ trueque.foto.url }}" class="trueque-foto" style="max-height: 150px;"></td>
+                            <td><img src="{{ trueque.foto.url }}" class="trueque-foto" style="max-height: 150px; max-width: 150px;"></td>
                             <td>
                                 <button class="editarTrueque" data-id="{{ trueque.id }}" data-nombre="{{ trueque.nombre }}" data-estado="{{ trueque.estado }}" data-categoria="{{ trueque.categoria }}" data-descripcion="{{ trueque.descripcion }}" data-modelo="{{ trueque.modelo }}" data-marca="{{ trueque.marca }}">Editar</button>
                             </td>
