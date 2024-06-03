@@ -1,43 +1,97 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Django Projects</title>
     <link rel="stylesheet" href="{% static 'styles/main.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'styles/global.css' %}">
 </head>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar {
+        background-color: #2d4a81;
+        padding: 10px 20px;
+        color: aliceblue;
+    }
+
+    .navbar ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .navbar ul li {
+        margin: 0 10px;
+    }
+
+    .navbar ul li a {
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s;
+    }
+
+    .navbar ul li a:hover {
+        color: rgba(219, 28, 28, 0.926);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    main.container {
+        margin-top: 20px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
 <body>
-    
-    <nav class="navbar container">
+    <nav class="navbar">
         <ul>
-            <li>
-                <a href="{% url 'index' %}">Home</a>
-            </li>
-            <li>
-                <a href="{% url 'about' %}">About</a>
-            </li>
-            <li>
-                <a href="{% url 'projects' %}">Projects</a>
-            </li>
-            <li>
-                <a href="{% url 'tasks' %}">Tasks</a>
-            </li>
-            <li>
-                <a href="{% url 'create_task' %}">Create task</a>
-            </li>
-            <li>
-                <a href="{% url 'create_project' %}">Create Project</a>
-            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+                <li>
+                    <a href="{% url 'menuPrincipal' %}">Menu principal</a>
+                </li>   
+            {% else %}
+                <li>
+                    <a href="{% url 'verSucursales' %}">Ver sucursales</a>
+                </li>   
+                <li class="nav-item">
+                    <a href="{% url 'signin' %}" class="nav-link">Iniciar sesión</a>
+                </li>
+                <li>
+                    <a href="{% url 'signup' %}">Registrarse</a>
+                </li>
+                <li>
+                    <a href="{% url 'contact' %}">Recuperar Contraseña</a>
+                </li>
+            {% endif %}
         </ul>
     </nav>
-    
+ 
     <main class="container">
         {% block content %}
         {% endblock %}
     </main>
-
 </body>
 </html>

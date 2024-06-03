@@ -1,7 +1,26 @@
-from django.http import HttpResponse
-from .models import Project, Task
+import random
+import string
+import os
+from time import sleep
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CreateNewTask, CreateNewProject
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
+from django.db import Error, IntegrityError
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from .models import Profile, Sucursal, intercambios, Product
+from .forms import RecoveryForm, crear_intercambio_con_espera_de_ofertas, ProductForm
+from django.core.mail import EmailMessage
+from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.shortcuts import render, redirect
+from django.contrib.auth import update_session_auth_hash
+import re  # Importación del módulo r
+
 
 # Create your views here.
 
@@ -13,57 +32,380 @@ def index(request):
     })
 
 
-def about(request):
-    username = 'fazt'
-    return render(request, 'about.html', {
-        'username': username
-    })
+def menuPrincipal(request):
+    return render(request, 'menuPrincipal.html')
 
 
-def hello(request, username):
-    return HttpResponse("<h2>Hello %s</h2>" % username)
+def miPerfil(request):
+    previous_page = request.META.get('HTTP_REFERER')
+    usuario = request.user  # Obtenemos el usuario autenticado
 
+    if request.method == 'POST':
+        if 'contraseñaActual' in request.POST:
+            # El formulario se envió desde el modal de cambio de contraseña
+            contraseña_actual = request.POST.get('contraseñaActual')
+            nueva_contraseña = request.POST.get('contraseñaNueva')
+            repetir_nueva_contraseña = request.POST.get('repetirContraseñaNueva')
 
-def projects(request):
-    # projects = list(Project.objects.values())
-    projects = Project.objects.all()
-    return render(request, 'projects/projects.html', {
-        'projects': projects
-    })
+            # Verificar si la contraseña actual coincide con la del usuario
+            if usuario.check_password(contraseña_actual):
+                if contraseña_actual == nueva_contraseña:
+                    messages.error(request, 'La nueva contraseña no puede ser igual a la actual.')
+                else:
+                    # Validar la nueva contraseña con los requisitos específicos
+                    if len(nueva_contraseña) < 8:
+                        messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
+                    elif not re.search(r'[A-Z]', nueva_contraseña):
+                        messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
+                    else:
+                        if nueva_contraseña == repetir_nueva_contraseña:
+                            # Actualizar la contraseña del usuario
+                            usuario.set_password(nueva_contraseña)
+                            usuario.save()
+                            update_session_auth_hash(request, usuario)  # Mantener la sesión activa
+                            messages.success(request, 'La contraseña se ha actualizado correctamente.')
+                        else:
+                            messages.error(request, 'Las nuevas contraseñas no coinciden.')
+            else:
+                messages.error(request, 'La contraseña actual es incorrecta.')
+        else:
+            # El formulario se envió desde el botón "Guardar cambios" fuera del modal
+            try:
+                edad = int(request.POST['edad'])
+                if edad < 18:
+                    messages.error(request, 'La edad debe ser mayor o igual a 18 años.')
+                else:
+                    usuario.profile.telefono = request.POST['telefono']
+                    usuario.profile.genero = request.POST['genero']
+                    usuario.profile.edad = edad
+                    usuario.username = request.POST['username']
+                    usuario.email = request.POST['email']
+                    usuario.first_name = request.POST['first_name']
+                    usuario.last_name = request.POST['last_name']
+                    usuario.save()  # Guardar los cambios en la base de datos
+                    messages.success(request, 'Los cambios se han guardado correctamente.')
+            except ValueError:
+                messages.error(request, 'Por favor, ingrese una edad válida.')
 
+    return render(request, 'miPerfil.html', {
+        'previous_page': previous_page, 
+        'usuario': usuario}
+    )
 
-def tasks(request):
-    # task = Task.objects.get(title=tile)
-    tasks = Task.objects.all()
-    return render(request, 'tasks/tasks.html', {
-        'tasks': tasks
-    })
-
-
-def create_task(request):
-    if request.method == 'GET':
-        return render(request, 'tasks/create_task.html', {
-            'form': CreateNewTask()
-        })
+@login_required
+def intercambio_con_espera_de_ofertas(request):
+    if request.method == 'POST':
+        intercambio = intercambios.objects.create(
+            nombre=request.POST['nombre'],
+            estado=request.POST['estado'],
+            categoria=request.POST['categoria'],
+            foto=request.FILES['foto'],
+            descripcion=request.POST['descripcion'],
+            modelo=request.POST['modelo'],
+            marca=request.POST['marca'],
+            usuario=request.user.profile
+        )
+        # Agrega un mensaje de éxito
+        messages.success(request, "El intercambio se ha creado correctamente. Se le notificarán las ofertas que reciba por correo electrónico.")
+        # Redirige a la página de Mis_Trueques
+        return redirect('Mis_Trueques')
     else:
-        Task.objects.create(
-            title=request.POST['title'], description=request.POST['description'], project_id=2)
-        return redirect('tasks')
-
-
-def create_project(request):
+        title = 'intercambio con espera de ofertas'
+        context = {'title': title, 'form': crear_intercambio_con_espera_de_ofertas()}
+        return render(request, 'intercambio_con_espera_de_ofertas.html', context)
+    
+def incorrect_password(password):
+        if len(password) < 8:
+            return True
+        else:
+            for i in password:
+                if (not i.isdigit() and i.isupper()):   #no es un número y es mayuscula? cumple
+                    return False
+        return True
+        
+def signup(request):
+    
     if request.method == 'GET':
-        return render(request, 'projects/create_project.html', {
-            'form': CreateNewProject()
-        })
+        return render(request, 'signup.html', {"form": UserCreationForm})
     else:
-        Project.objects.create(name=request.POST["name"])
-        return redirect('projects')
+        if User.objects.filter(email=request.POST["email"]).exists():
+            return render(request, 'signup.html', {"form": UserCreationForm, "error": "Este correo está en uso, debe utilizar otro."})
+        if incorrect_password(request.POST["password"]):
+            return render(request, 'signup.html', {"form": UserCreationForm, "error": "La contraseña debe tener mínimo 8 dígitos y una mayúscula."})
+        if int(request.POST["edad"]) < 18:
+            return render(request, 'signup.html', {"form": UserCreationForm, "error": "Debe ser mayor de edad para registarse."})
+        try:
+            user = User.objects.create_user(
+                request.POST["username"], password=request.POST["password"],
+                email=request.POST["email"],  first_name=request.POST["name"],
+                last_name=request.POST["lastname"])
+            user.profile.edad = request.POST["edad"]
+            user.profile.dni = request.POST["dni"]
+            user.profile.genero = request.POST['genero']
+            user.profile.telefono = request.POST["telefono"]
+            user.save()
+            login(request, user)
+            return redirect('/')
+        except IntegrityError:  #Manejo error asociado a la BD 
+            return render(request, 'signup.html', {"form": UserCreationForm, "error": "Nombre de usuario ya existente en el sistema."})
 
-def project_detail(request, id):
-    project = get_object_or_404(Project, id=id)
-    tasks = Task.objects.filter(project_id=id)
-    return render(request, 'projects/detail.html', {
-        'project': project,
-        'tasks': tasks
+
+
+def signin(request):
+    if request.user.is_authenticated:
+        # Si el usuario ya está autenticado, redirige según su perfil
+        profile = Profile.objects.get(user=request.user)
+        if profile.es_gerente:
+            return redirect('Sucursales')
+        else:
+            return redirect('menuPrincipal')
+
+    if request.method == 'GET':
+        return render(request, 'signin.html', {"form": AuthenticationForm()})
+    else:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # Accede al perfil del usuario
+            profile = Profile.objects.get(user=user)
+            if profile.es_gerente:  # Verifica si el usuario es gerente
+                return redirect('Sucursales')
+            elif profile.es_empleado:
+                return redirect('menuEmpleado')
+            else:    
+                return redirect('menuPrincipal')
+        else:
+            # Verifica si el error fue debido a un nombre de usuario no válido o contraseña incorrecta
+            try:
+                user = Profile.objects.get(user__username=username)
+                error_message = "Contraseña incorrecta"
+            except Profile.DoesNotExist:
+                error_message = "Nombre de usuario no se encuentra registrado"
+                
+            return render(request, 'signin.html', {"form": AuthenticationForm(), "error": error_message})
+
+
+
+def gestionarEmpleados(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "El correo electrónico ya está en uso.")
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, "El nombre de usuario ya está en uso.")
+        else:
+            user = User.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name)
+            user.profile.edad = request.POST["edad"]
+            user.profile.dni = request.POST["dni"]
+            user.profile.genero = request.POST['genero']
+            user.profile.telefono = request.POST["telefono"]
+            user.profile.es_empleado = True
+            user.profile.sucursal = Sucursal.objects.get(id=request.POST["sucursal"])
+            user.save()
+            messages.success(request, "Usuario creado exitosamente.")
+
+    # Manejar la obtención de empleados
+    empleados = Profile.objects.filter(es_empleado=True)
+    sucursales = Sucursal.objects.all()
+    return render(request, 'Empleados.html', {'empleados': empleados,
+                                              "sucursales": sucursales})
+
+@login_required
+def signout(request):
+    logout(request)
+    return redirect('/')
+
+
+
+def contact(request):
+    if request.method == 'GET':
+        return render(request, 'contact.html', {'form': RecoveryForm()})
+    else:
+        # Deberia trabajarlo con formularios => contact_form = RecoveryForm(data=request.POST)
+        account_email = request.POST["email"]
+        try:
+            new_password = ''.join([random.choice(string.ascii_letters + string.digits) for _ in range(10)])
+            if User.objects.filter(email=account_email).exists():
+                user = User.objects.get(email=account_email)
+                user.set_password(new_password)
+            else:
+                raise Error("No existe usuario con ese correo asociado")
+            # Enviar el correo electrónico
+            email = EmailMessage('Mensaje de recuperación de contraseña - Ferreplus 🛠️🧰','{} \n- Su nueva contraseña es: \n\n{}'
+                .format("No compartas esta información, nadie de nuestro equipo te la solicitará.", new_password),
+                account_email, ['da79fcc5174cf2@inbox.mailtrap.io'])
+            email.send()
+            user.save()
+            return redirect(reverse('contact')+'?ok')   #Todo OK
+        except:
+            # Ha habido un error y retorno a ERROR
+            return redirect(reverse('contact')+'?error')
+        
+        
+@login_required
+def Sucursales(request):
+    profile = Profile.objects.get(user=request.user)  # Obtener el perfil del usuario actual
+    if not profile.es_gerente:
+        # Si el usuario no es gerente, mostrar un mensaje de error
+        return render(request, 'Sucursales.html', {'error': 'No tienes permisos para acceder a esta página.'})
+    
+    # Si el usuario es gerente, obtener todas las sucursales
+    sucursales = Sucursal.objects.all()
+    return render(request, 'Sucursales.html', {'sucursales': sucursales})
+
+  
+def Ver_trueques(request):
+    # Obtener la lista de intercambios del usuario
+    usuario = request.user
+    listadointercambios = intercambios.objects.filter(usuario=usuario.profile)
+    
+    # Pasar tanto la lista de intercambios como el path absoluto al contexto
+    context = {
+        'listadointercambios': listadointercambios,
+    }
+    if 'eliminar' in request.POST:
+        # Acción para eliminar el trueque
+        trueque = intercambios.objects.get(id=request.POST['trueque_id'])
+        trueque.delete()
+        messages.success(request, '¡El intercambio se ha eliminado correctamente!')
+        return redirect('Mis_Trueques')
+    elif request.method == 'POST':
+        trueque = intercambios.objects.get(id=request.POST['trueque_id'])
+        trueque.categoria= request.POST['categoria']
+        trueque.descripcion= request.POST['descripcion']
+        trueque.marca= request.POST['marca']
+        trueque.estado= request.POST['estado']
+        trueque.nombre= request.POST['nombre']
+        trueque.modelo= request.POST['modelo']
+        # Si se proporciona una foto, asignarla al campo 'foto' del trueque
+        if 'foto' in request.FILES:
+            trueque.foto = request.FILES['foto']
+        trueque.save()
+    
+    return render(request, 'Mis_Trueques.html', context)
+
+def eliminar_sucursal(request, sucursal_id):
+    sucursal = Sucursal.objects.get(id=sucursal_id)
+    sucursal.delete()
+    messages.success(request, '¡La sucursal se ha eliminado correctamente!')
+    return redirect('Sucursales')
+
+def editar_sucursal(request, sucursal_id):
+    if request.method == 'POST':
+        nueva_direccion = request.POST.get('address')
+        nueva_ciudad = request.POST.get('city')
+        sucursal = Sucursal.objects.get(id=sucursal_id)
+        if sucursal.address == nueva_direccion and sucursal.city == nueva_ciudad:
+             messages.error(request, ' Se ingresaron los mismos datos que ya posee la sucursal')
+        elif not Sucursal.objects.filter(address=nueva_direccion, city=nueva_ciudad).exists():
+            sucursal.address = nueva_direccion
+            sucursal.city = nueva_ciudad
+            sucursal.save()
+            messages.success(request,"¡La sucursal se editó exitosamente!")
+        else:
+            messages.error(request, '¡La direccion y ciudad que se quiere ingresar ya pertenece a otra sucursal!')
+    return redirect('Sucursales')
+
+def agregar_sucursal(request):
+    if request.method == 'POST':
+        nueva_sucursal = request.POST.get('nuevaSucursal')
+        nueva_ciudad = request.POST.get('nueva_ciudad')
+        if not Sucursal.objects.filter(address=nueva_sucursal, city=nueva_ciudad).exists():
+            Sucursal.objects.create(address=nueva_sucursal, city= nueva_ciudad)
+            messages.success(request,'¡La sucursal se agrego correctamente!')
+        else:
+                
+            messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal de la misma ciudad!')
+    return redirect('Sucursales')
+
+
+def verSucursales(request):
+    sucursales = Sucursal.objects.all()
+    return render(request,'verSucursales.html',{
+        'sucursales':sucursales
     })
+
+
+def Menu_intercambios(request):
+    title = 'Menu Intercambio'
+    trueques = intercambios.objects.all()
+    context = {'title': title,
+               'trueques':trueques}
+    return render(request, 'Menu_De_Intercambios.html', context)
+
+
+def Historial_Intercambios(request):
+    title = 'Historial de intercambios'
+    trueques = intercambios.objects
+    t_cancelados = trueques.filter(status="CANCELADO")
+    t_efectuados = trueques.filter(status="EFECTUADO")
+    context = {
+        'title': title,
+        'trueques': trueques.all(), 
+        'trueques_cancelados': t_cancelados,
+        'trueques_efectuados': t_efectuados,
+        'form': ProductForm()
+    }
+    return render(request, 'Historial_De_Intercambios.html', context)
+
+
+def create_trade(request, trueque_id):
+    if request.method == 'POST':
+        trueque = get_object_or_404(intercambios, id=trueque_id)
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form_category = form.cleaned_data['categoria']
+            if form_category != trueque.categoria:
+                messages.error(request, 'La categoria del objeto ingresado debe corresponderse con la del objeto a intercambiar.')
+            elif request.user == trueque.usuario.user: # No debo dejar que un usuario postule a un trueque de el mismo
+                messages.error(request, 'No puede postular un objeto para un trueque creado por usted.')
+            else:
+                Product.objects.create(nombre=form.cleaned_data['nombre'], estado=form.cleaned_data['estado'],
+                                       categoria=form.cleaned_data['categoria'], foto=form.cleaned_data['foto'],
+                                       descripcion=form.cleaned_data['descripcion'], postulante=request.user.profile,
+                                       trueque_postulado=trueque)
+                
+                #form.save()
+                messages.success(request, 'El objeto ha sido creado y postulado con éxito.')
+                #Aquí se debe enviar mail al usuario de que se generó postulación al trueque que hizo?
+    return Historial_Intercambios(request=request)
+
+
+
+def ver_objetos_postulados(request, trueque_id):
+
+    trueque = get_object_or_404(intercambios, id=trueque_id)
+    title = 'Listado ofrecido para intercambiar objeto:' +  trueque.nombre + ', marca: ' + trueque.marca
+    trueques = intercambios.objects
+    objetos_postulados = Product.objects.filter(trueque_postulado=trueque)
+    context = {
+        'title': title,
+        'trueque': trueque, 
+    }
+    if (objetos_postulados.exists()):
+        context['objetos_postulados'] = objetos_postulados
+    else:
+        messages.error(request, 'No hay objetos postulados para este item selecionado todavia')
+    return render(request, 'ver_objetos_postulados.html', context)
+
+
+
+def Crear_Trueque(request):
+    title = 'Mis trueques'
+    context = {'title': title}
+    return render(request, 'Crear_Trueques.html', context)
+
+def Menu_Sucursales(request):
+    title = 'Menu de Sucursales'
+    context = {'sucursales': Sucursal.objects.all()}
+    return render(request, 'Menu_Sucursales.html', context)
+
+def menu_empleado(request):
+
+    return render(request,'menuEmpleado.html')

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Gestión de Sucursales{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #2d4a81;
+            padding: 10px 20px;
+            color: aliceblue;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .navbar ul li {
+            margin: 0 10px;
+        }
+
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .navbar ul li a:hover {
+            color: rgba(219, 28, 28, 0.926);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        body {
+            background-color: #4566d3e5;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        main.container {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 5px 6px 13px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            align-content: center;
+            justify-content: space-around
+        }
+        .table-container {
+        text-align: center;
+        width: 100%;
+        max-width: 800px;
+        background-color: #ffffffe5;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        position: relative;
+        }
+
+        .scrollable-table {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #c0bcbce0;
+            font-weight: bold;
+        }
+
+        .button-style {
+            font-weight: bold;
+            text-decoration: none;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #D9D9D9;
+            max-width: max-content;
+            background-color: #2d4a81;
+            padding: 6px 10px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .button-style:hover {
+            background-color: #4566d3e5;
+        }
+
+        #Agregar_Sucursal {
+            display: block;
+            margin: 20px auto;
+        }
+
+        #modal {
+            width: 500px;
+            background-color: rgb(225, 228, 240);
+        }
+
+        #modal::backdrop {
+            background-color: rgba(0, 0, 0, .45);
+        }
+
+        .logOut {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .message {
+            color: rgb(12, 17, 12);
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        </style>
+    {% block extra_styles %}
+    {% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'Sucursales' %}">Gestionar Sucursales</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'gestionarEmpleados' %}">Gestionar Empleados</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Cerrar sesion</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

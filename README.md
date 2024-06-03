@@ -1,5 +1,3 @@
-    
-
 # Ferreplus: Sistema ideado para cadena ferretera ubicada en Buenos Aires 🔩 🔧 🔨
 
 ## Desarrollado para la cátedra Ingeniería de Software 2
@@ -8,8 +6,7 @@ Este archivo [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplu
 
 
 <p align="center">
-<img alt="Logo of group" width="30%" src="https://raw.githubusercontent.com/jjuanvolpe/ferreplus/main/myapp/static/logo.png"><br>
-<em>Ferreplus logo</em>
+<img alt="Logo of group" width="30%" src="https://raw.githubusercontent.com/jjuanvolpe/ferreplus/develop/static/logo.png"><br>
 </p>
 
 [![License](https://img.shields.io/badge/License-CC0-lightgray.svg?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
@@ -21,11 +18,13 @@ Este archivo [`README.md`](https://raw.githubusercontent.com/JJuanVolpe/Ferreplu
 * [Prerequisites](#prerequisites)
 * [WorkFlow](#workflow)
 * [Basic Usage](#basic-usage)
+<!---
 * [Common Commands](#common-commands)
 * [Known issues and limitations](#known-issues-and-limitations)
 * [Getting help](#getting-help)
 * [Contributing](#contributing)
 * [License](#license)
+-->
 
 ## Introduction
 
@@ -69,6 +68,8 @@ mientras que el comando git branch especifica la rama sobre la cuál estamos act
 git branch
 ```
 
+
+
 ## WorkFlow
 
 La idea es mantener el desarrollo en función de la rama develop.
@@ -84,10 +85,10 @@ Luego de ejecutar éste comando vemos que si volvemos a ejecutar "git branch" no
 git checkout -b registrar_eventual_trueque
 ```
 
-***Debemos considerar que la nueva rama creada fue generada desde develop,
-esto nos permite manejar de forma centralizada las nuevas features a realizar
-en branch individuales permitiendo unificar los cambios en la branch develop***
-
+> [!NOTE]
+> Trabajar las features/HU a partir de ramas generadas desde develop,
+  nos permite manejar de forma centralizada las nuevas features a desarrollar
+  en branch individuales permitiendo unificar los cambios en la branch develop
 
 ## Basic-Usage:
 
@@ -114,6 +115,10 @@ Este comando nos permite generar los archivos que permiten especificar las funci
 * migrations: Se registran las modificaciones hechas a la BD.
 
 
+> [!TIP]
+> To format the Style using autopep press F1 and select format
+
+
 ## Common Commands:
 
 Para correr el servidor podemos ejecutar el siguiente comando, permitiendo como parámetro el n° de puerto dónde ejecutaremos el proyecto:
@@ -121,10 +126,7 @@ Para correr el servidor podemos ejecutar el siguiente comando, permitiendo como 
 ```sh
 python manage.py runserver <3000>
 ```
-
-Si no agregamos un número, se ejecuta en el puerto por defecto
-
-
+Si no agregamos un número, se ejecuta en el puerto por defecto.
 
 El comando makemigrations se encarga de empaquetar los cambios del modelo en archivos de migración individuales (análogos a los commits).
 Detectan los cambios de los modelos de las aplicaciones (Para esto se busca en todas las apps creadas dentro de nuestro proyecto),
@@ -138,7 +140,6 @@ Mientras que migrate se encarga de aplicarlos a la base de datos. Es decir se en
 python manage.py migrate
 ```
 
-
-### To format the Style using autopep press F1 and select format
-
-***Notar que se deben aplicar los comandos anteriores en el orden correspondiente para poder ejecutar el código actual, debido a que deben crearse los modelos y tablas mediante Python y Django para el correcto funcionamiento del proyecto***
+> [!IMPORTANT]
+> Notar que se deben aplicar los comandos anteriores en el orden correspondiente
+ para que django pueda generar las tablas para el correcto funcionamiento del proyecto

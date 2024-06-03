@@ -1,0 +1,157 @@
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
+    <style>
+        body {
+            background-color: #4566d3e5; 
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            width: 200px;
+            margin-bottom: 20px;
+        }
+        .menu button {
+            background-color: #8299e4e5;
+            color: rgba(253, 253, 253, 0.973);
+            padding: 20px;
+            margin: 10px 0px;
+            border: 2px solid #000000e5;
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;                                       
+        }
+        .menu button:hover {
+            background-color: #126627;
+        }
+        .contenido {
+            margin-top: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        /* para bloquear que descripcion me dejaba moverlo con el mouse*/
+        textarea {
+            resize: none;
+        }
+        /*para modificar como quiero que se vea el mensaje de que se creo el intercambio*/
+        .messages {
+            list-style-type: none ;
+            padding: 1;
+        }
+        .botonVolv{
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+            color: #ffffff;
+            background-color: #2d4a81;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <a href="{% url 'Menu_De_Intercambios' %}" style="position: absolute; top: 20px; left: 20px;">
+        <button class="botonVolv">
+            Volver
+        </button>
+    </a>
+    <div class="contenido">
+        <h1>Crear intercambio</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Campos obligatorios -->
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" name="estado" class="form-control">
+                    <option value="Nuevo">Nuevo</option>
+                    <option value="Usado" selected>Usado</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="categoria">Categoría:</label>
+                <input type="text" id="categoria" name="categoria" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="foto">Foto:</label>
+                <input type="file" id="foto" name="foto" accept=".jpg, .jpeg, .png" class="form-control" required>
+            </div>
+            <!-- Campos opcionales -->
+            <div class="form-group">
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" class="form-control" maxlength="150"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="modelo">Modelo:</label>
+                <input type="text" id="modelo" name="modelo" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="marca">Marca:</label>
+                <input type="text" id="marca" name="marca" class="form-control">
+            </div>
+            <button type="submit">Guardar</button>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>
