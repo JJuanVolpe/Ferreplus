@@ -136,6 +136,21 @@
         <div class="right">
             <h3>Intercambios disponibles</h3>
             <div class="divTrue">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success" role="alert" id="success-message">
+                            {{ message }}
+                        </div>
+                        <script>
+                            // Oculta el mensaje después de 5 segundos
+                            setTimeout(function(){
+                                document.getElementById('success-message').style.display = 'none';
+                            }, 5000); // 5000 milisegundos = 5 segundos
+                        </script>
+                    {% endfor %}
+                {% endif %}
+    
+                {% if trueques %}
                 <table class="trueque-table">
                     <thead>
                         <tr>
@@ -143,27 +158,60 @@
                             <th>Item</th>
                             <th>Estado</th>
                             <th>Foto</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% if trueques %}
                             {% for trueque in trueques %}
                                 <tr>
                                     <td>{{ trueque.usuario.user }}</td>
                                     <td>{{ trueque.nombre }}</td>
                                     <td>{{ trueque.estado }}</td>
                                     <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
+                                    <td><div>
+                                        {% csrf_token %}
+                                        <!-- Aquí puedes añadir los campos del formulario para el intercambio -->
+                                        <button type="button" class="btn-trueque" id="openModalBtn">Proponer Intercambio</button>
+                                        <dialog id="modal" class="modal">
+                                          <div class="modal-content">
+                                            <h1>Postular Objeto Para Intercambio</h1>
+                                              <form id="crear-form" action="{% url 'create_trade' trueque.id %}" method="post" enctype="multipart/form-data">
+                                                  {% csrf_token %}
+                                                  {{ form.as_p }}
+                                                  <button class="buttonSpecial" type="submit">Guardar cambios</button>
+                                                  <button class="buttonSpecial" type="button" id="closeModalBtn">Cancelar</button>
+                                              </form>
+                                          </div>
+                                        </dialog>
+                                        </div>  
+                                    </td>
                                 </tr>
                             {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No hay intercambios por el momento</td>
-                            </tr>
-                        {% endif %}
                     </tbody>
                 </table>
+                {% else %}
+                <tr>
+                    <td colspan="4">No hay intercambios por el momento</td>
+                </tr>
+            {% endif %}
             </div>
         </div>
     </div>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+          const openModalBtn = document.getElementById('openModalBtn');
+          const closeModalBtn = document.getElementById('closeModalBtn');
+          const modal = document.getElementById('modal');
+      
+          openModalBtn.addEventListener('click', function() {
+              modal.style.display = "block";
+          });
+      
+          closeModalBtn.addEventListener('click', function() {
+              modal.style.display = "none";
+          });
+      });
+      </script>
 </body>
 </html>

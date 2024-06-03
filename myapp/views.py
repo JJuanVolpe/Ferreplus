@@ -355,7 +355,8 @@ def Menu_intercambios(request):
     title = 'Menu Intercambio'
     trueques = intercambios.objects.all()
     context = {'title': title,
-               'trueques':trueques}
+               'trueques':trueques,
+                'form': ProductForm()}
     return render(request, 'Menu_De_Intercambios.html', context)
 
 
@@ -368,8 +369,7 @@ def Historial_Intercambios(request):
         'title': title,
         'trueques': trueques.all(), 
         'trueques_cancelados': t_cancelados,
-        'trueques_efectuados': t_efectuados,
-        'form': ProductForm()
+        'trueques_efectuados': t_efectuados
     }
     return render(request, 'Historial_De_Intercambios.html', context)
 
@@ -393,7 +393,8 @@ def create_trade(request, trueque_id):
                 #form.save()
                 messages.success(request, 'El objeto ha sido creado y postulado con éxito.')
                 #Aquí se debe enviar mail al usuario de que se generó postulación al trueque que hizo?
-    return Historial_Intercambios(request=request)
+    context = { 'for'}
+    return Menu_intercambios(request=request)
 
 
 
