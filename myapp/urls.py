@@ -27,7 +27,8 @@ urlpatterns = [
     path('agregar_sucursal/', views.agregar_sucursal, name='agregar_sucursal'),
     path('menuEmpleado/', views.menu_empleado, name="menuEmpleado"),
     path('gestionarEmpleados/', views.gestionarEmpleados,name="gestionarEmpleados"),
-    path('editarEmpleados/<int:empleado_id>', views.editarEmpleado, name="editar_empleado" )
+    path('editarEmpleados/<int:empleado_id>', views.editarEmpleado, name="editar_empleado" ),
+      path('eliminar_empleado/<int:user_id>/', views.eliminar_empleado, name='eliminar_empleado')
 ] 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

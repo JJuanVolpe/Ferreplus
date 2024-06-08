@@ -81,6 +81,7 @@
                         <th>DNI</th>
                         <th>Sucursal</th>
                         <th>Accion</th>
+                        <th>Accion</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,6 +94,12 @@
                                 <td>{{ empleado.sucursal.address }}  {{ empleado.sucursal.city }}</td>
                                <td><form method="get" action="{% url 'editar_empleado' empleado.id %}">
                                         <button  class="buttonSpecial" type="submit">Editar</button>
+                                    </form>
+                               </td>
+                               <td>
+                                    <form method="POST" action="{% url 'eliminar_empleado' empleado.user.id %}">
+                                        {% csrf_token %}
+                                        <button class="buttonSpecial" type="submit">Eliminar</button>
                                     </form>
                                </td>
                             </tr>

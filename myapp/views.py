@@ -125,7 +125,6 @@ def incorrect_password(password):
         return True
         
 def signup(request):
-    
     if request.method == 'GET':
         return render(request, 'signup.html', {"form": UserCreationForm})
     else:
@@ -206,7 +205,12 @@ def editarEmpleado(request,empleado_id):
     return render(request, 'editarEmpleado.html',{"empleado":empleado,
                                                 "sucursales":sucursales})
     
-   
+def eliminar_empleado(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        user.delete()
+        messages.success(request, "Empleado eliminado exitosamente.")
+    return redirect('gestionarEmpleados')   
 
 def gestionarEmpleados(request):
     if 'guardarEmpleado' in request.POST:
@@ -377,7 +381,6 @@ def Historial_Intercambios(request): #Queda por hacer
     }
     return render(request, 'Historial_De_Intercambios.html', context)
 
-
 def create_trade(request, trueque_id):
     if request.method == 'POST':
         trueque = get_object_or_404(intercambios, id=trueque_id)
@@ -400,8 +403,6 @@ def create_trade(request, trueque_id):
     context = { 'for'}
     return Menu_intercambios(request=request)
 
-
-
 def ver_objetos_postulados(request, trueque_id):
 
     trueque = get_object_or_404(intercambios, id=trueque_id)
@@ -417,8 +418,6 @@ def ver_objetos_postulados(request, trueque_id):
     else:
         messages.error(request, 'No hay objetos postulados para este item selecionado todavia')
     return render(request, 'ver_objetos_postulados.html', context)
-
-
 
 def Crear_Trueque(request):
     title = 'Mis trueques'
