@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-#from .models import Category
 
 # Create your models here.
 class Sucursal(models.Model):
@@ -59,7 +58,7 @@ class intercambios(models.Model):
     marca = models.CharField(max_length=200,default="")
     usuario = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='intercambios')
     status = models.CharField(max_length=200, null=True, default="NUEVO", blank=True)
-
+    sucursal_asignada =  models.ForeignKey(Sucursal, on_delete=models.SET_NULL, related_name='intercambios', null=True, blank=True)
 
     def __str__(self):
         return "intercambio:" + str(self.nombre) + ", con categoria:" + str(self.categoria)  + ", del usuario: "+ str(self.usuario.dni)  + "  y status:" + str(self.status) 

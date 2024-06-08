@@ -97,7 +97,7 @@ def miPerfil(request):
 @login_required
 def intercambio_con_espera_de_ofertas(request):
     if request.method == 'POST':
-        intercambio = intercambios.objects.create(
+        intercambios.objects.create(
             nombre=request.POST['nombre'],
             estado=request.POST['estado'],
             categoria=request.POST['categoria'],
@@ -105,15 +105,17 @@ def intercambio_con_espera_de_ofertas(request):
             descripcion=request.POST['descripcion'],
             modelo=request.POST['modelo'],
             marca=request.POST['marca'],
-            usuario=request.user.profile
+            sucursal_asignada = get_object_or_404(Sucursal, id=request.POST['sucursal']),
+            usuario=request.user.profile,
         )
         # Agrega un mensaje de éxito
         messages.success(request, "El intercambio se ha creado correctamente. Se le notificarán las ofertas que reciba por correo electrónico.")
         # Redirige a la página de Mis_Trueques
         return redirect('Mis_Trueques')
     else:
+        
         title = 'intercambio con espera de ofertas'
-        context = {'title': title, 'form': crear_intercambio_con_espera_de_ofertas()}
+        context = {'title': title, 'form': crear_intercambio_con_espera_de_ofertas(), 'sucursales': Sucursal.objects.all()}
         return render(request, 'intercambio_con_espera_de_ofertas.html', context)
     
 def incorrect_password(password):
@@ -415,7 +417,6 @@ def create_trade(request, trueque_id):
                 #form.save()
                 messages.success(request, 'El objeto ha sido creado y postulado con éxito.')
                 #Aquí se debe enviar mail al usuario de que se generó postulación al trueque que hizo?
-    context = { 'for'}
     return Menu_intercambios(request=request)
 
 def ver_objetos_postulados(request, trueque_id):
@@ -444,3 +445,26 @@ def Menu_Sucursales(request):
 def menu_empleado(request):
 
     return render(request,'menuEmpleado.html')
+
+
+
+def filtrar_productos_por_filtro(request):
+    query = request.GET.get('search_query')
+    search_type = request.GET.get('search_type', 'estado')  # Por defecto, busca por estado
+    productos = None
+    if query:
+        if search_type == 'estado':
+            productos = intercambios.objects.filter(estado__icontains=query)
+        elif search_type == 'sucursal':
+            for suc in Sucursal.objects.all():
+                if query in suc.address or query in suc.address:
+                    productos = get_object_or_404(Sucursal, id=request.POST['sucursal'])
+
+        if not productos.exists():
+            messages.error(request, 'No existen objetos con el estado o sucursal ingresado.')
+            productos = intercambios.objects.all()
+    else:
+        messages.error(request, 'No se proporcionó ninguna cadena para buscar.')
+        productos = intercambios.objects.all()
+    
+    return render(request, 'Menu_De_Intercambios.html', {'trueques': productos})
