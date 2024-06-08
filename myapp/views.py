@@ -20,6 +20,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
+from datetime import time,datetime
 import re  # Importación del módulo r
 
 
@@ -397,12 +398,16 @@ def create_trade(request, trueque_id):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form_category = form.cleaned_data['categoria']
-            if form_category != trueque.categoria:
+            if form.cleaned_data['fecha']<= datetime.today().date():
+               messages.error(request,'La fecha debe ser mayor a la fecha actual')
+            elif form.cleaned_data['hora']< time(8, 0) or form.cleaned_data['hora']> time(20, 0):
+                messages.error(request,'La hora debe ser mayor a las 08:00 y menor a las 20:00')
+            elif form_category != trueque.categoria:
                 messages.error(request, 'La categoria del objeto ingresado debe corresponderse con la del objeto a intercambiar.')
             elif request.user == trueque.usuario.user: # No debo dejar que un usuario postule a un trueque de el mismo
                 messages.error(request, 'No puede postular un objeto para un trueque creado por usted.')
             else:
-                Product.objects.create(nombre=form.cleaned_data['nombre'], estado=form.cleaned_data['estado'],
+                Product.objects.create(hora=form.cleaned_data['hora'], fecha=form.cleaned_data['fecha'], nombre=form.cleaned_data['nombre'], estado=form.cleaned_data['estado'],
                                        categoria=form.cleaned_data['categoria'], foto=form.cleaned_data['foto'],
                                        descripcion=form.cleaned_data['descripcion'], postulante=request.user.profile,
                                        trueque_postulado=trueque)

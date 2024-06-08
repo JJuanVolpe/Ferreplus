@@ -74,4 +74,5 @@ class Product(models.Model):
     descripcion = models.CharField(max_length=200, default="")
     postulante = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='postulante', null=True, blank=True)
     trueque_postulado = models.ForeignKey(intercambios, on_delete=models.CASCADE, null=True, blank=True)
-
+    hora = models.TimeField(blank=True, null=True)  # Permite valores en blanco y nulos
+    fecha = models.DateField(blank=True, null=True)  

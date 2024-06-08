@@ -1,6 +1,6 @@
 from django import forms
 from .models import Product
-
+from datetime import time,datetime
 
 class crear_intercambio_con_espera_de_ofertas(forms.Form):
     nombre = forms.CharField(label="nombre",max_length=200)
@@ -15,7 +15,12 @@ class crear_intercambio_con_espera_de_ofertas(forms.Form):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['nombre', 'estado', 'categoria', 'foto', 'descripcion']
+        
+        fields = ['nombre', 'estado', 'categoria', 'foto', 'descripcion','hora','fecha']
+        widgets = {
+            'fecha': forms.DateInput(attrs={'type': 'date', 'class': 'datepicker'}),
+            'hora': forms.TimeInput(attrs={'type': 'time', 'class': 'timepicker'}),
+        }
 
 class CreateNewProject(forms.Form):
     name = forms.CharField(label="Nombre del Proyect", max_length=200, widget=forms.TextInput(attrs={'class': 'input'}))
