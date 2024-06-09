@@ -427,7 +427,7 @@ def ver_objetos_postulados(request, trueque_id):
     objetos_postulados = Product.objects.filter(trueque_postulado=trueque)
     context = {
         'title': title,
-        'trueque': trueque, 
+        'objetos_postulados': objetos_postulados, 
     }
     
     return render(request, 'ver_objetos_postulados.html', context)
