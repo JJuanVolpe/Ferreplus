@@ -465,4 +465,4 @@ def filtrar_productos_por_filtro(request):
         else:
             messages.error(request, 'No se proporcionó ninguna cadena para buscar.')
             productos = intercambios.objects.all()
-        return render(request, 'Menu_De_Intercambios.html', {'trueques': productos})
+        return render(request, 'Menu_De_Intercambios.html', {'trueques': productos, 'form': ProductForm()})
