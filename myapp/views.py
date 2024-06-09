@@ -449,22 +449,20 @@ def menu_empleado(request):
 
 
 def filtrar_productos_por_filtro(request):
-    query = request.GET.get('search_query')
-    search_type = request.GET.get('search_type', 'estado')  # Por defecto, busca por estado
-    productos = None
-    if query:
-        if search_type == 'estado':
-            productos = intercambios.objects.filter(estado__icontains=query)
-        elif search_type == 'sucursal':
-            for suc in Sucursal.objects.all():
-                if query in suc.address or query in suc.address:
-                    productos = get_object_or_404(Sucursal, id=request.POST['sucursal'])
-
-        if not productos.exists():
-            messages.error(request, 'No existen objetos con el estado o sucursal ingresado.')
+        query = request.GET.get('search_query')
+        search_type = request.GET.get('search_type', 'estado')  # Por defecto, busca por estado
+        if query:
+            if search_type == 'estado':
+                productos = intercambios.objects.filter(estado__icontains=query)
+            elif search_type == 'sucursal':
+                # Obtener la sucursal que cumple con la consulta
+                chars = query.lower()
+                newlist = [x for x in Sucursal.objects.all() if chars in x.address.lower() or chars in x.city.lower()]
+                productos = [obj for obj in intercambios.objects.all() if obj.sucursal_asignada in newlist]
+            if  not productos:
+                messages.error(request, 'No existen objetos con el estado o sucursal ingresado.')
+                productos = intercambios.objects.all()
+        else:
+            messages.error(request, 'No se proporcionó ninguna cadena para buscar.')
             productos = intercambios.objects.all()
-    else:
-        messages.error(request, 'No se proporcionó ninguna cadena para buscar.')
-        productos = intercambios.objects.all()
-    
-    return render(request, 'Menu_De_Intercambios.html', {'trueques': productos})
+        return render(request, 'Menu_De_Intercambios.html', {'trueques': productos})
