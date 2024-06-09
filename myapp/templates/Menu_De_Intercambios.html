@@ -374,7 +374,7 @@
                     <form method="GET" action="{% url 'filtrar_productos_por_filtro' %}" style="position: relative;">
                         {% csrf_token %}
                         <div class="vertical-center">
-                            <input type="text" name="search_query" placeholder="Buscar productos...">
+                            <input type="text" name="search_query" placeholder="Buscar productos..." required>
                             <select name="search_type">
                                 <option value="estado" selected>Buscar por estado</option>
                                 <option value="sucursal">Buscar por sucursal</option>
@@ -390,6 +390,7 @@
                         <tr>
                             <th>Nombre usuario</th>
                             <th>Item</th>
+                            <th>Categoria</th>                            
                             <th>Estado</th>
                             <th>Sucursal</th>
                             <th>Foto</th>
@@ -401,6 +402,7 @@
                         <tr>
                             <td>{{ trueque.usuario.user }}</td>
                             <td>{{ trueque.nombre }}</td>
+                            <td>{{ trueque.categoria }}</td>
                             <td>{{ trueque.estado }}</td>
                             <td>{{ trueque.sucursal_asignada.address }}, {{ trueque.sucursal_asignada.city }}</td>
                             <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
