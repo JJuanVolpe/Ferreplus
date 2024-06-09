@@ -15,9 +15,13 @@ class crear_intercambio_con_espera_de_ofertas(forms.Form):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        
+        ESTADO_CHOICES = [
+            ('nuevo', 'Nuevo'),
+            ('usado', 'Usado'),
+        ]
         fields = ['nombre', 'estado', 'categoria', 'foto', 'descripcion','hora','fecha']
         widgets = {
+            'estado': forms.Select(attrs={'class': 'selectEstado'},choices=ESTADO_CHOICES),
             'fecha': forms.DateInput(attrs={'type': 'date', 'class': 'datepicker'}),
             'hora': forms.TimeInput(attrs={'type': 'time', 'class': 'timepicker'}),
         }
