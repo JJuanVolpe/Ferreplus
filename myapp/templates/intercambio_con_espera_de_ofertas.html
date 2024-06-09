@@ -145,7 +145,7 @@
             </div>
             <div class="form-group">
                 <label for="modelo">Sucursal donde realizar el intercambio:</label>
-                <select name="sucursal"  class="form-control">
+                <select name="sucursal"  class="form-control" required>
                     <option value="" selected>Seleccione una sucursal</option>
                     {% for sucursal in sucursales %}
                     <option value="{{ sucursal.id }}">{{ sucursal.address }} - {{ sucursal.city }} </option>
