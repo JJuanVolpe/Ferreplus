@@ -216,30 +216,26 @@ def gestionarEmpleados(request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         contraseña =  request.POST.get('contraseña')
-        confirmar_contraseña = request.POST.get('Confirmar contraseña')
-        if   contraseña != confirmar_contraseña:
-            messages.error(request, 'no coinciden la contraseña con la nueva contraseña')
+        # Validar la nueva contraseña con los requisitos específicos
+        if len(contraseña) < 8:
+            messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
+        elif not re.search(r'[A-Z]', contraseña):
+            messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
+        elif User.objects.filter(email=email).exists():
+            messages.error(request, "El correo electrónico ya está en uso.")
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, "El nombre de usuario ya está en uso.")
         else:
-            # Validar la nueva contraseña con los requisitos específicos
-            if len(contraseña) < 8:
-                messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
-            elif not re.search(r'[A-Z]', contraseña):
-                messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
-            elif User.objects.filter(email=email).exists():
-                messages.error(request, "El correo electrónico ya está en uso.")
-            elif User.objects.filter(username=username).exists():
-                messages.error(request, "El nombre de usuario ya está en uso.")
-            else:
-                user = User.objects.create_user(username=username, email=email, first_name=first_name, 
-                                                last_name=last_name, password=contraseña)
-                user.profile.edad = request.POST["edad"]
-                user.profile.dni = request.POST["dni"]
-                user.profile.genero = request.POST['genero']
-                user.profile.telefono = request.POST["telefono"]
-                user.profile.es_empleado = True
-                user.profile.sucursal = Sucursal.objects.get(id=request.POST["sucursal"])
-                user.save()
-                messages.success(request, "Usuario creado exitosamente.")
+            user = User.objects.create_user(username=username, email=email, first_name=first_name, 
+                                            last_name=last_name, password=contraseña)
+            user.profile.edad = request.POST["edad"]
+            user.profile.dni = request.POST["dni"]
+            user.profile.genero = request.POST['genero']
+            user.profile.telefono = request.POST["telefono"]
+            user.profile.es_empleado = True
+            user.profile.sucursal = Sucursal.objects.get(id=request.POST["sucursal"])
+            user.save()
+            messages.success(request, "Usuario creado exitosamente.")
 
     # Manejar la obtención de empleados
     empleados = Profile.objects.filter(es_empleado=True)
