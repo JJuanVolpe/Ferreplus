@@ -69,7 +69,7 @@
     <div class="divModal">
         <form id="crear-form" method="post" action="{% url 'editar_empleado' empleado.id %}">
             {% csrf_token %}
-            <label for="username">Nombre de empleado:</label>
+            <label for="username">Nombre de usuario:</label>
             <input type="text" id="username" name="username" value="{{ empleado.user.username }}" readonly>
             <label for="email">Correo electrónico:</label>
             <input type="email" id="email" name="email" readonly value="{{ empleado.user.email }}">

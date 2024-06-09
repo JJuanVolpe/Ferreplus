@@ -197,7 +197,6 @@ def editarEmpleado(request,empleado_id):
         empleado.user.save()
         empleado.save()
         messages.success(request, "Empleado Editado Exitosamente")
-        print("llegue")
         return redirect('gestionarEmpleados')
     return render(request, 'editarEmpleado.html',{"empleado":empleado,
                                                 "sucursales":sucursales})
@@ -217,12 +216,12 @@ def gestionarEmpleados(request):
         last_name = request.POST.get('last_name')
         contraseña =  request.POST.get('contraseña')
         # Validar la nueva contraseña con los requisitos específicos
-        if len(contraseña) < 8:
-            messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
-        elif not re.search(r'[A-Z]', contraseña):
-            messages.error(request, 'La nueva contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
-        elif User.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists():
             messages.error(request, "El correo electrónico ya está en uso.")
+        elif len(contraseña) < 8:
+            messages.error(request, 'La contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
+        elif not re.search(r'[A-Z]', contraseña):
+            messages.error(request, 'La contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
         elif User.objects.filter(username=username).exists():
             messages.error(request, "El nombre de usuario ya está en uso.")
         else:
