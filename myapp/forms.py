@@ -25,6 +25,10 @@ class ProductForm(forms.ModelForm):
             'fecha': forms.DateInput(attrs={'type': 'date', 'class': 'datepicker'}),
             'hora': forms.TimeInput(attrs={'type': 'time', 'class': 'timepicker'}),
         }
+    def __init__(self, *args, **kwargs):
+        super(ProductForm, self).__init__(*args, **kwargs)
+        self.fields['hora'].required = True
+        self.fields['fecha'].required = True
 
 class CreateNewProject(forms.Form):
     name = forms.CharField(label="Nombre del Proyect", max_length=200, widget=forms.TextInput(attrs={'class': 'input'}))
