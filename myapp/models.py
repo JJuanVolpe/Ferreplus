@@ -57,7 +57,7 @@ class intercambios(models.Model):
     modelo = models.CharField(max_length=200, default="")
     marca = models.CharField(max_length=200,default="")
     usuario = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='intercambios')
-    status = models.CharField(max_length=200, null=True, default="NUEVO", blank=True)
+    status = models.CharField(max_length=200, null=True, default="NUEVO", blank=True)   # Campo que identitifica estado del trueque
     sucursal_asignada =  models.ForeignKey(Sucursal, on_delete=models.SET_NULL, related_name='intercambios', null=True, blank=True)
 
     def __str__(self):
@@ -74,4 +74,4 @@ class Product(models.Model):
     postulante = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='postulante', null=True, blank=True)
     trueque_postulado = models.ForeignKey(intercambios, on_delete=models.CASCADE, null=True, blank=True)
     hora = models.TimeField(blank=True, null=True)  # Permite valores en blanco y nulos
-    fecha = models.DateField(blank=True, null=True)  
+    fecha = models.DateField(blank=True, null=True)

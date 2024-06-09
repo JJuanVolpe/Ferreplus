@@ -1,8 +1,6 @@
 from itertools import groupby
 import random
 import string
-import os
-from time import sleep
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
@@ -13,11 +11,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Profile, Sucursal, intercambios, Product
 from .forms import RecoveryForm, crear_intercambio_con_espera_de_ofertas, ProductForm
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
 from datetime import time,datetime
@@ -300,11 +294,11 @@ def Sucursales(request):
 def Ver_trueques(request):
     # Obtener la lista de intercambios del usuario
     usuario = request.user
-    listadointercambios = intercambios.objects.filter(usuario=usuario.profile)
+    trueques = intercambios.objects.filter(usuario=usuario.profile, status='NUEVO')
     
     # Pasar tanto la lista de intercambios como el path absoluto al contexto
     context = {
-        'listadointercambios': listadointercambios,
+        'listadointercambios': trueques,
     }
     if 'eliminar' in request.POST:
         # Acción para eliminar el trueque
@@ -371,14 +365,14 @@ def verSucursales(request):
 
 def Menu_intercambios(request):
     title = 'Menu Intercambio'
-    trueques = intercambios.objects.all()
+    trueques = intercambios.objects.filter(status='NUEVO')
     context = {'title': title,
                'trueques':trueques,
                 'form': ProductForm()}
     return render(request, 'Menu_De_Intercambios.html', context)
 
 
-def Historial_Intercambios(request): #Queda por hacer
+def Historial_Intercambios(request):
     title = 'Historial de intercambios'
     trueques = intercambios.objects.all().order_by('status')
     
@@ -466,3 +460,33 @@ def filtrar_productos_por_filtro(request):
             messages.error(request, 'No se proporcionó ninguna cadena para buscar.')
             productos = intercambios.objects.all()
         return render(request, 'Menu_De_Intercambios.html', {'trueques': productos, 'form': ProductForm()})
+
+
+def aceptar_trueque(request, obj_id):
+        postuled =  get_object_or_404(Product, id=obj_id)
+        trueque = postuled.trueque_postulado
+        trueque.status = 'PENDIENTE'
+        trueque.save()
+        #Falta el código pa hacer algo con los obj. postulados restantes. 
+        return Historial_Intercambios(request)
+
+
+def rechazar_trueque(request, obj_id):
+        postuled =  Product.objects.filter(id=obj_id)
+        trueque_id = postuled.trueque_postulado.id
+
+        postuled.delete()
+        
+        return ver_objetos_postulados(request, trueque_id=trueque_id)
+
+def cancelar_trueque(request, trueque_id):
+        trueque = get_object_or_404(intercambios, id=trueque_id)
+        trueque.status = 'CANCELADO'
+        postulados = Product.objects.filter(trueque_postulado=trueque)
+        for obj in postulados:
+            obj.delete()
+        
+        trueque.save()
+        
+        return Historial_Intercambios(request)
+

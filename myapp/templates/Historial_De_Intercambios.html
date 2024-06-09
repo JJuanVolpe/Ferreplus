@@ -48,6 +48,12 @@
                 <span class="attribute-label">Descripcion:</span>
                 <span class="attribute-value">{{ trueque.descripcion }}</span><br>
               </div>
+                <div class="btn-container">
+                  <form action="{% url 'cancelar_trueque' trueque.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn danger"><i class="fas fa-times-circle"></i> Cancelar Intercambio</button>
+                  </form>
+                </div>
             </div>
         {% endfor %}
       {% else %}
@@ -82,6 +88,7 @@
     </div>
 
     <div class="panel">
+
       <h2>Trueques Cancelados</h2>
       {% if trueques_cancelados %}
         {% for trueque in trueques_cancelados %}

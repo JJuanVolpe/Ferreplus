@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'styles/historial_intercambios.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/ver_objetos_postulados.css' %}">
 </head>
 <body>
     <a href="{% url 'Mis_Trueques' %}" style="position: absolute; top: 20px; left: 20px;">
@@ -30,8 +30,14 @@
                                         <span class="attribute-value">{{ obj.descripcion }}</span><br>
                                     </div>
                                     <div class="btn-container">
-                                        <button class="btn btn-aceptar">Aceptar</button><!-- Acciones sobre el trueque-->
-                                        <button class="btn btn-rechazar">Rechazar</button>    
+                                        <form action="{% url 'aceptar_trueque' obj.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <button class="btn btn-aceptar">Aceptar</button>
+                                        </form>
+                                        <form action="{% url 'rechazar_trueque' obj.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <button class="btn btn-rechazar">Rechazar</button> 
+                                        </form>
                                     </div>
                                 </div>
                                 
