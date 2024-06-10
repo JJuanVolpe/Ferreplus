@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
     <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <style>
         body {
             background-color: #4566d3e5;
@@ -182,9 +180,9 @@
                             <td>{{ intercambio.modelo }}</td>
                             <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>                                               
                             <td>
-                                <form method="POST" action="{% url 'historialaceptados' %}" style="position: relative;">
+                                <form method="POST" action="{% url 'intercambiosaceptados' intercambio.id %}" style="position: relative;">
                                     {% csrf_token %}
-                                    <button type="button" class="btn-aceptar openModalBtn">Aceptar</button>
+                                    <button type="submit" class="btn-aceptar">Aceptar</button>
                                 </form>
                             </td>
                             </tr>
@@ -194,12 +192,11 @@
                 </div>       
             </div>     
         </div>
-        <a href="{% url 'intercambiosaceptados' %}">
-            <button type="button" class="btn-aceptar openModalBtn">Historial de Intercambios aceptados</button>
-        </a>
     {% else %}
         <p>No hay intercambios a aprobar en tu sucursal.</p>
     {% endif %}
+    <a href="{% url 'intercambiosaceptados' %}">
+        <button type="button" class="btn-aceptar">Historial de Intercambios aceptados</button>
+    </a>
 </body>
-
 </html>

@@ -1,36 +1,151 @@
-{% extends "layouts/base.html" %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Intercambios Aceptados</title>
+    <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #4566d3e5;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+        }
 
-{% block content %}
-<h1>Historial de Intercambios Aceptados</h1>
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
 
-{% if intercambios_aceptados %}
-    <table class="trueque-table">
-        <thead>
-            <tr>
-                <th>Nombre usuario</th>
-                <th>Item</th>
-                <th>Categoria</th>
-                <th>Estado</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Foto</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for intercambio in intercambios_aceptados %}
-            <tr>
-                <td>{{ intercambio.usuario.user.username }}</td>
-                <td>{{ intercambio.nombre }}</td>
-                <td>{{ intercambio.categoria }}</td>
-                <td>{{ intercambio.estado }}</td>
-                <td>{{ intercambio.marca }}</td>
-                <td>{{ intercambio.modelo }}</td>
-                <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>No hay intercambios aceptados.</p>
-{% endif %}
-{% endblock %}
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px;
+        }
+
+        .left,
+        .right {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .trueque-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .trueque-table th,
+        .trueque-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .trueque-table th {
+            background-color: #c0bcbce0;
+            font-weight: bold;
+        }
+
+        .trueque-foto {
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        .botonVolv {
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+            color: #ffffff;
+            background-color: #2d4a81;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .botonVolv:hover {
+            background-color: rgba(255, 82, 51, 0.926);
+            transform: scale(1.05);
+        }
+
+        .botonValorar {
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+            color: #ffffff;
+            background-color: #2d4a81;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .botonValorar:hover {
+            background-color: rgba(255, 82, 51, 0.926);
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="top-buttons">
+        <a href="{% url 'menuEmpleado' %}" class="botonVolv">Volver</a>
+    </div>
+    <h1>Historial de Intercambios Aceptados</h1>
+    <div class="container">
+        <div class="right">
+            {% if aceptados %}
+                <table class="trueque-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre usuario</th>
+                            <th>Item</th>
+                            <th>Categori­a</th>
+                            <th>Estado</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Foto</th>
+                            <th>Valoracion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for intercambio in aceptados %}
+                        <tr>
+                            <td>{{ intercambio.usuario.user.username }}</td>
+                            <td>{{ intercambio.nombre }}</td>
+                            <td>{{ intercambio.categoria }}</td>
+                            <td>{{ intercambio.estado }}</td>
+                            <td>{{ intercambio.marca }}</td>
+                            <td>{{ intercambio.modelo }}</td>
+                            <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>
+                            <td><a href="{% url 'rate_profile' intercambio.usuario.id %}" class="botonValorar">Valorar este perfil</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No hay intercambios aceptados.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

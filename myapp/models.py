@@ -59,6 +59,7 @@ class intercambios(models.Model):
     usuario = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='intercambios')
     status = models.CharField(max_length=200, null=True, default="NUEVO", blank=True)   # Campo que identitifica estado del trueque
     sucursal_asignada =  models.ForeignKey(Sucursal, on_delete=models.SET_NULL, related_name='intercambios', null=True, blank=True)
+    
 
     def __str__(self):
         return "intercambio:" + str(self.nombre) + ", con categoria:" + str(self.categoria)  + ", del usuario: "+ str(self.usuario.dni)  + "  y status:" + str(self.status) 

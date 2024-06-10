@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product
+from .models import Product, Rating
 from datetime import time,datetime
 
 class crear_intercambio_con_espera_de_ofertas(forms.Form):

@@ -45,7 +45,7 @@
     stars.forEach(star => {
       star.addEventListener('click', function() {
         const value = this.getAttribute('data-value');
-        ratingInput.value = value ;
+        ratingInput.value = value;
         stars.forEach(s => s.style.color = 'black');
         for (let i = 0; i < value; i++) {
           stars[i].style.color = 'gold';
