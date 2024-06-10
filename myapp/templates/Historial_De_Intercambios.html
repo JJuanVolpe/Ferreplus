@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'styles/historial_intercambios.css' %}">
+  <title>Historial de intercambios</title>
+  <h1> Soy el historial de intercambios</h1>
+</head>
+<body>
+<a href="{% url 'Menu_De_Intercambios' %}" style="position: absolute; top: 20px; left: 20px;">
+  <button class="botonVolv">volver</button>
+</a>
+ {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success" role="alert" id="success-message">
+                    {{ message }}
+                </div>
+                <script>
+                    // Oculta el mensaje después de 5 segundos
+                    setTimeout(function(){
+                        document.getElementById('success-message').style.display = 'none';
+                    }, 5000); // 5000 milisegundos = 5 segundos
+                </script>
+            {% endfor %}
+ {% endif %}
+
+        
+  <div class="panel-container">
+    <div class="panel">
+      <h2>Trueques Pendientes</h2>
+      {% if trueques_pendientes %}
+        {% for trueque in trueques_pendientes %}
+            <div class="product-container">
+              <div class="product-image">
+                <img src="{{ trueque.foto.url }}" class="trueque-foto" alt="Descripción de la imagen">
+              </div>
+              <div class="product-details">
+                    <span>{{ trueque.nombre }}</span>
+              </div>
+              <div class="product-atributos-container">
+                <span class="attribute-label">Categoria:</span>
+                <span class="attribute-value" style="color: brown;">{{ trueque.categoria }}</span><br>
+                <span class="attribute-label">Modelo:</span>
+                <span class="attribute-value">{{ trueque.modelo }}</span><br>
+                <span class="attribute-label">Descripcion:</span>
+                <span class="attribute-value">{{ trueque.descripcion }}</span><br>
+              </div>
+                <div class="btn-container">
+                  <form action="{% url 'cancelar_trueque' trueque.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn danger"><i class="fas fa-times-circle"></i> Cancelar Intercambio</button>
+                  </form>
+                </div>
+            </div>
+        {% endfor %}
+      {% else %}
+        <h3>No hay trueques Pendientes publicados</h3>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <h2>Trueques Realizados</h2>
+      {% if trueques_realizados %}
+        {% for trueque in trueques_realizados %}
+            <div class="product-container">
+              <div class="product-image">
+                <img src="{{ trueque.foto.url }}" class="trueque-foto" alt="Descripción de la imagen">
+              </div>
+              <div class="product-details">
+                    <span>{{ trueque.nombre }}</span>
+              </div>
+              <div class="product-atributos-container">
+                <span class="attribute-label">Categoria:</span>
+                <span class="attribute-value" style="color: brown;">{{ trueque.categoria }}</span><br>
+                <span class="attribute-label">Modelo:</span>
+                <span class="attribute-value">{{ trueque.modelo }}</span><br>
+                <span class="attribute-label">Descripcion:</span>
+                <span class="attribute-value">{{ trueque.descripcion }}</span><br>
+              </div>
+            </div>
+        {% endfor %}
+      {% else %}
+        <h3>No hay trueques realizados actualmente</h3>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+
+      <h2>Trueques Cancelados</h2>
+      {% if trueques_cancelados %}
+        {% for trueque in trueques_cancelados %}
+            <div class="product-container">
+              <div class="product-image">
+                <img src="{{ trueque.foto.url }}" class="trueque-foto" alt="Descripción de la imagen">
+              </div>
+              <div class="product-details">
+                    <span>{{ trueque.nombre }}</span>
+              </div>
+              <div class="product-atributos-container">
+                <span class="attribute-label">Categoria:</span>
+                <span class="attribute-value" style="color: brown;">{{ trueque.categoria }}</span><br>
+                <span class="attribute-label">Modelo:</span>
+                <span class="attribute-value">{{ trueque.modelo }}</span><br>
+                <span class="attribute-label">Descripcion:</span>
+                <span class="attribute-value">{{ trueque.descripcion }}</span><br>
+              </div>
+            </div>
+        {% endfor %}
+      {% else %}
+        <h3>No hay trueques Cancelados actualmente</h3>
+      {% endif %}
+    </div>
+</div>
+<script>
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const openModalBtn = document.getElementById('openModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modal = document.getElementById('modal');
+
+    openModalBtn.addEventListener('click', function() {
+        modal.style.display = "block";
+    });
+
+    closeModalBtn.addEventListener('click', function() {
+        modal.style.display = "none";
+    });
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <script>
+        function validarqueseanletras(event) {
+            const tecla = event.key;
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/.test(tecla)) {
+                event.preventDefault();
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const btnAbrirModal = document.querySelector("#editarContraseña");
+            const btnCerrarModal = document.querySelector("#Cerrar_modal");
+            const modal = document.querySelector("#modal");
+
+            btnAbrirModal.addEventListener("click", function() {
+                modal.showModal();
+            });
+
+            btnCerrarModal.addEventListener("click", function() {
+                modal.close();
+            });
+        });
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi perfil</title>
+    <style>
+        body {
+            background-color: #4566d3e5;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+        .contenedor {
+            width: 90%;
+            max-width: 600px;
+            background-color: #2d4a81;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button, a, input[type="submit"] {
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 16px;
+            color: #ffffff;
+            width: 100%;
+            background-color: #003f7f;
+            padding: 15px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover, a:hover, input[type="submit"]:hover {
+            background-color: #ff5233;
+            transform: scale(1.05);
+        }
+        .alert {
+            max-width: 340px;
+            margin-top: 10px;
+        }
+        #modal::backdrop {
+            background-color: rgba(0, 0, 0, .45);
+        }
+        #modal {
+            width: 90%;
+            max-width: 500px;
+            height: auto;
+            padding: 20px;
+            background-color: #2d4a81;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            max-height: 500px;
+        }
+        .divModal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .cerrarS{
+            margin: 1%;
+            position: absolute;
+            top: 38px;
+            right: 10px;
+        }
+        .volverF{
+            margin: 1%;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <form action="{% url 'menuPrincipal' %}" class="volverF">
+            <button type="submit">Volver</button>  
+        </form>
+        <div class="cerrarS">
+            <a class="nav-link"  href="/logout">Cerrar sesion</a>
+        </div>
+    </div>
+    <div class="contenedor">
+        <form method="post">
+            <h1>Información del usuario</h1>
+            {% csrf_token %}
+            <label for="username">Nombre de usuario:</label>
+            <input type="text" id="username" name="username" value="{{ usuario.username }}" readonly>
+
+            <label for="email">Correo electrónico:</label>
+            <input type="email" id="email" name="email" value="{{ usuario.email }}" readonly>
+
+            <label for="first_name">Nombre:</label>
+            <input type="text" id="first_name" name="first_name" value="{{ usuario.first_name }}" onkeypress="validarqueseanletras(event)" required>
+
+            <label for="last_name">Apellido:</label>
+            <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}" onkeypress="validarqueseanletras(event)" required>
+
+            <label for="edad">Edad:</label>
+            <input type="number" id="edad" name="edad" value="{{ usuario.profile.edad }}" required>
+
+            <label for="genero">Género:</label>
+            <select id="genero" name="genero" required>
+                <option value="Masculino" {% if usuario.profile.genero == 'Masculino' %}selected{% endif %}>Masculino</option>
+                <option value="Femenino" {% if usuario.profile.genero == 'Femenino' %}selected{% endif %}>Femenino</option>
+                <option value="Otro" {% if usuario.profile.genero == 'Otro' %}selected{% endif %}>Otro</option>
+            </select>
+
+            <label for="telefono">Número:</label>
+            <input type="number" id="telefono" name="telefono" value="{{ usuario.profile.telefono }}">
+
+            
+            <label for="average_rating">Valoración promedio:</label>
+            <p id="average_rating">
+                {% if average_rating %}
+                   {{ average_rating }}
+                {% else %}
+                    No valorado aún
+                {% endif %}
+            </p>
+
+            <!-- Enlace para valorar el perfil -->
+            <a href="{% url 'rate_profile' usuario.profile.id %}">Valorar este perfil</a>
+
+            <button type="submit">Guardar cambios</button>
+            <button type="button" id="editarContraseña">Editar Contraseña</button>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </form>
+    </div>
+    <dialog id="modal">
+        <div class="divModal">
+            <h1>Modificar Contraseña</h1>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="modal_form" value="true">
+                <label for="contraseñaActual">Contraseña actual:</label>
+                <input type="password" id="contraseñaActual" name="contraseñaActual" required>
+
+                <label for="contraseñaNueva">Nueva contraseña:</label>
+                <input type="password" id="contraseñaNueva" name="contraseñaNueva" required>
+
+                <label for="repetirContraseñaNueva">Repetir nueva contraseña:</label>
+                <input type="password" id="repetirContraseñaNueva" name="repetirContraseñaNueva" required>
+
+                <button type="submit">Actualizar contraseña</button>
+                <button type="button" id="Cerrar_modal">Cerrar</button>
+            </form>
+        </div>
+    </dialog>
+</body>
+</html>

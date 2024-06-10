@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButtons = document.querySelectorAll('.editarTrueque');
+            const modal = document.getElementById('modal');
+            const closeModalButton = document.getElementById('Cerrar_modal');
+    
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const truequeId = this.getAttribute('data-id');
+                    const nombre = this.getAttribute('data-nombre');
+                    const estado = this.getAttribute('data-estado');
+                    const categoria = this.getAttribute('data-categoria');
+                    const descripcion = this.getAttribute('data-descripcion');
+                    const modelo = this.getAttribute('data-modelo');
+                    const marca = this.getAttribute('data-marca');
+    
+                    document.getElementById('truequeId').value = truequeId;
+                    document.getElementById('nombre').value = nombre;
+                    document.getElementById('estado').value = estado;
+                    document.getElementById('categoria').value = categoria;
+                    document.getElementById('descripcion').value = descripcion;
+                    document.getElementById('modelo').value = modelo;
+                    document.getElementById('marca').value = marca;
+    
+                    modal.showModal();
+                });
+            });
+    
+            closeModalButton.addEventListener('click', function() {
+                modal.close();
+            });
+        });
+    </script>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
+    <style>
+        body {
+            background-color: #4566d3e5;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            width: 200px;
+            margin-bottom: 30px;
+        }
+        .menu button {
+            background-color: #8299e4e5;
+            color: #2d4a81;
+            padding: 20px;
+            margin: 10px 0px;
+            border: 2px solid #000000e5;
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .menu button:hover {
+            background-color: #126627;
+        }
+        .contenido {
+            margin-top: 1px;
+            text-align: center;
+            min-width:600px;
+            max-width: fit-content;
+            padding: 20px;
+            background-color: #ffffffe5;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-height: 600px; /* Limitar la altura máxima */
+            overflow-y: auto; /* Hacer el contenido desplazable */  
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #2d4a81;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        textarea {
+            resize: none;
+        }
+        .messages {
+            list-style-type: none;
+            padding: 1;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .trueque-table {
+            max-width: 800px;
+            
+            border-collapse: collapse;
+        }
+        .trueque-table th, .trueque-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .trueque-table th {
+            background-color: #c0bcbce0;
+            font-weight: bold;
+        }
+        .trueque-foto {
+            max-width: 250px;
+            max-height: 300px;
+        }
+        .divider {
+            margin: 10px 0;
+        }
+        .botonVolv{
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+            color: #ffffff;
+            background-color: #2d4a81;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+    </style>
+    {% load static %}
+</head>
+<body>
+    <a href="{% url 'Menu_De_Intercambios' %}" style="position: absolute; top: 20px; left: 20px;">
+        <button class="botonVolv">volver</button>
+    </a>
+    <h1>Mis intercambios</h1>
+    <!-- Agrega este bloque en tu template -->
+    
+    <div class="contenido">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success" role="alert" id="success-message">
+                    {{ message }}
+                </div>
+                <script>
+                    // Oculta el mensaje después de 5 segundos
+                    setTimeout(function(){
+                        document.getElementById('success-message').style.display = 'none';
+                    }, 5000); // 5000 milisegundos = 5 segundos
+                </script>
+            {% endfor %}
+        {% endif %}
+        {% if listadointercambios %}
+
+        <table class="trueque-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Estado </th>
+                    <th>Categoria</th>
+                    <th>Descripcion</th>
+                    <th>Modelo</th>
+                    <th>Marca</th>
+                    <th>Foto</th>
+                    <th>Acciones</th>
+                    <th>Acciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trueque in listadointercambios %}
+                        <tr>
+                            <td>{{ trueque.nombre }}</td>
+                            <td>{{ trueque.estado }}</td>
+                            <td>{{ trueque.categoria }}</td>
+                            <td>{{ trueque.descripcion }}</td>
+                            <td>{{ trueque.modelo }}</td>
+                            <td>{{ trueque.marca }}</td>
+                            <td><img src="{{ trueque.foto.url }}" class="trueque-foto" style="max-height: 150px; max-width: 150px;"></td>
+                            <td>
+                                <button class="editarTrueque" data-id="{{ trueque.id }}" data-nombre="{{ trueque.nombre }}" data-estado="{{ trueque.estado }}" data-categoria="{{ trueque.categoria }}" data-descripcion="{{ trueque.descripcion }}" data-modelo="{{ trueque.modelo }}" data-marca="{{ trueque.marca }}">Editar</button>
+                            </td>
+                            <td>
+                                <form method="POST" action="{% url 'Mis_Trueques' %}" style="display: inline;">
+                                    <input type="hidden" name="trueque_id" value="{{ trueque.id }}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="trueque_id" value="{{ trueque.id }}">
+                                    <button type="submit" name="eliminar">Eliminar</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="GET" action="{% url 'ver_objetos_postulados' trueque.id %}" style="display: inline;">
+                                    <input type="hidden" name="trueque_id" value="{{ trueque.id }}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="trueque_id" value="{{ trueque.id }}">
+                                    <button type="submit" name="Ver Postulaciones">Ver Postulaciones</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <br>
+                        <br>
+                        <td colspan="9">No hay intercambios por el momento</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <dialog id="modal">
+        <div class="divModal">
+            <h1>Editar Trueque</h1>
+            <form id="editForm" method="POST" action="{% url 'Mis_Trueques' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" id="truequeId" name="trueque_id">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label><br>
+                    <input type="text" id="nombre" name="nombre" class="form-control" required ><br><br>
+                </div>
+                <div class="form-group">
+                    <label for="estado">Estado:</label><br>
+                    <select id="estado" name="estado" class="form-control">
+                        <option value="Nuevo">Nuevo</option>
+                        <option value="Usado" selected>Usado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoria:</label><br>
+                    <input type="text" id="categoria" name="categoria" class="form-control"required ><br><br>
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripcion:</label><br>
+                    <textarea id="descripcion" name="descripcion" class="form-control" ></textarea><br><br>
+                </div>
+                <div class="form-group">
+                    <label for="modelo">Modelo:</label><br>
+                    <input type="text" id="modelo" name="modelo" class="form-control" ><br><br>
+                </div>
+                <div class="form-group">
+                    <label for="marca">Marca:</label><br>
+                    <input type="text" id="marca" name="marca" class="form-control" ><br><br>
+                </div>
+                <div class="form-group">
+                    <br><label for="foto">Foto:</label><br>
+                    <input type="file" id="foto" name="foto" class="form-control" accept=".jpg, .jpeg, .png" >
+                </div>
+                <div>
+                    <button type="submit" id="submit" >Guardar Cambios</button>
+                    <button type="button" id="Cerrar_modal">Cerrar</button>
+                </div> 
+            </form>
+        </div>
+    </dialog>
+</body>
+</html>
