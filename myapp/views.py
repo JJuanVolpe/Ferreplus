@@ -448,14 +448,13 @@ def menu_empleado(request):
     return render(request, 'menuEmpleado.html', context)
 
 def historialaceptados(request, intercambio_id=None):
-    print(intercambio_id)
     if intercambio_id:
         intercambio = get_object_or_404(intercambios, id=intercambio_id)
         intercambio.status = "REALIZADO"
         intercambio.save()
     usuario = request.user.profile
     suc = usuario.sucursal
-    aceptados = intercambios.objects.filter(sucursal_asignada=suc, status="REALIZADO")
+    aceptados = intercambios.objects.filter(sucursal_asignada=suc, status="REALIZADO", valorado=False)
     context = {'aceptados': aceptados}
     return render(request, 'historialaceptados.html', context)
 
@@ -484,6 +483,7 @@ def aceptar_trueque(request, obj_id):
         postuled =  get_object_or_404(Product, id=obj_id)
         trueque = postuled.trueque_postulado
         trueque.status = 'PENDIENTE'
+        
         trueque.save()
         #Falta el código pa hacer algo con los obj. postulados restantes. 
         return Historial_Intercambios(request)
@@ -521,9 +521,9 @@ def rate_profile(request, profile_id):
             # Obtener o crear la instancia de Rating
             rating_obj, created = Rating.objects.get_or_create(
                 profile=profile,
-                defaults={'rating': rating_value, 'cantValoraciones': 1}
+                defaults={'rating': rating_value}
             )
-            
+           
             if not created:
                 # Si ya existe, actualizar la valoración sumando la nueva
                 rating_obj.rating += rating_value
@@ -531,11 +531,11 @@ def rate_profile(request, profile_id):
                 rating_obj.save()
 
             # Calcular el promedio de valoración
-            total_rating = profile.ratings.aggregate(total=sum('rating'), count=sum('cantValoraciones'))
-            average_rating = total_rating['total'] / total_rating['count'] if total_rating['count'] > 0 else 0
+            #total_rating = profile.ratings.aggregate(total=sum('rating'), count=sum('cantValoraciones'))
+            #average_rating = total_rating['total'] / total_rating['count'] if total_rating['count'] > 0 else 0
 
-            if request.POST.get('ajax'):
-                return JsonResponse({'average_rating': average_rating})
+            #if request.POST.get('ajax'):
+            #    return JsonResponse({'average_rating': average_rating})
             
             return redirect('profile_detail', profile_id=profile.id)
 
