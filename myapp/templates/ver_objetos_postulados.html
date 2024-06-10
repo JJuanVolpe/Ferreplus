@@ -27,7 +27,10 @@
                                     <div class="product-atributos-container">
                                         <span class="attribute-label">Categoria: {{ obj.categoria }}</span>
                                         <span class="attribute-label">Descripcion:</span>
-                                        <span class="attribute-value">{{ obj.descripcion }}</span><br>
+                                        <span class="attribute-value">{{ obj.descripcion }}</span>
+                                        <span class="attribute-label">Fecha y Horario:</span>
+                                        <span class="attribute-value">{{ obj.hora }} <br> {{ obj.fecha }}</span>
+                                        <br>
                                     </div>
                                     <div class="btn-container">
                                         <form action="{% url 'aceptar_trueque' obj.id %}" method="POST">
