@@ -434,21 +434,23 @@ def Menu_Sucursales(request):
 def menu_empleado(request):
     usuario = request.user.profile
     suc = usuario.sucursal
-    intercambiossuc = intercambios.objects.filter(sucursal_asignada = suc,status = "PENDIENTE")
-    if request.method == 'post':
-        return redirect('historialaceptados')
+    intercambiossuc = intercambios.objects.filter(sucursal_asignada=suc, status="PENDIENTE")
+    if request.method == 'POST':
+        return redirect('intercambiosaceptados')
 
-    context = {'sucursal' : suc, 'intercambios' : intercambiossuc}
-    return render(request,'menuEmpleado.html',context)
+    context = {'sucursal': suc, 'intercambios': intercambiossuc}
+    return render(request, 'menuEmpleado.html', context)
 
-def historialaceptados(request,intercambio_id):
-    intercambio = get_object_or_404(intercambios, id=intercambio_id)
-    intercambio.status = "REALIZADO"
-    intercambio.save()
+def historialaceptados(request, intercambio_id=None):
+    print(intercambio_id)
+    if intercambio_id:
+        intercambio = get_object_or_404(intercambios, id=intercambio_id)
+        intercambio.status = "REALIZADO"
+        intercambio.save()
     usuario = request.user.profile
     suc = usuario.sucursal
-    aceptados = intercambios.objects.filter(sucursal_asignada = suc,status="ACEPTADO")
-    context = {'aceptados' : aceptados}
+    aceptados = intercambios.objects.filter(sucursal_asignada=suc, status="REALIZADO")
+    context = {'aceptados': aceptados}
     return render(request, 'historialaceptados.html', context)
 
 

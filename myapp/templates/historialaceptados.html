@@ -1,36 +1,41 @@
-{% extends "layouts/base.html" %}
-
-{% block content %}
-<h1>Historial de Intercambios Aceptados</h1>
-
-{% if intercambios_aceptados %}
-    <table class="trueque-table">
-        <thead>
-            <tr>
-                <th>Nombre usuario</th>
-                <th>Item</th>
-                <th>Categoria</th>
-                <th>Estado</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Foto</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for intercambio in intercambios_aceptados %}
-            <tr>
-                <td>{{ intercambio.usuario.user.username }}</td>
-                <td>{{ intercambio.nombre }}</td>
-                <td>{{ intercambio.categoria }}</td>
-                <td>{{ intercambio.estado }}</td>
-                <td>{{ intercambio.marca }}</td>
-                <td>{{ intercambio.modelo }}</td>
-                <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>No hay intercambios aceptados.</p>
-{% endif %}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Intercambios Aceptados</title>
+    <!-- Agrega aquí tus enlaces a estilos CSS si los tienes -->
+</head>
+<body>
+    <h1>Historial de Intercambios Aceptados</h1>
+    {% if aceptados %}
+        <table class="trueque-table">
+            <thead>
+                <tr>
+                    <th>Nombre usuario</th>
+                    <th>Item</th>
+                    <th>Categoría</th>
+                    <th>Estado</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Foto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for intercambio in aceptados %}
+                <tr>
+                    <td>{{ intercambio.usuario.user.username }}</td>
+                    <td>{{ intercambio.nombre }}</td>
+                    <td>{{ intercambio.categoria }}</td>
+                    <td>{{ intercambio.estado }}</td>
+                    <td>{{ intercambio.marca }}</td>
+                    <td>{{ intercambio.modelo }}</td>
+                    <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay intercambios aceptados.</p>
+    {% endif %}
+</body>
+</html>
