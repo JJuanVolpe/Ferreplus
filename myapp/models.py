@@ -75,3 +75,8 @@ class Product(models.Model):
     trueque_postulado = models.ForeignKey(intercambios, on_delete=models.CASCADE, null=True, blank=True)
     hora = models.TimeField(blank=True, null=True)  # Permite valores en blanco y nulos
     fecha = models.DateField(blank=True, null=True)
+
+class Rating(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    cantValoraciones = models.IntegerField(default=1) 

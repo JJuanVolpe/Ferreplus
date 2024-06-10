@@ -1,6 +1,7 @@
 from itertools import groupby
 import random
 import string
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
@@ -8,13 +9,15 @@ from django.contrib.auth.models import User
 from django.db import Error, IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Sucursal, intercambios, Product
+from .models import Profile, Rating, Sucursal, intercambios, Product
 from .forms import RecoveryForm, crear_intercambio_con_espera_de_ofertas, ProductForm
 from django.core.mail import EmailMessage
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
 from datetime import time,datetime
+from django.db.models import Avg
+
 import re  # Importación del módulo r
 
 
@@ -500,3 +503,39 @@ def cancelar_trueque(request, trueque_id):
         
         return Historial_Intercambios(request)
 
+
+
+
+
+def rate_profile(request, profile_id):
+    profile = get_object_or_404(Profile, id=profile_id)
+    
+    if request.method == "POST":
+        rating_value = request.POST.get('rating')
+        if rating_value:
+            created = Rating.objects.update_or_create(
+                profile=profile,
+                defaults={'rating': rating_value}
+            )
+            if request.POST.get('ajax'):
+                average_rating = profile.ratings.aggregate(Avg('rating'))['rating__avg']
+                return JsonResponse({'average_rating': average_rating})
+            return redirect('profile_detail', profile_id=profile.id)
+
+    context = {
+        'profile': profile,
+    }
+    return render(request, 'rate_profile.html', context)
+
+
+
+def profile_detail(request, profile_id):
+    profile = get_object_or_404(Profile, id=profile_id)
+    average_rating = profile.ratings.aggregate(Avg('rating'))['rating__avg']
+
+    context = {
+        'profile': profile,
+        'average_rating': average_rating,
+        'usuario': profile.user,
+    }
+    return render(request, 'miPerfil.html', context)

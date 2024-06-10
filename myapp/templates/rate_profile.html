@@ -1,0 +1,80 @@
+{% block content %}
+
+<style>
+  .rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .star {
+    font-size: 2em;
+    color: black;
+    transition: color 0.2s;
+  }
+  .star:hover,
+  .star:hover ~ .star {
+    color: gold;
+  }
+</style>
+
+<h1>Valorar a {{ profile.user.username }}</h1>
+<form id="rating-form">
+  {% csrf_token %}
+  <div class="rating">
+    <span class="star" data-value="5">&#9733;</span>
+    <span class="star" data-value="4">&#9733;</span>
+    <span class="star" data-value="3">&#9733;</span>
+    <span class="star" data-value="2">&#9733;</span>
+    <span class="star" data-value="1">&#9733;</span>
+  </div>
+  <input type="hidden" name="rating" id="rating-input">
+  <button type="submit">Enviar valoración</button>
+</form>
+
+<form action="{% url 'miPefil' %}" class="volverF">
+    <button type="submit">Volver</button>
+</form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('rating-input');
+    const ratingForm = document.getElementById('rating-form');
+
+    stars.forEach(star => {
+      star.addEventListener('click', function() {
+        const value = this.getAttribute('data-value');
+        ratingInput.value = value ;
+        stars.forEach(s => s.style.color = 'black');
+        for (let i = 0; i < value; i++) {
+          stars[i].style.color = 'gold';
+        }
+      });
+    });
+
+    ratingForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(ratingForm);
+      const csrfToken = formData.get('csrfmiddlewaretoken');
+
+      fetch("{% url 'rate_profile' profile.id %}", {
+        method: "POST",
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.average_rating !== undefined) {
+          document.getElementById('average_rating').innerText = `${data.average_rating.toFixed(2)} / 5`;
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+  });
+</script>
+
+{% endblock %}

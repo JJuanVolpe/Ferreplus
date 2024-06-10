@@ -40,3 +40,12 @@ class RecoveryForm(forms.Form):
 
 class PopupForm(forms.Form):
     message = forms.CharField(label='Mensaje del Popup', max_length=100)
+
+
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['rating']
+        widgets = {
+            'rating': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+        }
