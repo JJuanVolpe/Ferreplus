@@ -443,9 +443,24 @@ def Menu_Sucursales(request):
     return render(request, 'Menu_Sucursales.html', context)
 
 def menu_empleado(request):
+    usuario = request.user.profile
+    suc = usuario.sucursal
+    intercambiossuc = intercambios.objects.filter(sucursal_asignada = suc,status = "PENDIENTE")
+    if request.method == 'post':
+        return redirect('historialaceptados')
 
-    return render(request,'menuEmpleado.html')
+    context = {'sucursal' : suc, 'intercambios' : intercambiossuc}
+    return render(request,'menuEmpleado.html',context)
 
+def historialaceptados(request,intercambio_id):
+    intercambio = get_object_or_404(intercambios, id=intercambio_id)
+    intercambio.status = "REALIZADO"
+    intercambio.save()
+    usuario = request.user.profile
+    suc = usuario.sucursal
+    aceptados = intercambios.objects.filter(sucursal_asignada = suc,status="ACEPTADO")
+    context = {'aceptados' : aceptados}
+    return render(request, 'historialaceptados.html', context)
 
 
 def filtrar_productos_por_filtro(request):

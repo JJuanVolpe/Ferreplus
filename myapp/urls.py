@@ -29,7 +29,8 @@ urlpatterns = [
     path('gestionarEmpleados/', views.gestionarEmpleados,name="gestionarEmpleados"),
     path('editarEmpleados/<int:empleado_id>', views.editarEmpleado, name="editar_empleado" ),
     path('eliminar_empleado/<int:user_id>/', views.eliminar_empleado, name='eliminar_empleado'),
-    path('filtrar/', views.filtrar_productos_por_filtro, name='filtrar_productos_por_filtro')
+    path('filtrar/', views.filtrar_productos_por_filtro, name='filtrar_productos_por_filtro'),
+    path('intercambiosaceptados/<int:intercambio_id>', views.historialaceptados,name='intercambiosaceptados')
 ] 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
