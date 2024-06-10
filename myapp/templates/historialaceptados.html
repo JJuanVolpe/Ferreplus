@@ -137,7 +137,13 @@
                             <td>{{ intercambio.marca }}</td>
                             <td>{{ intercambio.modelo }}</td>
                             <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>
-                            <td><a href="{% url 'rate_profile' intercambio.usuario.id %}" class="botonValorar">Valorar este perfil</a></td>
+                            <td>
+                                {% if not intercambio.ya_valorado %}
+                                    <a href="{% url 'rate_profile' intercambio.usuario.id %}" class="botonValorar">Valorar este perfil</a>
+                                {% else %}
+                                    <span>Ya valorado</span>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -147,5 +153,16 @@
             {% endif %}
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const valorarButtons = document.querySelectorAll('.botonValorar');
+        
+            valorarButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    button.disabled = true;
+                });
+            });
+        });
+        </script>
 </body>
 </html>

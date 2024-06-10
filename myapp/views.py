@@ -1,7 +1,7 @@
 from itertools import groupby
 import random
 import string
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
@@ -516,15 +516,27 @@ def rate_profile(request, profile_id):
     profile = get_object_or_404(Profile, id=profile_id)
     
     if request.method == "POST":
-        rating_value = request.POST.get('rating')
+        rating_value = int(request.POST.get('rating', 0))
         if rating_value:
-            created = Rating.objects.update_or_create(
+            # Obtener o crear la instancia de Rating
+            rating_obj, created = Rating.objects.get_or_create(
                 profile=profile,
-                defaults={'rating': rating_value}
+                defaults={'rating': rating_value, 'cantValoraciones': 1}
             )
+            
+            if not created:
+                # Si ya existe, actualizar la valoración sumando la nueva
+                rating_obj.rating += rating_value
+                rating_obj.cantValoraciones += 1
+                rating_obj.save()
+
+            # Calcular el promedio de valoración
+            total_rating = profile.ratings.aggregate(total=sum('rating'), count=sum('cantValoraciones'))
+            average_rating = total_rating['total'] / total_rating['count'] if total_rating['count'] > 0 else 0
+
             if request.POST.get('ajax'):
-                average_rating = profile.ratings.aggregate(Avg('rating'))['rating__avg']
                 return JsonResponse({'average_rating': average_rating})
+            
             return redirect('profile_detail', profile_id=profile.id)
 
     context = {
