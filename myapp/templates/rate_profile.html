@@ -58,7 +58,7 @@
       const formData = new FormData(ratingForm);
       const csrfToken = formData.get('csrfmiddlewaretoken');
 
-      fetch("{% url 'rate_profile' profile.id %}", {
+      fetch("{% url 'rate_profile' intercambio.id %}", {
         method: "POST",
         headers: {
           'X-CSRFToken': csrfToken,

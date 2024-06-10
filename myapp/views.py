@@ -512,8 +512,9 @@ def cancelar_trueque(request, trueque_id):
 
 
 
-def rate_profile(request, profile_id):
-    profile = get_object_or_404(Profile, id=profile_id)
+def rate_profile(request, intercambio_id):
+    intercambio= get_object_or_404(intercambios, id=intercambio_id)
+    profile = get_object_or_404(Profile, id=intercambio.usuario.id)
     
     if request.method == "POST":
         rating_value = int(request.POST.get('rating', 0))
@@ -529,6 +530,11 @@ def rate_profile(request, profile_id):
                 rating_obj.rating += rating_value
                 rating_obj.cantValoraciones += 1
                 rating_obj.save()
+
+
+            intercambio.valorado = True
+            intercambio.save()
+            
 
             # Calcular el promedio de valoración
             total_rating = profile.ratings.aggregate(total=sum('rating'), count=sum('cantValoraciones'))

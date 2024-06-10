@@ -35,7 +35,7 @@ urlpatterns = [
     path('cancelar_trueque/<int:trueque_id>/', views.cancelar_trueque, name='cancelar_trueque'),
     path('intercambiosaceptados/<int:intercambio_id>', views.historialaceptados,name='intercambiosaceptados'),
     path('intercambiosaceptados/', views.historialaceptados, name='intercambiosaceptados'),
-    path('rate/<int:profile_id>/', views.rate_profile, name='rate_profile'),
+    path('rate/<int:intercambio_id>/', views.rate_profile, name='rate_profile'),
     path('rate/<int:profile_id>/', views.profile_detail, name='profile_detail')
 ] 
 if settings.DEBUG:
