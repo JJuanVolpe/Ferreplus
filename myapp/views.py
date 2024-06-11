@@ -486,10 +486,10 @@ def filtrar_productos_por_filtro(request):
                 productos = [obj for obj in intercambios.objects.all() if obj.sucursal_asignada in newlist]
             if  not productos:
                 messages.error(request, 'No existen objetos con el estado o sucursal ingresado.')
-                productos = intercambios.objects.all()
+                productos = intercambios.objects.filter(status="NUEVO").all()
         else:
             messages.error(request, 'No se proporcionó ninguna cadena para buscar.')
-            productos = intercambios.objects.all()
+            productos = intercambios.objects.filter(status="NUEVO").all()
         return render(request, 'Menu_De_Intercambios.html', {'trueques': productos, 'form': ProductForm()})
 
 
