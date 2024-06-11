@@ -31,10 +31,15 @@
   <input type="hidden" name="rating" id="rating-input">
   <button type="submit">Enviar valoración</button>
 </form>
-
-<form action="{% url 'intercambiosaceptados' %}" class="volverF">
+{% if actual_user.es_empleado %}
+  <form action="{% url 'intercambiosaceptados' %}" class="volverF">
+      <button type="submit">Volver</button>
+  </form>
+{% else %}
+  <form action="{% url 'Historial_De_Intercambios' %}" class="volverF">
     <button type="submit">Volver</button>
-</form>
+  </form>
+{% endif %}
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
