@@ -377,6 +377,7 @@ def Historial_Intercambios(request):
     trueques = intercambios.objects.all().order_by('status')
     
     
+    
     trueque_data = {
         status: list(items) 
         for status, items in groupby(trueques, key=lambda x: x.status)
@@ -385,7 +386,8 @@ def Historial_Intercambios(request):
         'title': title,
         'trueques_pendientes': trueque_data.get("PENDIENTE", []), 
         'trueques_realizados': trueque_data.get("REALIZADO", []),
-        'trueques_cancelados': trueque_data.get("CANCELADO", [])
+        'trueques_cancelados': trueque_data.get("CANCELADO", []),
+        
     }
     return render(request, 'Historial_De_Intercambios.html', context)
 
@@ -536,9 +538,6 @@ def rate_profile(request, intercambio_id):
             intercambio.save()
             
 
-            # Calcular el promedio de valoración
-            #total_rating = profile.ratings.aggregate(total=sum('rating'), count=sum('cantValoraciones'))
-            #average_rating = total_rating['total'] / total_rating['count'] if total_rating['count'] > 0 else 0
 
             #if request.POST.get('ajax'):
             #    return JsonResponse({'average_rating': average_rating})
@@ -547,6 +546,7 @@ def rate_profile(request, intercambio_id):
 
     context = {
         'profile': profile,
+        'intercambio' : intercambio
     }
     return render(request, 'rate_profile.html', context)
 
