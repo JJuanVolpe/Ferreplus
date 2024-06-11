@@ -72,7 +72,7 @@
               <span>{{ trueque.nombre }}</span>
             </div>
             <div>
-              {% if not trueque.valorado %}
+              {% if not trueque.valoradoUsuario %}
                 <a href="{% url 'rate_profile' trueque.id %}" class="botonValorar">Valorar este perfil</a>
               {% else %}
                 <span>Ya valorado</span>

@@ -456,7 +456,7 @@ def historialaceptados(request, intercambio_id=None):
         intercambio.save()
     usuario = request.user.profile
     suc = usuario.sucursal
-    aceptados = intercambios.objects.filter(sucursal_asignada=suc, status="REALIZADO", valorado=False)
+    aceptados = intercambios.objects.filter(sucursal_asignada=suc, status="REALIZADO")
     context = {'aceptados': aceptados}
     return render(request, 'historialaceptados.html', context)
 
@@ -533,10 +533,12 @@ def rate_profile(request, intercambio_id):
                 rating_obj.cantValoraciones += 1
                 rating_obj.save()
 
-
-            intercambio.valorado = True
-            intercambio.save()
-            
+            if request.user.profile.es_empleado:
+                intercambio.valoradoEmpleado = True
+                intercambio.save()
+            else:    
+                intercambio.valoradoUsuario = True
+                intercambio.save()
 
 
             #if request.POST.get('ajax'):
