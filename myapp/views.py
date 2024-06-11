@@ -415,6 +415,7 @@ def create_trade(request, trueque_id):
             else:
                 Product.objects.create(hora=form.cleaned_data['hora'], fecha=form.cleaned_data['fecha'], nombre=form.cleaned_data['nombre'], estado=form.cleaned_data['estado'],
                                        categoria=form.cleaned_data['categoria'], foto=form.cleaned_data['foto'],
+                                       marca=form.cleaned_data['marca'],modelo=form.cleaned_data['modelo'],
                                        descripcion=form.cleaned_data['descripcion'], postulante=request.user.profile,
                                        trueque_postulado=trueque)
                 

@@ -19,7 +19,7 @@ class ProductForm(forms.ModelForm):
             ('nuevo', 'Nuevo'),
             ('usado', 'Usado'),
         ]
-        fields = ['nombre', 'estado', 'categoria', 'foto', 'descripcion','hora','fecha']
+        fields = ['nombre', 'estado', 'categoria','marca','modelo', 'foto', 'descripcion','hora','fecha']
         widgets = {
             'estado': forms.Select(attrs={'class': 'selectEstado'},choices=ESTADO_CHOICES),
             'fecha': forms.DateInput(attrs={'type': 'date', 'class': 'datepicker'}),
@@ -29,6 +29,9 @@ class ProductForm(forms.ModelForm):
         super(ProductForm, self).__init__(*args, **kwargs)
         self.fields['hora'].required = True
         self.fields['fecha'].required = True
+        self.fields['descripcion'].required = False
+        self.fields['marca'].required = False
+        self.fields['modelo'].required = False
 
 class CreateNewProject(forms.Form):
     name = forms.CharField(label="Nombre del Proyect", max_length=200, widget=forms.TextInput(attrs={'class': 'input'}))
