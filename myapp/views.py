@@ -374,7 +374,7 @@ def Menu_intercambios(request):
 
 def Historial_Intercambios(request):
     title = 'Historial de intercambios'
-    trueques = intercambios.objects.all().order_by('status')
+    trueques = intercambios.objects.filter(usuario = request.user.profile).order_by('status')
     
     trueque_data = {
         status: list(items) 
