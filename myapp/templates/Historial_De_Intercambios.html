@@ -62,27 +62,31 @@
 
     <div class="panel">
       <h2>Intercambios Realizados</h2>
-      {% if trueques_realizados %}
-        {% for trueque in trueques_realizados %}
+        {% if trueques_realizados %}
+          {% for trueque in trueques_realizados %}
             <div class="product-container">
               <div class="product-image">
                 <img src="{{ trueque.foto.url }}" class="trueque-foto" alt="Descripción de la imagen">
               </div>
-              <div class="product-details">
-                    <span>{{ trueque.nombre }}</span>
-              </div>
-              
-              <div class="product-atributos-container">
-                <span class="attribute-label">Categoria:</span>
-                <span class="attribute-value" style="color: brown;">{{ trueque.categoria }}</span><br>
-                <span class="attribute-label">Modelo:</span>
-                <span class="attribute-value">{{ trueque.modelo }}</span><br>
-                <span class="attribute-label">Descripcion:</span>
-                <span class="attribute-value">{{ trueque.descripcion }}</span><br>
-               
-
-              </div>
+            <div class="product-details">
+              <span>{{ trueque.nombre }}</span>
             </div>
+            <div>
+              {% if not trueque.valorado %}
+                <a href="{% url 'rate_profile' trueque.id %}" class="botonValorar">Valorar este perfil</a>
+              {% else %}
+                <span>Ya valorado</span>
+              {% endif %}
+            </div>
+            <div class="product-atributos-container">
+              <span class="attribute-label">Categoria:</span>
+              <span class="attribute-value" style="color: brown;">{{ trueque.categoria }}</span><br>
+              <span class="attribute-label">Modelo:</span>
+              <span class="attribute-value">{{ trueque.modelo }}</span><br>
+              <span class="attribute-label">Descripcion:</span>
+              <span class="attribute-value">{{ trueque.descripcion }}</span><br>
+            </div>
+          </div>
         {% endfor %}
       {% else %}
         <h3>No hay intercambios realizados actualmente</h3>
