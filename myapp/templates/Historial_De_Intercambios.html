@@ -72,6 +72,7 @@
 
     <div class="panel">
       <h2>Intercambios Realizados</h2>
+      <div class ="panelV2">
         {% if trueques_realizados %}
           {% for trueque in trueques_realizados %}
             <div class="product-container">
@@ -103,12 +104,13 @@
       {% else %}
         <h3>No hay intercambios realizados actualmente</h3>
       {% endif %}
+      </div>
     </div>
 
     <div class="panel">
-
       <h2>Intercambios Cancelados</h2>
-      {% if trueques_cancelados %}
+      <div class ="panelV2">
+        {% if trueques_cancelados %}
         {% for trueque in trueques_cancelados %}
             <div class="product-container">
               <div class="product-image">
@@ -132,7 +134,9 @@
       {% else %}
         <h3>No hay intercambios Cancelados actualmente</h3>
       {% endif %}
+      </div>
     </div>
+      
 </div>
 <script>
 
