@@ -132,17 +132,6 @@ h2::after {
   left: 0;
 }
 
-.product-container {
-  display: grid;
-  width: 50%;
-  margin: 0 auto;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
-  box-shadow: 6px 8px 14px 7px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
 .product-details {
   display: flex;
   justify-content: center;
@@ -160,13 +149,14 @@ h2::after {
   /* Ocupa todo el ancho disponible */
   overflow: hidden;
   /* Oculta cualquier contenido que pueda extenderse más allá de los límites del contenedor */
-  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 3px 4px 8px 4px rgb(0 0 0 / 20%);
   /* Agrega una sombra fina por arriba */
   justify-content: center;
   align-items: center;
   /* Centra los elementos verticalmente */
   font-size: 13px;
   /* Tamaño de fuente */
+  font-family: monospace;
   color: #666;
   /* Color de texto */
   border-top: 2px solid #ccc;
