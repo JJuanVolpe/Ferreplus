@@ -81,7 +81,17 @@ body {
   justify-content: space-between;
   width: 100%;
 }
-
+.panelV2 {
+  background-color: #ffffff;
+  border-radius: 18px;
+  box-shadow: 11px 4px 8px 8px rgb(0 0 0 / 23%);
+  /* border: 2px solid #2d4a81; */
+  text-align: center;
+  flex-grow: 0;
+  margin: 0 10px;
+  max-height: 650px;
+  overflow: auto;
+}
 .panel {
   background-color: #ffffff;
   border-radius: 18px;
@@ -95,7 +105,7 @@ body {
   margin: 0 10px;
   /* Ajusta el margen horizontal para dar espacio entre los paneles */
   max-height: 750px;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .panel-objects-postuled {
@@ -218,6 +228,7 @@ h2::after {
 .product-container {
   width: 50%;
   margin: 0 auto;
+  margin-top: 10px;
   margin-bottom: 25px;
   border: 1px solid #ccc;
   border-radius: 5px;

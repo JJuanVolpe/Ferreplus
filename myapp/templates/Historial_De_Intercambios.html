@@ -36,8 +36,9 @@
   <div class="panel-container">
     <div class="panel">
       <h2>Intercambios Pendientes</h2>
-      {% if trueques_pendientes %}
-        {% for trueque in trueques_pendientes %}
+      <div class ="panelV2">
+        {% if trueques_pendientes %}
+          {% for trueque in trueques_pendientes %}
             <div class="product-container">
               <div class="product-image">
                 <img src="{{ trueque.foto.url }}" class="trueque-foto" alt="Descripción de la imagen">
@@ -62,10 +63,11 @@
                   </form>
                 </div>
             </div>
-        {% endfor %}
-      {% else %}
-        <h3>No hay intercambios Pendientes publicados</h3>
-      {% endif %}
+          {% endfor %}
+        {% else %}
+          <h3>No hay intercambios Pendientes publicados</h3>
+        {% endif %}
+      </div>
     </div>
 
     <div class="panel">
