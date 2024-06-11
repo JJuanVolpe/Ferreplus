@@ -50,15 +50,19 @@
     const ratingForm = document.getElementById('rating-form');
 
     stars.forEach(star => {
-      star.addEventListener('click', function () {
-        const value = this.getAttribute('data-value');
-        ratingInput.value = value;
-        stars.forEach(s => s.style.color = 'black');
-        for (let i = 0; i < value; i++) {
-          stars[i].style.color = 'gold';
-        }
-      });
-    });
+                star.addEventListener('click', function () {
+                    const value = parseInt(this.getAttribute('data-value')); // Asegúrate de convertir a entero
+                    ratingInput.value = value;
+                    stars.forEach(s => s.style.color = 'black');
+                    for (let i = 0; i < stars.length; i++) {
+                        if (parseInt(stars[i].getAttribute('data-value')) <= value) {
+                            stars[i].style.color = 'gold';
+                        }
+                    }
+                    console.log(ratingInput.value);
+                });
+            });
+
 
     ratingForm.addEventListener('submit', function (event) {
       event.preventDefault();
