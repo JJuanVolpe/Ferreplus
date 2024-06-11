@@ -374,7 +374,8 @@ def Menu_intercambios(request):
 
 def Historial_Intercambios(request):
     title = 'Historial de intercambios'
-    trueques = intercambios.objects.filter(usuario = request.user.profile).order_by('status')
+    actual_user = request.user.profile
+    trueques = intercambios.objects.filter(usuario = actual_user).order_by('status')
     
     trueque_data = {
         status: list(items) 
@@ -551,14 +552,12 @@ def rate_profile(request, intercambio_id):
     if request.method == "POST":
         if not request.POST.get('rating'):
             return render(request, 'rate_profile.html', context=context)
-        rating_value = int(request.POST.get('rating', 0))
-        # Obtener o crear la instancia de Rating
-        if (profile == user_actual):#Hago que el profile a enviar sea de la otra persona (sino se valora a sí mismo)
-            if not intercambio.valoradoPostulante:
-                intercambio.valoradoPostulante = True #El usuario valora al postulante
+        
+        rating_value = int(request.POST.get('rating', 0)) # Obtener o crear la instancia de Rating       
+        if (user_actual == intercambio.usuario): #Si soy el creador del trueque voto al postulante
+            intercambio.valoradoPostulante = True 
         elif user_actual.es_empleado:
-            if not intercambio.valoradoEmpleado:
-                intercambio.valoradoEmpleado = True # El empleado valora al creador del trueque
+            intercambio.valoradoEmpleado = True 
         elif not intercambio.valoradoUsuario:
             intercambio.valoradoUsuario = True #El usuario valora al creador de trueque
         intercambio.save()
@@ -567,9 +566,9 @@ def rate_profile(request, intercambio_id):
             rating_obj.rating += rating_value
             rating_obj.cantValoraciones += 1
             rating_obj.save()
-        redirect_url = '/menuEmpleado'
-        if not user_actual.es_empleado:
-            redirect_url = '/historial-intercambios/'
+        redirect_url = '/historial-intercambios/'
+        if user_actual.es_empleado:
+            redirect_url = '/menuEmpleado'
         return JsonResponse({'success': True, 'redirect_url': redirect_url})
     else:
         return render(request, 'rate_profile.html', context=context)
