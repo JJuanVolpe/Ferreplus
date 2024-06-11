@@ -83,6 +83,27 @@
             transform: scale(1.05);
         }
 
+        .botonValorar {
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+            color: #ffffff;
+            background-color: #2d4a81;
+            padding: 10px 20px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .botonValorar:hover {
+            background-color: rgba(255, 82, 51, 0.926);
+            transform: scale(1.05);
+        }
+
     </style>
 </head>
 <body>
@@ -98,12 +119,12 @@
                         <tr>
                             <th>Nombre usuario</th>
                             <th>Item</th>
-                            <th>Categoría</th>
+                            <th>Categori­a</th>
                             <th>Estado</th>
                             <th>Marca</th>
                             <th>Modelo</th>
                             <th>Foto</th>
-                            <th>Valorar</th>
+                            <th>Valoracion</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,6 +137,13 @@
                             <td>{{ intercambio.marca }}</td>
                             <td>{{ intercambio.modelo }}</td>
                             <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>
+                            <td>
+                                {% if not intercambio.valoradoEmpleado %}
+                                    <a href="{% url 'rate_profile' intercambio.id %}" class="botonValorar">Valorar este perfil</a>
+                                {% else %}
+                                    <span>Ya valorado</span>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -125,5 +153,16 @@
             {% endif %}
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const valorarButtons = document.querySelectorAll('.botonValorar');
+        
+            valorarButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    button.disabled = true;
+                });
+            });
+        });
+    </script>
 </body>
 </html>

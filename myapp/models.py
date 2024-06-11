@@ -59,9 +59,13 @@ class intercambios(models.Model):
     usuario = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='intercambios')
     status = models.CharField(max_length=200, null=True, default="NUEVO", blank=True)   # Campo que identitifica estado del trueque
     sucursal_asignada =  models.ForeignKey(Sucursal, on_delete=models.SET_NULL, related_name='intercambios', null=True, blank=True)
+    valoradoEmpleado = models.BooleanField(default=False)
+    valoradoUsuario = models.BooleanField(default=False)
+    valoradoPostulante = models.BooleanField(default=False)
+    
 
     def __str__(self):
-        return "intercambio:" + str(self.nombre) + ", con categoria:" + str(self.categoria)  + ", del usuario: "+ str(self.usuario.dni)  + "  y status:" + str(self.status) 
+        return "intercambio:" + str(self.nombre) + ", con categoria:" + str(self.categoria)  + ", del usuario: "+ str(self.usuario.dni)  + "  y status:" + str(self.status) + "  val. creador:" + str(self.valoradoUsuario)+ "  val. post:" + str(self.valoradoPostulante)+ "  val. x emp:" + str(self.valoradoEmpleado)
 
 
 
@@ -75,3 +79,8 @@ class Product(models.Model):
     trueque_postulado = models.ForeignKey(intercambios, on_delete=models.CASCADE, null=True, blank=True)
     hora = models.TimeField(blank=True, null=True)  # Permite valores en blanco y nulos
     fecha = models.DateField(blank=True, null=True)
+
+class Rating(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    cantValoraciones = models.IntegerField(default=1) 

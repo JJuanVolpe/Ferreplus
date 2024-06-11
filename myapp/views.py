@@ -1,6 +1,7 @@
 from itertools import groupby
 import random
 import string
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
@@ -8,13 +9,15 @@ from django.contrib.auth.models import User
 from django.db import Error, IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Sucursal, intercambios, Product
+from .models import Profile, Rating, Sucursal, intercambios, Product
 from .forms import RecoveryForm, crear_intercambio_con_espera_de_ofertas, ProductForm
 from django.core.mail import EmailMessage
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
 from datetime import time,datetime
+from django.db.models import Avg
+
 import re  # Importación del módulo r
 
 
@@ -35,6 +38,8 @@ def menuPrincipal(request):
 def miPerfil(request):
     previous_page = request.META.get('HTTP_REFERER')
     usuario = request.user  # Obtenemos el usuario autenticado
+    
+
 
     if request.method == 'POST':
         if 'contraseñaActual' in request.POST:
@@ -375,11 +380,21 @@ def Historial_Intercambios(request):
         status: list(items) 
         for status, items in groupby(trueques, key=lambda x: x.status)
     }
+    trueques_realizados = trueque_data.get("REALIZADO", [])
+    trueques_cancelados = trueque_data.get("CANCELADO", [])
+    trueques_pendientes = trueque_data.get("PENDIENTE", [])
+    valorables_ids = []
+    for intercambio in trueques_realizados:
+        if can_rate(request.user.profile, intercambio):
+            valorables_ids.append(intercambio.id)
+    
     context = {
         'title': title,
-        'trueques_pendientes': trueque_data.get("PENDIENTE", []), 
-        'trueques_realizados': trueque_data.get("REALIZADO", []),
-        'trueques_cancelados': trueque_data.get("CANCELADO", [])
+        'trueques_pendientes': trueques_pendientes,
+        'trueques_realizados': trueques_realizados,
+        'trueques_cancelados': trueques_cancelados,
+        'valorables_ids': valorables_ids
+        
     }
     return render(request, 'Historial_De_Intercambios.html', context)
 
@@ -437,12 +452,16 @@ def menu_empleado(request):
     intercambiossuc = intercambios.objects.filter(sucursal_asignada=suc, status="PENDIENTE")
     if request.method == 'POST':
         return redirect('intercambiosaceptados')
+    intercambiossuc = intercambios.objects.filter(sucursal_asignada=suc, status="PENDIENTE")
+    if request.method == 'POST':
+        return redirect('intercambiosaceptados')
 
+    context = {'sucursal': suc, 'intercambios': intercambiossuc}
+    return render(request, 'menuEmpleado.html', context)
     context = {'sucursal': suc, 'intercambios': intercambiossuc}
     return render(request, 'menuEmpleado.html', context)
 
 def historialaceptados(request, intercambio_id=None):
-    print(intercambio_id)
     if intercambio_id:
         intercambio = get_object_or_404(intercambios, id=intercambio_id)
         intercambio.status = "REALIZADO"
@@ -476,8 +495,14 @@ def filtrar_productos_por_filtro(request):
 
 def aceptar_trueque(request, obj_id):
         postuled =  get_object_or_404(Product, id=obj_id)
+        for offer in Product.objects.filter(trueque_postulado=postuled.trueque_postulado):
+            #Elimina el resto de obj. postulados
+            if offer != postuled:
+                offer.delete()
+            
         trueque = postuled.trueque_postulado
         trueque.status = 'PENDIENTE'
+        
         trueque.save()
         #Falta el código pa hacer algo con los obj. postulados restantes. 
         return Historial_Intercambios(request)
@@ -502,3 +527,63 @@ def cancelar_trueque(request, trueque_id):
         
         return Historial_Intercambios(request)
 
+
+
+def can_rate(profile, intercambio):
+        return (profile.es_empleado and not intercambio.valoradoEmpleado) or \
+                (profile == intercambio.usuario and not intercambio.valoradoPostulante) or \
+                (profile != intercambio.usuario and not intercambio.valoradoUsuario)
+            
+
+def rate_profile(request, intercambio_id):
+    intercambio = get_object_or_404(intercambios, id=intercambio_id)
+    profile = intercambio.usuario #Percibo que quién valora es el postulante (justamente al creador del trade)
+    user_actual = request.user.profile
+    if profile == user_actual:
+        profile = get_object_or_404(Product, trueque_postulado=intercambio).postulante
+    context = {
+        'actual_user': user_actual,
+        'profile': profile,
+        'intercambio' : intercambio,
+        'puede_valorar' : can_rate(user_actual, intercambio)
+    }
+    if request.method == "POST":
+        if not request.POST.get('rating'):
+            return render(request, 'rate_profile.html', context=context)
+        rating_value = int(request.POST.get('rating', 0))
+        # Obtener o crear la instancia de Rating
+        if (profile == user_actual):#Hago que el profile a enviar sea de la otra persona (sino se valora a sí mismo)
+            if not intercambio.valoradoPostulante:
+                intercambio.valoradoPostulante = True #El usuario valora al postulante
+        elif user_actual.es_empleado:
+            if not intercambio.valoradoEmpleado:
+                intercambio.valoradoEmpleado = True # El empleado valora al creador del trueque
+        elif not intercambio.valoradoUsuario:
+            intercambio.valoradoUsuario = True #El usuario valora al creador de trueque
+        intercambio.save()
+        rating_obj, created = Rating.objects.get_or_create(profile=profile, defaults={'rating': rating_value})
+        if not created: # Si ya existe, actualizar la valoración sumando la nueva
+            rating_obj.rating += rating_value
+            rating_obj.cantValoraciones += 1
+            rating_obj.save()
+        redirect_url = '/menuEmpleado'
+        if not user_actual.es_empleado:
+            redirect_url = '/historial-intercambios/'
+        return JsonResponse({'success': True, 'redirect_url': redirect_url})
+    else:
+        return render(request, 'rate_profile.html', context=context)
+        
+
+
+
+
+def profile_detail(request, profile_id):
+    profile = get_object_or_404(Profile, id=profile_id)
+    average_rating = profile.ratings.aggregate(Avg('rating'))['rating__avg']
+
+    context = {
+        'profile': profile,
+        'average_rating': average_rating,
+        'usuario': profile.user,
+    }
+    return render(request, 'miPerfil.html', context)
