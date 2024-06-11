@@ -531,7 +531,6 @@ def can_rate(profile, intercambio):
             
 
 def rate_profile(request, intercambio_id):
-    print("HHHHHHHHHHHHHHHHHHHHHHHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOLA")    
     intercambio = get_object_or_404(intercambios, id=intercambio_id)
     profile = intercambio.usuario #Percibo que quién valora es el postulante (justamente al creador del trade)
     user_actual = request.user.profile
@@ -544,7 +543,6 @@ def rate_profile(request, intercambio_id):
         'puede_valorar' : can_rate(user_actual, intercambio)
     }
     if request.method == "POST":
-        
         if not request.POST.get('rating'):
             return render(request, 'rate_profile.html', context=context)
         rating_value = int(request.POST.get('rating', 0))
@@ -563,10 +561,10 @@ def rate_profile(request, intercambio_id):
             rating_obj.rating += rating_value
             rating_obj.cantValoraciones += 1
             rating_obj.save()
-        if user_actual.es_empleado:
-            return redirect('/menuEmpleado')
-        else:
-            return Historial_Intercambios(request)
+        redirect_url = '/menuEmpleado'
+        if not user_actual.es_empleado:
+            redirect_url = '/historial-intercambios/'
+        return JsonResponse({'success': True, 'redirect_url': redirect_url})
     else:
         return render(request, 'rate_profile.html', context=context)
         
