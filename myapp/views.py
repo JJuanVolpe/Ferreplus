@@ -108,7 +108,7 @@ def intercambio_con_espera_de_ofertas(request):
             usuario=request.user.profile,
         )
         # Agrega un mensaje de éxito
-        messages.success(request, "El intercambio se ha creado correctamente. Se le notificarán las ofertas que reciba por correo electrónico.")
+        messages.success(request, "El intercambio se ha creado correctamente.")
         # Redirige a la página de Mis_Trueques
         return redirect('Mis_Trueques')
     else:
