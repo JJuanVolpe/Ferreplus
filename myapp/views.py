@@ -380,16 +380,25 @@ def Historial_Intercambios(request):
         for status, items in groupby(trueques, key=lambda x: x.status)
     }
     
-    trueques_realizados = trueque_data.get("REALIZADO", [])
-    trueques_cancelados = trueque_data.get("CANCELADO", [])
-    trueques_pendientes = trueque_data.get("PENDIENTE", [])
+    trueques_realizados = []
+    trueques_cancelados = []
+    #trueques_pendientes = trueque_data.get("PENDIENTE", [])
     
     valorables_ids = []
     for intercambio in trueques_realizados:
         prod_by_postuler = get_object_or_404(Product, trueque_postulado=intercambio)
         if request.user.profile == intercambio.usuario or prod_by_postuler.postulante == request.user.profile:
+            trueques_realizados.append(intercambio)
             if can_rate(request.user.profile, prod_by_postuler.trueque_postulado):
                 valorables_ids.append(intercambio.id)
+    
+    for intercambio in trueques.filter(status='CANCELADO'):
+        prod_by_postuler = get_object_or_404(Product, trueque_postulado=intercambio)
+        if request.user.profile == intercambio.usuario or prod_by_postuler.postulante == request.user.profile:
+            trueques_cancelados.append(intercambio)
+    
+    trueques_pendientes = intercambios.objects.filter(usuario=request.user.profile).get("PENDIENTE", [])
+    
     
     context = {
         'title': title,
