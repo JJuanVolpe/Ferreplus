@@ -377,6 +377,7 @@ def Menu_intercambios(request):
 def Historial_Intercambios(request):
     title = 'Historial de intercambios'
     trueques = intercambios.objects.order_by('status')
+
     trueque_data = {
         status: list(items) 
         for status, items in groupby(trueques, key=lambda x: x.status)
@@ -484,12 +485,12 @@ def filtrar_productos_por_filtro(request):
         search_type = request.GET.get('search_type', 'estado')  # Por defecto, busca por estado
         if query:
             if search_type == 'estado':
-                productos = intercambios.objects.filter(estado__icontains=query)
+                productos = intercambios.objects.filter(estado__icontains=query, status="NUEVO")
             elif search_type == 'sucursal':
                 # Obtener la sucursal que cumple con la consulta
                 chars = query.lower()
                 newlist = [x for x in Sucursal.objects.all() if chars in x.address.lower() or chars in x.city.lower()]
-                productos = [obj for obj in intercambios.objects.all() if obj.sucursal_asignada in newlist]
+                productos = [obj for obj in intercambios.objects.filter(status="NUEVO").all() if obj.sucursal_asignada in newlist]
             if  not productos:
                 messages.error(request, 'No existen objetos con el estado o sucursal ingresado.')
                 productos = intercambios.objects.filter(status="NUEVO").all()
