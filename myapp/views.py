@@ -374,20 +374,22 @@ def Menu_intercambios(request):
 
 def Historial_Intercambios(request):
     title = 'Historial de intercambios'
-    actual_user = request.user.profile
-    trueques = intercambios.objects.filter(usuario = actual_user).order_by('status')
-    
+    trueques = intercambios.objects.order_by('status')
     trueque_data = {
         status: list(items) 
         for status, items in groupby(trueques, key=lambda x: x.status)
     }
+    
     trueques_realizados = trueque_data.get("REALIZADO", [])
     trueques_cancelados = trueque_data.get("CANCELADO", [])
     trueques_pendientes = trueque_data.get("PENDIENTE", [])
+    
     valorables_ids = []
     for intercambio in trueques_realizados:
-        if can_rate(request.user.profile, intercambio):
-            valorables_ids.append(intercambio.id)
+        prod_by_postuler = get_object_or_404(Product, trueque_postulado=intercambio)
+        if request.user.profile == intercambio.usuario or prod_by_postuler.postulante == request.user.profile:
+            if can_rate(request.user.profile, prod_by_postuler.trueque_postulado):
+                valorables_ids.append(intercambio.id)
     
     context = {
         'title': title,
@@ -532,9 +534,9 @@ def cancelar_trueque(request, trueque_id):
 
 
 def can_rate(profile, intercambio):
-        return (profile.es_empleado and not intercambio.valoradoEmpleado) or \
-                (profile == intercambio.usuario and not intercambio.valoradoPostulante) or \
-                (profile != intercambio.usuario and not intercambio.valoradoUsuario)
+    return (profile.es_empleado and not intercambio.valoradoEmpleado) or \
+            (profile == intercambio.usuario and not intercambio.valoradoPostulante) or \
+            (profile != intercambio.usuario and not intercambio.valoradoUsuario)
             
 
 def rate_profile(request, intercambio_id):
