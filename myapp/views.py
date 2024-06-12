@@ -174,7 +174,7 @@ def signin(request):
             if profile.es_gerente:  # Verifica si el usuario es gerente
                 return redirect('Sucursales')
             elif profile.es_empleado:
-                return redirect('menuEmpleado')
+                menu_empleado(request=request)
             else:    
                 return redirect('menuPrincipal')
         else:
@@ -522,12 +522,12 @@ def aceptar_trueque(request, obj_id):
 
 
 def rechazar_trueque(request, obj_id):
-        postuled =  Product.objects.filter(id=obj_id)
-        trueque_id = postuled.trueque_postulado.id
+    postuled =  Product.objects.filter(id=obj_id).first()
+    trueque_id = postuled.trueque_postulado.id
 
-        postuled.delete()
-        
-        return ver_objetos_postulados(request, trueque_id=trueque_id)
+    postuled.delete()
+    
+    return ver_objetos_postulados(request, trueque_id=trueque_id)
 
 def cancelar_trueque(request, trueque_id):
         trueque = get_object_or_404(intercambios, id=trueque_id)
