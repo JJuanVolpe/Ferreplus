@@ -126,6 +126,25 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
+        .btn-rechazar {
+            background-color: #ff7f0e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-rechazar:hover {
+            background-color: #ff9900;
+        }
+
+        .btn-rechazar:focus {
+            outline: none;
+        }
+
+
         .btn-aceptar {
             background-color: #ff7f0e;
             color: white;
@@ -167,6 +186,7 @@
                                 <th>Modelo</th>
                                 <th>Foto</th>
                                 <th>Acción</th>
+                                <th>Accion</th>
                              </tr>
                         </thead>
                     <tbody>
@@ -183,6 +203,12 @@
                                 <form method="POST" action="{% url 'intercambiosaceptados' intercambio.id %}" style="position: relative;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn-aceptar">Aceptar</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="{% url 'cancelar_trueque' intercambio.id %}" style="position: relative;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-rechazar">Cancelar</button>
                                 </form>
                             </td>
                             </tr>
