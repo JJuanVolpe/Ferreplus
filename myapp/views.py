@@ -159,8 +159,10 @@ def signin(request):
         profile = Profile.objects.get(user=request.user)
         if profile.es_gerente:
             return redirect('Sucursales')
+        elif profile.es_empleado:
+            return redirect('menuEmpleado') 
         else:
-            return redirect('menuPrincipal')
+             return redirect('menuPrincipal')
 
     if request.method == 'GET':
         return render(request, 'signin.html', {"form": AuthenticationForm()})
@@ -528,7 +530,9 @@ def cancelar_trueque(request, trueque_id):
             obj.delete()
         
         trueque.save()
-        
+        if request.user.profile.es_empleado:
+            return menu_empleado(request)
+
         return Historial_Intercambios(request)
 
 
