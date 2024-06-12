@@ -38,9 +38,6 @@ def menuPrincipal(request):
 def miPerfil(request):
     previous_page = request.META.get('HTTP_REFERER')
     usuario = request.user  # Obtenemos el usuario autenticado
-    
-
-
     if request.method == 'POST':
         if 'contraseñaActual' in request.POST:
             # El formulario se envió desde el modal de cambio de contraseña
@@ -375,42 +372,43 @@ def Menu_intercambios(request):
 
 
 def Historial_Intercambios(request):
+    
+    def permitir_visualizar_trueque(profile, intercambio, prod):
+        return profile == intercambio.usuario or ((prod != None and prod.postulante == profile))
+    
     title = 'Historial de intercambios'
     trueques = intercambios.objects.order_by('status')
-    trueque_data = {
-        status: list(items) 
-        for status, items in groupby(trueques, key=lambda x: x.status)
-    }
-    
-    trueques_realizados = []
-    trueques_cancelados = []
-    #trueques_pendientes = trueque_data.get("PENDIENTE", [])
     
     valorables_ids = []
-    for intercambio in trueques_realizados:
+    realizados_por_usuario = []
+    cancelados_por_usuario = []
+    pendientes_por_usuario = intercambios.objects.filter(usuario=request.user.profile, status='PENDIENTE')
+   
+    for intercambio in trueques.filter(status='REALIZADO'):
         prod_by_postuler = get_object_or_404(Product, trueque_postulado=intercambio)
-        if request.user.profile == intercambio.usuario or prod_by_postuler.postulante == request.user.profile:
-            trueques_realizados.append(intercambio)
+        if permitir_visualizar_trueque(profile=request.user.profile, intercambio=intercambio,prod=prod_by_postuler):
+            realizados_por_usuario.append(intercambio)
             if can_rate(request.user.profile, prod_by_postuler.trueque_postulado):
                 valorables_ids.append(intercambio.id)
     
     for intercambio in trueques.filter(status='CANCELADO'):
-        prod_by_postuler = get_object_or_404(Product, trueque_postulado=intercambio)
-        if request.user.profile == intercambio.usuario or prod_by_postuler.postulante == request.user.profile:
-            trueques_cancelados.append(intercambio)
-    
-    trueques_pendientes = intercambios.objects.filter(usuario=request.user.profile).get("PENDIENTE", [])
-    
-    
+        prod_by_postuler = Product.objects.filter(trueque_postulado=intercambio)
+        if (request.user.profile == intercambio.usuario):
+            cancelados_por_usuario.append(intercambio)
+        #else: Si descomento esto filtro y obtengo paraa el postulante del trueque cancelado el mismo asi lo ve. 
+        #    for prod in prod_by_postuler:
+        #        if permitir_visualizar_trueque(profile=request.user.profile, postulante=prod.postulante, intercambio=intercambio, prod=prod):
+        #            cancelados_por_usuario.append(intercambio)
     context = {
         'title': title,
-        'trueques_pendientes': trueques_pendientes,
-        'trueques_realizados': trueques_realizados,
-        'trueques_cancelados': trueques_cancelados,
+        'trueques_pendientes': pendientes_por_usuario,
+        'trueques_realizados': realizados_por_usuario,
+        'trueques_cancelados': cancelados_por_usuario,
         'valorables_ids': valorables_ids
         
     }
     return render(request, 'Historial_De_Intercambios.html', context)
+
 
 def create_trade(request, trueque_id):
     if request.method == 'POST':
