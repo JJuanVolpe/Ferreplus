@@ -173,7 +173,7 @@ def signin(request):
             if profile.es_gerente:  # Verifica si el usuario es gerente
                 return redirect('Sucursales')
             elif profile.es_empleado:
-                menu_empleado(request=request)
+                return redirect('menuEmpleado')
             else:    
                 return redirect('menuPrincipal')
         else:
