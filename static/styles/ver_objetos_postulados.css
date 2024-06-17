@@ -150,6 +150,7 @@ h2::after {
 }
 
 .trueque-foto {
+  margin-bottom: 15px;
   width: auto; /* Ajusta el ancho de la imagen automáticamente según el tamaño del contenedor */
   max-width: 100%; /* Establece el ancho máximo de la imagen para que no exceda el ancho del contenedor */
   max-height: 100%; /* Ajusta la altura máxima de la imagen automáticamente */

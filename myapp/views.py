@@ -1,4 +1,3 @@
-from itertools import groupby
 import random
 import string
 from django.http import HttpResponse, JsonResponse
@@ -471,8 +470,7 @@ def menu_empleado(request):
 
     context = {'sucursal': suc, 'intercambios': intercambiossuc}
     return render(request, 'menuEmpleado.html', context)
-    context = {'sucursal': suc, 'intercambios': intercambiossuc}
-    return render(request, 'menuEmpleado.html', context)
+
 
 def historialaceptados(request, intercambio_id=None):
     if intercambio_id:
@@ -499,10 +497,7 @@ def filtrar_productos_por_filtro(request):
                 productos = [obj for obj in intercambios.objects.filter(status="NUEVO").all() if obj.sucursal_asignada in newlist]
             if  not productos:
                 messages.error(request, 'No existen objetos con el estado o sucursal ingresado.')
-                productos = intercambios.objects.filter(status="NUEVO").all()
-        else:
-            messages.error(request, 'No se proporcionó ninguna cadena para buscar.')
-            productos = intercambios.objects.filter(status="NUEVO").all()
+                productos = []
         return render(request, 'Menu_De_Intercambios.html', {'trueques': productos, 'form': ProductForm()})
 
 
