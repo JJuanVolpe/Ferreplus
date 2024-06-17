@@ -509,6 +509,8 @@ def aceptar_trueque(request, obj_id):
                 offer.delete()
             
         trueque = postuled.trueque_postulado
+        trueque.hora = postuled.hora
+        trueque.fecha = postuled.fecha
         trueque.status = 'PENDIENTE'
         
         trueque.save()

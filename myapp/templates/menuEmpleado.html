@@ -185,6 +185,7 @@
                                 <th>Marca</th>
                                 <th>Modelo</th>
                                 <th>Foto</th>
+                                <th>Fecha y Hora</th>
                                 <th>Acción</th>
                                 <th>Accion</th>
                              </tr>
@@ -199,12 +200,14 @@
                             <td>{{ intercambio.marca }}</td>
                             <td>{{ intercambio.modelo }}</td>
                             <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>                                               
+                            <td>{{ intercambio.fecha }} {{ intercambio.hora }}</td>
                             <td>
                                 <form method="POST" action="{% url 'intercambiosaceptados' intercambio.id %}" style="position: relative;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn-aceptar">Aceptar</button>
                                 </form>
                             </td>
+
                             <td>
                                 <form method="POST" action="{% url 'cancelar_trueque' intercambio.id %}" style="position: relative;">
                                     {% csrf_token %}
