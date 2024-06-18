@@ -1,14 +1,21 @@
 {% extends "navegacionGerente.html" %}
 
 {% block title %}Listado de Sucursales{% endblock %}
-
+{% load static %}
 {% block extra_styles %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'styles/messages.css' %}">
+    <script src="{% static 'js/messages.js' %}"></script>
+</head>
 <style>
-    th, td {
-            border: 1px solid #060606;
-            padding: 5px;
-            text-align: left;
-        }
+    th,
+    td {
+        border: 1px solid #060606;
+        padding: 5px;
+        text-align: left;
+    }
+
     .table-container {
         border: 3px solid #1a1a1a;
         text-align: center;
@@ -37,23 +44,25 @@
             </thead>
             <tbody>
                 {% if sucursales %}
-                    {% for suc in sucursales %}
-                        <tr>
-                            <td>{{ suc.address }}</td>
-                            <td>{{ suc.city }}</td>
-                            <td>
-                                <button class="button-style editar-btn" data-id="{{ suc.id }}" data-address="{{ suc.address }}" data-city="{{ suc.city }}">Editar</button>
-                                <form class="eliminar-form" action="{% url 'eliminar_sucursal' suc.id %}" method="post" style="display: inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="button-style">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                {% for suc in sucursales %}
+                <tr>
+                    <td>{{ suc.address }}</td>
+                    <td>{{ suc.city }}</td>
+                    <td>
+                        <button class="button-style editar-btn" data-id="{{ suc.id }}" data-address="{{ suc.address }}"
+                            data-city="{{ suc.city }}">Editar</button>
+                        <form class="eliminar-form" action="{% url 'eliminar_sucursal' suc.id %}" method="post"
+                            style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="button-style">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
                 {% else %}
-                    <tr>
-                        <td colspan="3">No se encontraron sucursales</td>
-                    </tr>
+                <tr>
+                    <td colspan="3">No se encontraron sucursales</td>
+                </tr>
                 {% endif %}
             </tbody>
         </table>
@@ -66,13 +75,6 @@
         <input type="text" id="nueva_ciudad" name="nueva_ciudad" required><br><br>
         <button class="button-style" type="submit">Agregar sucursal</button>
     </form>
-    {% if messages %}
-        <div class="message">
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
 </div>
 
 <dialog id="modal">
@@ -90,9 +92,20 @@
         </form>
     </div>
 </dialog>
-
+{% if messages %}
+<div class="message-container">
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+            <span class="close" onclick="this.parentElement.style.display='none';">&times;</span>
+            {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const editarForm = document.getElementById('editar-form');
         const editarButtons = document.querySelectorAll('.editar-btn');
         const cerrarModalBtn = document.querySelector("#Cerrar_modal");
@@ -100,8 +113,8 @@
         const addressInput = document.getElementById('address');
         const cityInput = document.getElementById('city');
 
-        editarButtons.forEach(function(btn) {
-            btn.addEventListener("click", function() {
+        editarButtons.forEach(function (btn) {
+            btn.addEventListener("click", function () {
                 const sucursalId = this.getAttribute('data-id');
                 const sucursalAddress = this.getAttribute('data-address');
                 const sucursalCity = this.getAttribute('data-city');
@@ -114,7 +127,7 @@
             });
         });
 
-        cerrarModalBtn.addEventListener("click", function() {
+        cerrarModalBtn.addEventListener("click", function () {
             modal.close();
         });
     });

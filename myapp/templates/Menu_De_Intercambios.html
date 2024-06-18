@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
-
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
     <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles/messages.css' %}">
+    <script src="{% static 'js/messages.js' %}"></script>
+
 
     <style>
         body {
@@ -18,14 +21,16 @@
             justify-content: center;
             min-height: 100vh;
         }
-        .selectEstado{
+
+        .selectEstado {
             width: 100% !important;
             padding: 10px !important;
             margin-bottom: 20px !important;
-            border: 1px solid #ccc!important;
+            border: 1px solid #ccc !important;
             border-radius: 3px !important;
             box-sizing: border-box !important;
         }
+
         .container {
             display: flex;
             width: 90%;
@@ -150,19 +155,21 @@
             overflow: auto; /* Agregar desplazamiento si el contenido es más grande que el modal */
             background-color: rgb(0 0 0 / 69%);; /* Fondo semitransparente para el modal */
         }
+
         /* Estilos para el contenido del modal */
         .modal-content {
             max-height: fit-content;
-        background-color: #fefefe;
-        margin: 5% auto;
-        padding: 20px;
-        max-height: 800px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 600px;
-        border-radius: 10px;
-        overflow-y: auto;
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            max-height: 800px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            overflow-y: auto;
         }
+
         /* Estilos para el botón de cerrar */
         .closeModalBtn {
             color: #aaa;
@@ -338,6 +345,7 @@
         .round-button i {
             font-size: 24px;
         }
+
     </style>
 </head>
 
@@ -366,20 +374,6 @@
         <div class="right">
             <h3>Intercambios disponibles</h3>
             <div class="exist-trueque">
-                {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-success" role="alert" id="success-message">
-                    {{ message }}
-                </div>
-                <script>
-                    // Oculta el mensaje después de 5 segundos
-                    setTimeout(function () {
-                        document.getElementById('success-message').style.display = 'none';
-                    }, 5000); // 5000 milisegundos = 5 segundos
-                </script>
-                {% endfor %}
-                {% endif %}
-
                 {% if trueques %}
                 <div class="search-filter">
                     <form method="GET" action="{% url 'filtrar_productos_por_filtro' %}" style="position: relative;">
@@ -401,7 +395,7 @@
                         <tr>
                             <th>Nombre usuario</th>
                             <th>Item</th>
-                            <th>Categoria</th>                            
+                            <th>Categoria</th>
                             <th>Estado</th>
                             <th>Sucursal</th>
                             <th>Foto</th>
@@ -421,7 +415,8 @@
                                 <div>
                                     {% csrf_token %}
                                     <!-- Aquí puedes añadir los campos del formulario para el intercambio -->
-                                    <button type="button" class="btn-postular openModalBtn">Proponer Intercambio</button>
+                                    <button type="button" class="btn-postular openModalBtn">Proponer
+                                        Intercambio</button>
                                     <dialog class="modal">
                                         <div class="modal-content">
                                             <h1>Postular Objeto Para Intercambio</h1>
@@ -430,7 +425,8 @@
                                                 {% csrf_token %}
                                                 {{ form.as_p }}
                                                 <button class="buttonSpecial" type="submit">Guardar cambios</button>
-                                                <button class="buttonSpecial closeModalBtn" type="button">Cancelar</button>
+                                                <button class="buttonSpecial closeModalBtn"
+                                                    type="button">Cancelar</button>
                                             </form>
                                         </div>
                                     </dialog>
@@ -448,6 +444,18 @@
                 {% endif %}
             </div>
         </div>
+        {% if messages %}
+        <div class="message-container">
+            <ul class="messages">
+                {% for message in messages %}
+                <li class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                    <span class="close" onclick="this.parentElement.style.display='none';">&times;</span>
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {

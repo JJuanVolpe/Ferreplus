@@ -9,7 +9,7 @@ from django.db import Error, IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import Profile, Rating, Sucursal, intercambios, Product
-from .forms import RecoveryForm, crear_intercambio_con_espera_de_ofertas, ProductForm
+from .forms import CrearIntercambioForm, RecoveryForm, crear_intercambio_con_espera_de_ofertas, ProductForm
 from django.core.mail import EmailMessage
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -91,27 +91,27 @@ def miPerfil(request):
 
 @login_required
 def intercambio_con_espera_de_ofertas(request):
+    context = {'title': 'intercambio con espera de ofertas', 'form': CrearIntercambioForm()}
     if request.method == 'POST':
-        intercambios.objects.create(
-            nombre=request.POST['nombre'],
-            estado=request.POST['estado'],
-            categoria=request.POST['categoria'],
-            foto=request.FILES['foto'],
-            descripcion=request.POST['descripcion'],
-            modelo=request.POST['modelo'],
-            marca=request.POST['marca'],
-            sucursal_asignada = get_object_or_404(Sucursal, id=request.POST['sucursal']),
+        form = CrearIntercambioForm(request.POST, request.FILES)
+        if form.is_valid():
+            intercambios.objects.create(
+            nombre=form.cleaned_data['nombre'],
+            estado=form.cleaned_data['estado'],
+            categoria=form.cleaned_data['categoria'],
+            foto=form.cleaned_data['foto'],
+            descripcion=form.cleaned_data['descripcion'],
+            modelo=form.cleaned_data['modelo'],
+            marca=form.cleaned_data['marca'],
+            sucursal_asignada=form.cleaned_data['sucursal'],
             usuario=request.user.profile,
-        )
-        # Agrega un mensaje de éxito
-        messages.success(request, "El intercambio se ha creado correctamente.")
-        # Redirige a la página de Mis_Trueques
-        return redirect('Mis_Trueques')
+            )
+            messages.success(request, "El intercambio se ha creado correctamente.")    
+            # Redirige a la página de Mis_Trueques
+            return render(request, 'Mis_Trueques.html', {'listadointercambios': intercambios.objects.filter(usuario=request.user.profile, status='NUEVO')})
+            redirect()
     else:
-        
-        title = 'intercambio con espera de ofertas'
-        context = {'title': title, 'form': crear_intercambio_con_espera_de_ofertas(), 'sucursales': Sucursal.objects.all()}
-        return render(request, 'intercambio_con_espera_de_ofertas.html', context)
+        return render(request, 'intercambio_con_espera_de_ofertas.html', context=context)
     
 def incorrect_password(password):
         if len(password) < 8:
@@ -312,6 +312,7 @@ def Ver_trueques(request):
         trueque.estado= request.POST['estado']
         trueque.nombre= request.POST['nombre']
         trueque.modelo= request.POST['modelo']
+        messages.warning(request, '¡El intercambio se ha editado correctamente!')
         # Si se proporciona una foto, asignarla al campo 'foto' del trueque
         if 'foto' in request.FILES:
             trueque.foto = request.FILES['foto']
@@ -448,10 +449,7 @@ def ver_objetos_postulados(request, trueque_id):
     
     return render(request, 'ver_objetos_postulados.html', context)
 
-def Crear_Trueque(request):
-    title = 'Mis trueques'
-    context = {'title': title}
-    return render(request, 'Crear_Trueques.html', context)
+
 
 def Menu_Sucursales(request):
     context = {'sucursales': Sucursal.objects.all()}
@@ -566,6 +564,7 @@ def rate_profile(request, intercambio_id):
             intercambio.valoradoEmpleado = True 
         elif not intercambio.valoradoUsuario:
             intercambio.valoradoUsuario = True #El usuario valora al creador de trueque
+        messages.success(request, "Se valoró exitosamente el usuario")
         intercambio.save()
         rating_obj, created = Rating.objects.get_or_create(profile=profile, defaults={'rating': rating_value})
         if not created: # Si ya existe, actualizar la valoración sumando la nueva

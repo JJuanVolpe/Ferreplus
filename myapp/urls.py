@@ -20,7 +20,6 @@ urlpatterns = [
     path('create-trade/<int:trueque_id>/', views.create_trade, name='create_trade'),
     path('mis-intercambios/',views.Ver_trueques, name="Mis_Trueques"),
     path('ver_objetos_postulados/<int:trueque_id>',views.ver_objetos_postulados, name="ver_objetos_postulados"),
-    path('crear-trueques/',views.Crear_Trueque,name="Crear_Trueques"),
     path('menu-sucursales/',views.Menu_Sucursales, name="Menu_Sucursales"),
     path('eliminar_sucursal/<int:sucursal_id>/', views.eliminar_sucursal, name='eliminar_sucursal'),
     path('editar_sucursal/<int:sucursal_id>/', views.editar_sucursal, name='editar_sucursal'),

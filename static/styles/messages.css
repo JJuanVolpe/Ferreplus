@@ -1,0 +1,119 @@
+
+/* Estilos generales para el contenedor de mensajes */
+.message-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px; /* Puedes ajustar el ancho según tus necesidades */
+    z-index: 1000;
+}
+
+/* Estilos para la lista de mensajes */
+.messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos para cada mensaje individual */
+.message {
+    position: relative;
+    background-color: #f8f9fa; /* Fondo claro por defecto */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px; /* Aumentar el padding para mayor altura */
+    margin-bottom: 20px; /* Aumentar el margen inferior */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    transition: background-color 0.3s ease, opacity 1s ease-out; /* Transición para el efecto hover y desvanecimiento */
+    opacity: 1; /* Para manejar la transición de desvanecimiento */
+}
+
+/* Pico hacia abajo */
+.message::after {
+    content: "";
+    position: absolute;
+    bottom: -20px; /* Ajusta la posición para el pico */
+    right: 20px; /* Ajusta la posición horizontal del pico */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #f8f9fa; /* Color del fondo del mensaje */
+}
+
+/* Botón de cierre */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #aaa;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Estilos específicos para diferentes niveles de mensaje */
+.message.info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+.message.info:hover {
+    background-color: #c4e3eb; /* Color oscurecido para el efecto hover */
+}
+
+.message.info::after {
+    border-top-color: #d1ecf1;
+}
+
+.message.success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.message.success:hover {
+    background-color: #c3e6cb; /* Color oscurecido para el efecto hover */
+}
+
+.message.success::after {
+    border-top-color: #d4edda;
+}
+
+.message.warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+}
+
+.message.warning:hover {
+    background-color: #ffe8a1; /* Color oscurecido para el efecto hover */
+}
+
+.message.warning::after {
+    border-top-color: #fff3cd;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.message.error:hover {
+    background-color: #f5c6cb; /* Color oscurecido para el efecto hover */
+}
+
+.message.error::after {
+    border-top-color: #f8d7da;
+}

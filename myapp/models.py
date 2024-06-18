@@ -15,6 +15,10 @@ class Sucursal(models.Model):
             profile.delete()
         super().delete(*args, **kwargs)
 
+    def __str__(self):
+        return "Ciudad:" + self.city  + ", direccion:" + self.address
+    
+
 class Profile(models.Model):
     # otros campos
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile", blank=True, null=True)
@@ -25,6 +29,7 @@ class Profile(models.Model):
     es_gerente = models.BooleanField(null=False, blank=False,default=False)
     es_empleado = models.BooleanField(null=False, blank=False,default=False)
     sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE,related_name="sucursal",null=True,blank=True) 
+
     def __str__(self):
         return "username of prof:" + self.user.username  + " edad:" + str(self.edad) + ", con dni:" + str(self.dni)  + ", genero: "+ str(self.genero)  + "  y celular:" + str(self.telefono)
 
