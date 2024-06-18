@@ -123,6 +123,7 @@
                             <th>Estado</th>
                             <th>Marca</th>
                             <th>Modelo</th>
+                            <th>Fecha y Hora</th>
                             <th>Foto</th>
                             <th>Valoracion</th>
                         </tr>
@@ -136,6 +137,7 @@
                             <td>{{ intercambio.estado }}</td>
                             <td>{{ intercambio.marca }}</td>
                             <td>{{ intercambio.modelo }}</td>
+                            <td>{{ intercambio.fecha }} & {{ intercambio.hora }} </td>
                             <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>
                             <td>
                                 {% if not intercambio.valoradoEmpleado %}

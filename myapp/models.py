@@ -64,6 +64,8 @@ class intercambios(models.Model):
     valoradoEmpleado = models.BooleanField(default=False)
     valoradoUsuario = models.BooleanField(default=False)
     valoradoPostulante = models.BooleanField(default=False)
+    class Meta:
+        ordering = ['fecha', 'hora']
 
     def __str__(self):
         return "intercambio: " + str(self.nombre) + ", con categoria: " + str(self.categoria) + ", del usuario: " + str(self.usuario.dni) + " y status: " + str(self.status) + " val. creador: " + str(self.valoradoUsuario) + " val. post: " + str(self.valoradoPostulante) + " val. x emp: " + str(self.valoradoEmpleado)

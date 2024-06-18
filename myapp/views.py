@@ -454,16 +454,12 @@ def Crear_Trueque(request):
     return render(request, 'Crear_Trueques.html', context)
 
 def Menu_Sucursales(request):
-    title = 'Menu de Sucursales'
     context = {'sucursales': Sucursal.objects.all()}
     return render(request, 'Menu_Sucursales.html', context)
 
 def menu_empleado(request):
     usuario = request.user.profile
     suc = usuario.sucursal
-    intercambiossuc = intercambios.objects.filter(sucursal_asignada=suc, status="PENDIENTE")
-    if request.method == 'POST':
-        return redirect('intercambiosaceptados')
     intercambiossuc = intercambios.objects.filter(sucursal_asignada=suc, status="PENDIENTE")
     if request.method == 'POST':
         return redirect('intercambiosaceptados')
