@@ -9,7 +9,7 @@ from django.db import Error, IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import Profile, Rating, Sucursal, intercambios, Product
-from .forms import CrearIntercambioForm, RecoveryForm, crear_intercambio_con_espera_de_ofertas, ProductForm
+from .forms import CrearIntercambioForm, RecoveryForm, ProductForm
 from django.core.mail import EmailMessage
 from django.contrib import messages
 from django.shortcuts import render, redirect
