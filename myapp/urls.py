@@ -35,7 +35,8 @@ urlpatterns = [
     path('intercambiosaceptados/<int:intercambio_id>', views.historialaceptados,name='intercambiosaceptados'),
     path('intercambiosaceptados/', views.historialaceptados, name='intercambiosaceptados'),
     path('rate/<int:intercambio_id>/', views.rate_profile, name='rate_profile'),
-    path('rate/<int:profile_id>/', views.profile_detail, name='profile_detail')
+    path('rate/<int:profile_id>/', views.profile_detail, name='profile_detail'),
+    path('verEstadisticas/', views.ver_estadisticas,name="verEstadisticas")
 ] 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,36 @@
+
+{% extends "navegacionGerente.html" %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+{% block extra_styles %}
+<style>
+    .costado{
+        width: 20%;
+    }
+    .container{
+        display: flex;
+        flex-direction: column;
+    }
+
+</style>
+{% endblock %}
+<body>
+    
+    {% block content %}
+    <h1> Estadisticas </h1>
+    <div>
+        <div class="costado">
+            <h1> Estadistica 1 </h1>
+        </div>
+        <div>
+            <h1> Datos importantes de la estadistica 1 </h1>
+        </div>
+    </div>
+    
+    
+    {% endblock %}
+</body>

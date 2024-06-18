@@ -592,3 +592,6 @@ def profile_detail(request, profile_id):
         'usuario': profile.user,
     }
     return render(request, 'miPerfil.html', context)
+
+def ver_estadisticas(request):
+    return render(request,'verEstadisticas.html')

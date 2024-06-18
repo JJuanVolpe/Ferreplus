@@ -175,12 +175,12 @@
 
             <label for="genero">Género:</label>
             <select id="genero" name="genero" required>
-                <option value="Masculino" {% if usuario.profile.genero=='Masculino' %}selected{% endif %}>Masculino
+                <option value="Masculino" {% if usuario.profile.genero == 'Masculino' %}selected{% endif %}>Masculino
                 </option>
-                <option value="Femenino" {% if usuario.profile.genero=='Femenino' %}selected{% endif %}>Femenino
+                <option value="Femenino" {% if usuario.profile.genero == 'Femenino' %}selected{% endif %}>Femenino
                 </option>
-                <option value="Otro" {% if usuario.profile.genero=='Otro' %}selected{% endif %}>Otro</option>
-            </select>
+                <option value="Otro" {% if usuario.profile.genero == 'Otro' %}selected{% endif %}>Otro</option>
+            </select>   
 
             <label for="telefono">Número:</label>
             <input type="number" id="telefono" name="telefono" value="{{ usuario.profile.telefono }}">
