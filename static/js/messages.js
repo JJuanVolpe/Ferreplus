@@ -10,6 +10,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
             setTimeout(() => {
                 message.style.display = 'none'; // Elimina el mensaje del flujo del documento
             }, 1000); // Espera a que la transición termine (1s)
-        }, 3000); // Espera 3 segundos antes de empezar a desvanecer
+        }, 4000); // Espera 3 segundos antes de empezar a desvanecer
     });
 });
