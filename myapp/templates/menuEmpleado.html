@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{% static 'styles/messages.css' %}">
     <script src="{% static 'js/messages.js' %}"></script>
-   <style>
+    <style>
         body {
             background-color: #4566d3e5;
             font-family: Arial, Helvetica, sans-serif;
@@ -147,7 +147,6 @@
             outline: none;
         }
 
-
         .btn-aceptar {
             background-color: #ff7f0e;
             color: white;
@@ -158,14 +157,93 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-aceptar:hover {
+        .btn-menu:hover {
             background-color: #ff9900;
         }
 
-        .btn-aceptar:focus {
+        .btn-menu:focus {
             outline: none;
         }
 
+        .btn-menu {
+            background-color: #ff7f0e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-menu:hover {
+            background-color: #ff9900;
+        }
+
+        .btn-menu:focus {
+            outline: none;
+        }
+
+
+        /* Modal styles */
+        #modal, #gastoModal {
+            width: 90%;
+            max-width: 500px;
+            height: auto;
+            padding: 20px;
+            background-color: #2d4a81;
+            border-radius: 8px;
+            box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            max-height: 300px;
+        }
+        
+        #modal::backdrop, #gastoModal::backdrop {
+            background-color: rgba(0, 0, 0, .45);
+        }
+
+        .divModal {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .buttonSpecial,
+        input[type="submit"].buttonSpecial {
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #003f7f;
+            padding: 10px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin: 4px 0;
+        }
+
+        .buttonSpecial:hover,
+        input[type="submit"].buttonSpecial:hover {
+            background-color: #ff5233;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -191,32 +269,31 @@
                                 <th>Fecha y Hora</th>
                                 <th>Acción</th>
                                 <th>Accion</th>
-                             </tr>
+                            </tr>
                         </thead>
-                    <tbody>
-                          {% for intercambio in intercambios %}
+                        <tbody>
+                            {% for intercambio in intercambios %}
                             <tr>
-                            <td>{{ intercambio.usuario.user.username }}</td>
-                            <td>{{ intercambio.nombre }}</td>
-                            <td>{{ intercambio.categoria }}</td>
-                            <td>{{ intercambio.estado }}</td>
-                            <td>{{ intercambio.marca }}</td>
-                            <td>{{ intercambio.modelo }}</td>
-                            <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>                                               
-                            <td>{{ intercambio.fecha }} {{ intercambio.hora }}</td>
-                            <td>
-                                <form method="POST" action="{% url 'intercambiosaceptados' intercambio.id %}" style="position: relative;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn-aceptar">Aceptar</button>
-                                </form>
-                            </td>
-
-                            <td>
-                                <form method="POST" action="{% url 'cancelar_trueque' intercambio.id %}" style="position: relative;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn-rechazar">Cancelar</button>
-                                </form>
-                            </td>
+                                <td>{{ intercambio.usuario.user.username }}</td>
+                                <td>{{ intercambio.nombre }}</td>
+                                <td>{{ intercambio.categoria }}</td>
+                                <td>{{ intercambio.estado }}</td>
+                                <td>{{ intercambio.marca }}</td>
+                                <td>{{ intercambio.modelo }}</td>
+                                <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>                                               
+                                <td>{{ intercambio.fecha }} {{ intercambio.hora }}</td>
+                                <td>
+                                    <form method="POST" action="{% url 'intercambiosaceptados' intercambio.id %}" style="position: relative;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-aceptar">Aceptar</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="POST" action="{% url 'cancelar_trueque' intercambio.id %}" style="position: relative;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-rechazar">Cancelar</button>
+                                    </form>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -228,7 +305,7 @@
         <p>No hay intercambios a aprobar en tu sucursal.</p>
     {% endif %}
     <a href="{% url 'intercambiosaceptados' %}">
-        <button type="button" class="btn-aceptar">Historial de Intercambios aceptados</button>
+        <button type="button" class="btn-menu">Historial de Intercambios aceptados</button>
     </a>
     
     {% if messages %}
@@ -243,5 +320,51 @@
         </ul>
     </div>
     {% endif %}
+
+    <!-- Modal for monto gastado -->
+    <dialog id="gastoModal">
+        <div class="divModal">
+            <h2>Ingrese el monto gastado en la ferreteria</h2>
+            <form id="gastoForm">
+                <label for="montoGastado">Monto gastado en la ferretería:</label>
+                <input type="number" id="montoGastado" name="montoGastado" min="0" required>
+                <button type="button" class="buttonSpecial" id="confirmGasto">Confirmar</button>
+                <button type="button" class="buttonSpecial" id="cancelGasto">Cancelar</button>
+            </form>
+        </div>
+    </dialog>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const gastoModal = document.getElementById('gastoModal');
+            const gastoForm = document.getElementById('gastoForm');
+            const confirmGasto = document.getElementById('confirmGasto');
+            const cancelGasto = document.getElementById('cancelGasto');
+            
+            document.querySelecto('.btn-aceptar').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    gastoModal.showModal();
+                });
+            });
+            
+            confirmGasto.addEventListener('click', function() {
+                const montoGastado = document.getElementById('montoGastado').value;
+                if (montoGastado) {
+                    // Aquí puedes agregar la lógica para enviar el monto al servidor
+                    gastoModal.close();
+                    // Continuar con el envío del formulario
+                    document.querySelectorAll('.btn-aceptar').forEach(button => {
+                        button.closest('form').submit();
+                    });
+                }
+            });
+            
+            cancelGasto.addEventListener('click', function() {
+                gastoModal.close();
+            });
+        });
+    </script>
 </body>
 </html>

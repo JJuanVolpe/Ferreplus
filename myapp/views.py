@@ -460,6 +460,7 @@ def menu_empleado(request):
     suc = usuario.sucursal
     intercambiossuc = intercambios.objects.filter(sucursal_asignada=suc, status="PENDIENTE")
     if request.method == 'POST':
+        print(request.POST.get('montoGastado')) #aca deberia haber una forma de guardar el monto
         return redirect('intercambiosaceptados')
 
     context = {'sucursal': suc, 'intercambios': intercambiossuc}
@@ -594,4 +595,9 @@ def profile_detail(request, profile_id):
     return render(request, 'miPerfil.html', context)
 
 def ver_estadisticas(request):
-    return render(request,'verEstadisticas.html')
+    sucursales = Sucursal.objects.all()
+    intercambio = intercambios.objects.all()
+    return render(request,'verEstadisticas.html',{
+        'intercambios':intercambio,
+        'sucursales':sucursales
+    })
