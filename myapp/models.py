@@ -69,6 +69,7 @@ class intercambios(models.Model):
     valoradoEmpleado = models.BooleanField(default=False)
     valoradoUsuario = models.BooleanField(default=False)
     valoradoPostulante = models.BooleanField(default=False)
+    valorCompra = models.FloatField(default=0)
     class Meta:
         ordering = ['fecha', 'hora']
 

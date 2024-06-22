@@ -246,6 +246,19 @@
         }
     </style>
 </head>
+<html lang="es">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles/messages.css' %}">
+    <script src="{% static 'js/messages.js' %}"></script>
+    <style>
+        /* CSS styles remain unchanged */
+    </style>
+</head>
 <body>
     <div class="top-buttons">
         <a class="logOut botonVolv" href="/logout">Cerrar Sesión</a>
@@ -285,6 +298,7 @@
                                 <td>
                                     <form method="POST" action="{% url 'intercambiosaceptados' intercambio.id %}" style="position: relative;">
                                         {% csrf_token %}
+                                        <input type="hidden" name="montoGastado" class="montoGastado">
                                         <button type="submit" class="btn-aceptar">Aceptar</button>
                                     </form>
                                 </td>
@@ -305,7 +319,7 @@
         <p>No hay intercambios a aprobar en tu sucursal.</p>
     {% endif %}
     <a href="{% url 'intercambiosaceptados' %}">
-        <button type="button" class="btn-menu">Historial de Intercambios aceptados</button>
+        <button type="button" class="btn-aceptar">Historial de Intercambios aceptados</button>
     </a>
     
     {% if messages %}
@@ -340,11 +354,13 @@
             const gastoForm = document.getElementById('gastoForm');
             const confirmGasto = document.getElementById('confirmGasto');
             const cancelGasto = document.getElementById('cancelGasto');
-            
-            document.querySelecto('.btn-aceptar').forEach(button => {
+            let currentForm = null;
+
+            document.querySelectorAll('.btn-aceptar').forEach(button => {
                 button.addEventListener('click', function(event) {
                     event.preventDefault();
                     event.stopPropagation();
+                    currentForm = this.closest('form');
                     gastoModal.showModal();
                 });
             });
@@ -352,12 +368,10 @@
             confirmGasto.addEventListener('click', function() {
                 const montoGastado = document.getElementById('montoGastado').value;
                 if (montoGastado) {
-                    // Aquí puedes agregar la lógica para enviar el monto al servidor
+                    const montoFields = currentForm.querySelectorAll('.montoGastado');
+                    montoFields.forEach(field => field.value = montoGastado);
                     gastoModal.close();
-                    // Continuar con el envío del formulario
-                    document.querySelectorAll('.btn-aceptar').forEach(button => {
-                        button.closest('form').submit();
-                    });
+                    currentForm.submit();
                 }
             });
             

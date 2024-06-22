@@ -459,10 +459,10 @@ def menu_empleado(request):
     usuario = request.user.profile
     suc = usuario.sucursal
     intercambiossuc = intercambios.objects.filter(sucursal_asignada=suc, status="PENDIENTE")
+    
     if request.method == 'POST':
-        print(request.POST.get('montoGastado')) #aca deberia haber una forma de guardar el monto
         return redirect('intercambiosaceptados')
-
+    
     context = {'sucursal': suc, 'intercambios': intercambiossuc}
     return render(request, 'menuEmpleado.html', context)
 
@@ -471,6 +471,10 @@ def historialaceptados(request, intercambio_id=None):
     if intercambio_id:
         intercambio = get_object_or_404(intercambios, id=intercambio_id)
         intercambio.status = "REALIZADO"
+        monto_gastado = request.POST.get('montoGastado')
+        print( intercambio_id)
+        intercambio.valorCompra = monto_gastado  # Ajusta el campo según tu modelo
+        print("valor",intercambio.valorCompra)
         intercambio.save()
     usuario = request.user.profile
     suc = usuario.sucursal
