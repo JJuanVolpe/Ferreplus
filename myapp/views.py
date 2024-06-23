@@ -418,7 +418,7 @@ def create_trade(request, trueque_id):
             form_category = form.cleaned_data['categoria']
             if form.cleaned_data['fecha']<= datetime.today().date():
                messages.error(request,'La fecha debe ser mayor a la fecha actual')
-            elif form.cleaned_data['hora']< time(8, 0) or form.cleaned_data['hora']> time(20, 0):
+            elif form.cleaned_data['hora']< time(8, 0) or form.cleaned_data['hora'] > time(20, 0):
                 messages.error(request,'La hora debe ser mayor a las 08:00 y menor a las 20:00')
             elif form_category != trueque.categoria:
                 messages.error(request, 'La categoria del objeto ingresado debe corresponderse con la del objeto a intercambiar.')
@@ -437,11 +437,9 @@ def create_trade(request, trueque_id):
     return Menu_intercambios(request=request)
 
 def ver_objetos_postulados(request, trueque_id):
-
     trueque = get_object_or_404(intercambios, id=trueque_id)
     title = 'Listado ofrecido para intercambiar objeto:' +  trueque.nombre + ', marca: ' + trueque.marca
-    trueques = intercambios.objects
-    objetos_postulados = Product.objects.filter(trueque_postulado=trueque)
+    objetos_postulados = Product.objects.filter(trueque_postulado=trueque, status='NUEVO')
     context = {
         'title': title,
         'objetos_postulados': objetos_postulados, 
@@ -503,35 +501,34 @@ def filtrar_productos_por_filtro(request):
 def aceptar_trueque(request, obj_id):
         postuled =  get_object_or_404(Product, id=obj_id)
         for offer in Product.objects.filter(trueque_postulado=postuled.trueque_postulado):
-            #Elimina el resto de obj. postulados
-            if offer != postuled:
-                offer.delete()
-            
+            if offer != postuled:  #Cancela el resto de obj. postulados
+                offer.status = 'RECHAZADO'
+                offer.save()
+        postuled.status = 'ACEPTADO'
         trueque = postuled.trueque_postulado
         trueque.hora = postuled.hora
         trueque.fecha = postuled.fecha
         trueque.status = 'PENDIENTE'
-        
         trueque.save()
-        #Falta el código pa hacer algo con los obj. postulados restantes. 
         return Historial_Intercambios(request)
 
 
 def rechazar_trueque(request, obj_id):
     postuled =  Product.objects.filter(id=obj_id).first()
+    postuled.status = "RECHAZADO"
     trueque_id = postuled.trueque_postulado.id
-
-    postuled.delete()
+    postuled.save()
     
     return ver_objetos_postulados(request, trueque_id=trueque_id)
 
 def cancelar_trueque(request, trueque_id):
         trueque = get_object_or_404(intercambios, id=trueque_id)
         trueque.status = 'CANCELADO'
-        postulados = Product.objects.filter(trueque_postulado=trueque)
-        for obj in postulados:
-            obj.delete()
-        
+        postulados = Product.objects.filter(trueque_postulado=trueque) #Está bien q se cancelen, o no?
+        for obj in postulados:                                         #Cancel trueque = Cancel object postuled
+            obj.status = 'CANCELADO'
+            obj.save()
+            
         trueque.save()
         if request.user.profile.es_empleado:
             return menu_empleado(request)
@@ -582,9 +579,6 @@ def rate_profile(request, intercambio_id):
         return JsonResponse({'success': True, 'redirect_url': redirect_url})
     else:
         return render(request, 'rate_profile.html', context=context)
-        
-
-
 
 
 def profile_detail(request, profile_id):
@@ -605,3 +599,8 @@ def ver_estadisticas(request):
         'intercambios':intercambio,
         'sucursales':sucursales
     })
+
+
+def mis_objetos_postulados(request):
+    objects = Product.objects.filter(postulante=request.user.profile)
+    return render(request,'ver_mis_objetos_postulados.html', context={'postuled': objects})

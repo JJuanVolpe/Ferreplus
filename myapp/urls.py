@@ -34,6 +34,7 @@ urlpatterns = [
     path('cancelar_trueque/<int:trueque_id>/', views.cancelar_trueque, name='cancelar_trueque'),
     path('intercambiosaceptados/<int:intercambio_id>', views.historialaceptados,name='intercambiosaceptados'),
     path('intercambiosaceptados/', views.historialaceptados, name='intercambiosaceptados'),
+    path('ver_mis_objetos_postulados/',views.mis_objetos_postulados,name="ver_mis_objetos_postulados"),
     path('rate/<int:intercambio_id>/', views.rate_profile, name='rate_profile'),
     path('rate/<int:profile_id>/', views.profile_detail, name='profile_detail'),
     path('verEstadisticas/', views.ver_estadisticas,name="verEstadisticas")
