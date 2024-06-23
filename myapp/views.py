@@ -472,7 +472,6 @@ def historialaceptados(request, intercambio_id=None):
         intercambio = get_object_or_404(intercambios, id=intercambio_id)
         intercambio.status = "REALIZADO"
         monto_gastado = request.POST.get('montoGastado')
-        print( intercambio_id)
         intercambio.valorCompra = monto_gastado  # Ajusta el campo según tu modelo
         print("valor",intercambio.valorCompra)
         intercambio.save()
@@ -601,7 +600,17 @@ def profile_detail(request, profile_id):
 def ver_estadisticas(request):
     sucursales = Sucursal.objects.all()
     intercambio = intercambios.objects.all()
+    
+    valor_por_sucursal=[]   
+    for sucursal in sucursales:
+        valorSucursal = 0
+        for inter in intercambio:
+            if inter.sucursal_asignada:
+                if inter.sucursal_asignada.id == sucursal.id:
+                    valorSucursal += inter.valorCompra   
+        valor_por_sucursal.append(valorSucursal)
+    
     return render(request,'verEstadisticas.html',{
-        'intercambios':intercambio,
+        'valor_por_sucursal':valor_por_sucursal,
         'sucursales':sucursales
     })

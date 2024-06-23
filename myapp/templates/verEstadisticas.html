@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -136,7 +138,30 @@
                     <h2>Estadística 1</h2>
                 </div>
                 <div class="main-content">
-                    <h2>Datos importantes de la estadística 1</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Dirección</th>
+                                <th>Ciudad</th>
+                                <th>Valor Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if sucursales %}
+                                {% for sucursal in sucursales %}
+                                    <tr>
+                                        <td>{{ sucursal.address }}</td>
+                                        <td>{{ sucursal.city }}</td>
+                                        <td>un valor</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="3">No se encontraron sucursales</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>   
                 </div>
             </div>
         </main>
