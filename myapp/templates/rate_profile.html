@@ -1,0 +1,155 @@
+{% block content %}
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .container {
+    background: #214589;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 7px 6px 10px rgb(0 0 0 / 35%);
+    text-align: center;
+  }
+
+  h1 {
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
+
+  .rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+
+  .rating__star {
+    font-size: 2em;
+    color: #ccc;
+    transition: color 0.2s;
+  }
+
+  .rating__star:hover,
+  .rating__star:hover ~ .rating__star,
+  .rating__star--selected {
+    color: gold;
+  }
+
+  .button {
+    display: inline-block;
+    background: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .button:hover {
+    background: #218838;
+  }
+
+  .volverF {
+    margin-top: 10px;
+  }
+
+  .volverF .button {
+    background: #007bff;
+  }
+
+  .volverF .button:hover {
+    background: #0056b3;
+  }
+</style>
+
+<div class="container">
+  <h1>Valorar a {{ profile.user.username }}</h1>
+  <form id="rating-form">
+    {% csrf_token %}
+    <div class="rating">
+      <span class="rating__star" data-value="5">&#9733;</span>
+      <span class="rating__star" data-value="4">&#9733;</span>
+      <span class="rating__star" data-value="3">&#9733;</span>
+      <span class="rating__star" data-value="2">&#9733;</span>
+      <span class="rating__star" data-value="1">&#9733;</span>
+    </div>
+    <input type="hidden" name="rating" id="rating-input">
+    <button type="submit" class="button">Enviar valoración</button>
+  </form>
+  {% if actual_user.es_empleado %}
+  <form action="{% url 'intercambiosaceptados' %}" class="volverF">
+    <button type="submit" class="button">Volver</button>
+  </form>
+  {% else %}
+  <form action="{% url 'Historial_De_Intercambios' %}" class="volverF">
+    <button type="submit" class="button">Volver</button>
+  </form>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const stars = document.querySelectorAll('.rating__star');
+    const ratingInput = document.getElementById('rating-input');
+    const ratingForm = document.getElementById('rating-form');
+
+    stars.forEach(star => {
+      star.addEventListener('click', function () {
+        const value = parseInt(this.getAttribute('data-value'));
+        ratingInput.value = value;
+
+        stars.forEach(s => s.classList.remove('rating__star--selected'));
+        for (let i = 0; i < stars.length; i++) {
+          if (parseInt(stars[i].getAttribute('data-value')) <= value) {
+            stars[i].classList.add('rating__star--selected');
+          }
+        }
+        console.log(ratingInput.value);
+      });
+    });
+
+    ratingForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const formData = new FormData(ratingForm);
+      const csrfToken = formData.get('csrfmiddlewaretoken');
+
+      fetch("{% url 'rate_profile' intercambio.id %}", {
+        method: "POST",
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: formData,
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Response data:', data);
+          if (data.redirect_url) {
+            console.log(data.redirect_url)
+            window.location.href = data.redirect_url;
+          } else {
+            alert('Valoración enviada correctamente.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+  });
+</script>
+
+{% endblock %}

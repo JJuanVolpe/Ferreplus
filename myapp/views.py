@@ -1,7 +1,6 @@
 import random
 import string
-import os
-from time import sleep
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
@@ -9,16 +8,15 @@ from django.contrib.auth.models import User
 from django.db import Error, IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Sucursal, intercambios, Product
-from .forms import RecoveryForm, crear_intercambio_con_espera_de_ofertas, ProductForm
+from .models import Profile, Rating, Sucursal, intercambios, Product
+from .forms import CrearIntercambioForm, RecoveryForm, ProductForm
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
+from datetime import time,datetime
+from django.db.models import Avg
+
 import re  # Importación del módulo r
 
 
@@ -39,7 +37,6 @@ def menuPrincipal(request):
 def miPerfil(request):
     previous_page = request.META.get('HTTP_REFERER')
     usuario = request.user  # Obtenemos el usuario autenticado
-
     if request.method == 'POST':
         if 'contraseñaActual' in request.POST:
             # El formulario se envió desde el modal de cambio de contraseña
@@ -94,25 +91,27 @@ def miPerfil(request):
 
 @login_required
 def intercambio_con_espera_de_ofertas(request):
+    context = {'title': 'intercambio con espera de ofertas', 'form': CrearIntercambioForm()}
     if request.method == 'POST':
-        intercambio = intercambios.objects.create(
-            nombre=request.POST['nombre'],
-            estado=request.POST['estado'],
-            categoria=request.POST['categoria'],
-            foto=request.FILES['foto'],
-            descripcion=request.POST['descripcion'],
-            modelo=request.POST['modelo'],
-            marca=request.POST['marca'],
-            usuario=request.user.profile
-        )
-        # Agrega un mensaje de éxito
-        messages.success(request, "El intercambio se ha creado correctamente. Se le notificarán las ofertas que reciba por correo electrónico.")
-        # Redirige a la página de Mis_Trueques
-        return redirect('Mis_Trueques')
+        form = CrearIntercambioForm(request.POST, request.FILES)
+        if form.is_valid():
+            intercambios.objects.create(
+            nombre=form.cleaned_data['nombre'],
+            estado=form.cleaned_data['estado'],
+            categoria=form.cleaned_data['categoria'],
+            foto=form.cleaned_data['foto'],
+            descripcion=form.cleaned_data['descripcion'],
+            modelo=form.cleaned_data['modelo'],
+            marca=form.cleaned_data['marca'],
+            sucursal_asignada=form.cleaned_data['sucursal'],
+            usuario=request.user.profile,
+            )
+            messages.success(request, "El intercambio se ha creado correctamente.")    
+            # Redirige a la página de Mis_Trueques
+            return render(request, 'Mis_Trueques.html', {'listadointercambios': intercambios.objects.filter(usuario=request.user.profile, status='NUEVO')})
+            redirect()
     else:
-        title = 'intercambio con espera de ofertas'
-        context = {'title': title, 'form': crear_intercambio_con_espera_de_ofertas()}
-        return render(request, 'intercambio_con_espera_de_ofertas.html', context)
+        return render(request, 'intercambio_con_espera_de_ofertas.html', context=context)
     
 def incorrect_password(password):
         if len(password) < 8:
@@ -124,7 +123,6 @@ def incorrect_password(password):
         return True
         
 def signup(request):
-    
     if request.method == 'GET':
         return render(request, 'signup.html', {"form": UserCreationForm})
     else:
@@ -157,8 +155,10 @@ def signin(request):
         profile = Profile.objects.get(user=request.user)
         if profile.es_gerente:
             return redirect('Sucursales')
+        elif profile.es_empleado:
+            return redirect('menuEmpleado') 
         else:
-            return redirect('menuPrincipal')
+             return redirect('menuPrincipal')
 
     if request.method == 'GET':
         return render(request, 'signin.html', {"form": AuthenticationForm()})
@@ -186,21 +186,50 @@ def signin(request):
                 
             return render(request, 'signin.html', {"form": AuthenticationForm(), "error": error_message})
 
-
+def editarEmpleado(request,empleado_id):
+    empleado = Profile.objects.get(id=empleado_id)
+    sucursales = Sucursal.objects.all()
+    if 'guardarEdicion' in request.POST:
+        empleado.user.first_name = request.POST.get('first_name')
+        empleado.user.last_name = request.POST.get('last_name')
+        empleado.edad = request.POST["edad"]
+        empleado.dni = request.POST["dni"]
+        empleado.genero = request.POST['genero']
+        empleado.telefono = request.POST["telefono"]
+        empleado.sucursal = Sucursal.objects.get(id=request.POST["sucursal"])
+        empleado.user.save()
+        empleado.save()
+        messages.success(request, "Empleado Editado Exitosamente")
+        return redirect('gestionarEmpleados')
+    return render(request, 'editarEmpleado.html',{"empleado":empleado,
+                                                "sucursales":sucursales})
+    
+def eliminar_empleado(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        user.delete()
+        messages.success(request, "Empleado eliminado exitosamente.")
+    return redirect('gestionarEmpleados')   
 
 def gestionarEmpleados(request):
-    if request.method == 'POST':
+    if 'guardarEmpleado' in request.POST:
         username = request.POST.get('username')
         email = request.POST.get('email')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
-
+        contraseña =  request.POST.get('contraseña')
+        # Validar la nueva contraseña con los requisitos específicos
         if User.objects.filter(email=email).exists():
             messages.error(request, "El correo electrónico ya está en uso.")
+        elif len(contraseña) < 8:
+            messages.error(request, 'La contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
+        elif not re.search(r'[A-Z]', contraseña):
+            messages.error(request, 'La contraseña debe tener al menos una letra mayúscula y al menos 8 caracteres.')
         elif User.objects.filter(username=username).exists():
             messages.error(request, "El nombre de usuario ya está en uso.")
         else:
-            user = User.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name)
+            user = User.objects.create_user(username=username, email=email, first_name=first_name, 
+                                            last_name=last_name, password=contraseña)
             user.profile.edad = request.POST["edad"]
             user.profile.dni = request.POST["dni"]
             user.profile.genero = request.POST['genero']
@@ -263,11 +292,11 @@ def Sucursales(request):
 def Ver_trueques(request):
     # Obtener la lista de intercambios del usuario
     usuario = request.user
-    listadointercambios = intercambios.objects.filter(usuario=usuario.profile)
+    trueques = intercambios.objects.filter(usuario=usuario.profile, status='NUEVO')
     
     # Pasar tanto la lista de intercambios como el path absoluto al contexto
     context = {
-        'listadointercambios': listadointercambios,
+        'listadointercambios': trueques,
     }
     if 'eliminar' in request.POST:
         # Acción para eliminar el trueque
@@ -283,6 +312,7 @@ def Ver_trueques(request):
         trueque.estado= request.POST['estado']
         trueque.nombre= request.POST['nombre']
         trueque.modelo= request.POST['modelo']
+        messages.warning(request, '¡El intercambio se ha editado correctamente!')
         # Si se proporciona una foto, asignarla al campo 'foto' del trueque
         if 'foto' in request.FILES:
             trueque.foto = request.FILES['foto']
@@ -334,23 +364,48 @@ def verSucursales(request):
 
 def Menu_intercambios(request):
     title = 'Menu Intercambio'
-    trueques = intercambios.objects.all()
+    trueques = intercambios.objects.filter(status='NUEVO')
     context = {'title': title,
-               'trueques':trueques}
+               'trueques':trueques,
+                'form': ProductForm()}
     return render(request, 'Menu_De_Intercambios.html', context)
 
 
 def Historial_Intercambios(request):
+    
+    def permitir_visualizar_trueque(profile, intercambio, prod):
+        return profile == intercambio.usuario or ((prod != None and prod.postulante == profile))
+    
     title = 'Historial de intercambios'
-    trueques = intercambios.objects
-    t_cancelados = trueques.filter(status="CANCELADO")
-    t_efectuados = trueques.filter(status="EFECTUADO")
+    trueques = intercambios.objects.order_by('status')
+    
+    valorables_ids = []
+    realizados_por_usuario = []
+    cancelados_por_usuario = []
+    pendientes_por_usuario = intercambios.objects.filter(usuario=request.user.profile, status='PENDIENTE')
+   
+    for intercambio in trueques.filter(status='REALIZADO'):
+        prod_by_postuler = get_object_or_404(Product, trueque_postulado=intercambio)
+        if permitir_visualizar_trueque(profile=request.user.profile, intercambio=intercambio,prod=prod_by_postuler):
+            realizados_por_usuario.append(intercambio)
+            if can_rate(request.user.profile, prod_by_postuler.trueque_postulado):
+                valorables_ids.append(intercambio.id)
+    
+    for intercambio in trueques.filter(status='CANCELADO'):
+        prod_by_postuler = Product.objects.filter(trueque_postulado=intercambio)
+        if (request.user.profile == intercambio.usuario):
+            cancelados_por_usuario.append(intercambio)
+        #else: Si descomento esto filtro y obtengo paraa el postulante del trueque cancelado el mismo asi lo ve. 
+        #    for prod in prod_by_postuler:
+        #        if permitir_visualizar_trueque(profile=request.user.profile, postulante=prod.postulante, intercambio=intercambio, prod=prod):
+        #            cancelados_por_usuario.append(intercambio)
     context = {
         'title': title,
-        'trueques': trueques.all(), 
-        'trueques_cancelados': t_cancelados,
-        'trueques_efectuados': t_efectuados,
-        'form': ProductForm()
+        'trueques_pendientes': pendientes_por_usuario,
+        'trueques_realizados': realizados_por_usuario,
+        'trueques_cancelados': cancelados_por_usuario,
+        'valorables_ids': valorables_ids
+        
     }
     return render(request, 'Historial_De_Intercambios.html', context)
 
@@ -361,51 +416,191 @@ def create_trade(request, trueque_id):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form_category = form.cleaned_data['categoria']
-            if form_category != trueque.categoria:
+            if form.cleaned_data['fecha']<= datetime.today().date():
+               messages.error(request,'La fecha debe ser mayor a la fecha actual')
+            elif form.cleaned_data['hora']< time(8, 0) or form.cleaned_data['hora'] > time(20, 0):
+                messages.error(request,'La hora debe ser mayor a las 08:00 y menor a las 20:00')
+            elif form_category != trueque.categoria:
                 messages.error(request, 'La categoria del objeto ingresado debe corresponderse con la del objeto a intercambiar.')
             elif request.user == trueque.usuario.user: # No debo dejar que un usuario postule a un trueque de el mismo
                 messages.error(request, 'No puede postular un objeto para un trueque creado por usted.')
             else:
-                Product.objects.create(nombre=form.cleaned_data['nombre'], estado=form.cleaned_data['estado'],
+                Product.objects.create(hora=form.cleaned_data['hora'], fecha=form.cleaned_data['fecha'], nombre=form.cleaned_data['nombre'], estado=form.cleaned_data['estado'],
                                        categoria=form.cleaned_data['categoria'], foto=form.cleaned_data['foto'],
+                                       marca=form.cleaned_data['marca'],modelo=form.cleaned_data['modelo'],
                                        descripcion=form.cleaned_data['descripcion'], postulante=request.user.profile,
                                        trueque_postulado=trueque)
                 
                 #form.save()
                 messages.success(request, 'El objeto ha sido creado y postulado con éxito.')
                 #Aquí se debe enviar mail al usuario de que se generó postulación al trueque que hizo?
-    return Historial_Intercambios(request=request)
-
-
+    return Menu_intercambios(request=request)
 
 def ver_objetos_postulados(request, trueque_id):
-
     trueque = get_object_or_404(intercambios, id=trueque_id)
     title = 'Listado ofrecido para intercambiar objeto:' +  trueque.nombre + ', marca: ' + trueque.marca
-    trueques = intercambios.objects
-    objetos_postulados = Product.objects.filter(trueque_postulado=trueque)
+    objetos_postulados = Product.objects.filter(trueque_postulado=trueque, status='NUEVO')
     context = {
         'title': title,
-        'trueque': trueque, 
+        'objetos_postulados': objetos_postulados, 
     }
-    if (objetos_postulados.exists()):
-        context['objetos_postulados'] = objetos_postulados
-    else:
-        messages.error(request, 'No hay objetos postulados para este item selecionado todavia')
+    
     return render(request, 'ver_objetos_postulados.html', context)
 
 
 
-def Crear_Trueque(request):
-    title = 'Mis trueques'
-    context = {'title': title}
-    return render(request, 'Crear_Trueques.html', context)
-
 def Menu_Sucursales(request):
-    title = 'Menu de Sucursales'
     context = {'sucursales': Sucursal.objects.all()}
     return render(request, 'Menu_Sucursales.html', context)
 
 def menu_empleado(request):
+    usuario = request.user.profile
+    suc = usuario.sucursal
+    intercambiossuc = intercambios.objects.filter(sucursal_asignada=suc, status="PENDIENTE")
+    
+    if request.method == 'POST':
+        return redirect('intercambiosaceptados')
+    
+    context = {'sucursal': suc, 'intercambios': intercambiossuc}
+    return render(request, 'menuEmpleado.html', context)
 
-    return render(request,'menuEmpleado.html')
+
+def historialaceptados(request, intercambio_id=None):
+    if intercambio_id:
+        intercambio = get_object_or_404(intercambios, id=intercambio_id)
+        intercambio.status = "REALIZADO"
+        monto_gastado = request.POST.get('montoGastado')
+        print( intercambio_id)
+        intercambio.valorCompra = monto_gastado  # Ajusta el campo según tu modelo
+        print("valor",intercambio.valorCompra)
+        intercambio.save()
+    usuario = request.user.profile
+    suc = usuario.sucursal
+    aceptados = intercambios.objects.filter(sucursal_asignada=suc, status="REALIZADO")
+    context = {'aceptados': aceptados}
+    return render(request, 'historialaceptados.html', context)
+
+
+def filtrar_productos_por_filtro(request):
+        query = request.GET.get('search_query')
+        search_type = request.GET.get('search_type', 'estado')  # Por defecto, busca por estado
+        if query:
+            if search_type == 'estado':
+                productos = intercambios.objects.filter(estado__icontains=query, status="NUEVO")
+            elif search_type == 'sucursal':
+                # Obtener la sucursal que cumple con la consulta
+                chars = query.lower()
+                newlist = [x for x in Sucursal.objects.all() if chars in x.address.lower() or chars in x.city.lower()]
+                productos = [obj for obj in intercambios.objects.filter(status="NUEVO").all() if obj.sucursal_asignada in newlist]
+            if  not productos:
+                messages.error(request, 'No existen objetos con el estado o sucursal ingresado.')
+                productos = []
+        return render(request, 'Menu_De_Intercambios.html', {'trueques': productos, 'form': ProductForm()})
+
+
+def aceptar_trueque(request, obj_id):
+        postuled =  get_object_or_404(Product, id=obj_id)
+        for offer in Product.objects.filter(trueque_postulado=postuled.trueque_postulado):
+            if offer != postuled:  #Cancela el resto de obj. postulados
+                offer.status = 'RECHAZADO'
+                offer.save()
+        postuled.status = 'ACEPTADO'
+        trueque = postuled.trueque_postulado
+        trueque.hora = postuled.hora
+        trueque.fecha = postuled.fecha
+        trueque.status = 'PENDIENTE'
+        trueque.save()
+        return Historial_Intercambios(request)
+
+
+def rechazar_trueque(request, obj_id):
+    postuled =  Product.objects.filter(id=obj_id).first()
+    postuled.status = "RECHAZADO"
+    trueque_id = postuled.trueque_postulado.id
+    postuled.save()
+    
+    return ver_objetos_postulados(request, trueque_id=trueque_id)
+
+def cancelar_trueque(request, trueque_id):
+        trueque = get_object_or_404(intercambios, id=trueque_id)
+        trueque.status = 'CANCELADO'
+        postulados = Product.objects.filter(trueque_postulado=trueque) #Está bien q se cancelen, o no?
+        for obj in postulados:                                         #Cancel trueque = Cancel object postuled
+            obj.status = 'CANCELADO'
+            obj.save()
+            
+        trueque.save()
+        if request.user.profile.es_empleado:
+            return menu_empleado(request)
+
+        return Historial_Intercambios(request)
+
+
+
+def can_rate(profile, intercambio):
+    return (profile.es_empleado and not intercambio.valoradoEmpleado) or \
+            (profile == intercambio.usuario and not intercambio.valoradoPostulante) or \
+            (profile != intercambio.usuario and not intercambio.valoradoUsuario)
+            
+
+def rate_profile(request, intercambio_id):
+    intercambio = get_object_or_404(intercambios, id=intercambio_id)
+    profile = intercambio.usuario #Percibo que quién valora es el postulante (justamente al creador del trade)
+    user_actual = request.user.profile
+    if profile == user_actual:
+        profile = get_object_or_404(Product, trueque_postulado=intercambio).postulante
+    context = {
+        'actual_user': user_actual,
+        'profile': profile,
+        'intercambio' : intercambio,
+        'puede_valorar' : can_rate(user_actual, intercambio)
+    }
+    if request.method == "POST":
+        if not request.POST.get('rating'):
+            return render(request, 'rate_profile.html', context=context)
+        
+        rating_value = int(request.POST.get('rating', 0)) # Obtener o crear la instancia de Rating       
+        if (user_actual == intercambio.usuario): #Si soy el creador del trueque voto al postulante
+            intercambio.valoradoPostulante = True 
+        elif user_actual.es_empleado:
+            intercambio.valoradoEmpleado = True 
+        elif not intercambio.valoradoUsuario:
+            intercambio.valoradoUsuario = True #El usuario valora al creador de trueque
+        messages.success(request, "Se valoró exitosamente el usuario")
+        intercambio.save()
+        rating_obj, created = Rating.objects.get_or_create(profile=profile, defaults={'rating': rating_value})
+        if not created: # Si ya existe, actualizar la valoración sumando la nueva
+            rating_obj.rating += rating_value
+            rating_obj.cantValoraciones += 1
+            rating_obj.save()
+        redirect_url = '/historial-intercambios/'
+        if user_actual.es_empleado:
+            redirect_url = '/menuEmpleado'
+        return JsonResponse({'success': True, 'redirect_url': redirect_url})
+    else:
+        return render(request, 'rate_profile.html', context=context)
+
+
+def profile_detail(request, profile_id):
+    profile = get_object_or_404(Profile, id=profile_id)
+    average_rating = profile.ratings.aggregate(Avg('rating'))['rating__avg']
+
+    context = {
+        'profile': profile,
+        'average_rating': average_rating,
+        'usuario': profile.user,
+    }
+    return render(request, 'miPerfil.html', context)
+
+def ver_estadisticas(request):
+    sucursales = Sucursal.objects.all()
+    intercambio = intercambios.objects.all()
+    return render(request,'verEstadisticas.html',{
+        'intercambios':intercambio,
+        'sucursales':sucursales
+    })
+
+
+def mis_objetos_postulados(request):
+    objects = Product.objects.filter(postulante=request.user.profile)
+    return render(request,'ver_mis_objetos_postulados.html', context={'postuled': objects})

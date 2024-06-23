@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
     <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles/messages.css' %}">
+    <script src="{% static 'js/messages.js' %}"></script>
+
+
     <style>
         body {
             background-color: #4566d3e5;
@@ -15,13 +21,25 @@
             justify-content: center;
             min-height: 100vh;
         }
+
+        .selectEstado {
+            width: 100% !important;
+            padding: 10px !important;
+            margin-bottom: 20px !important;
+            border: 1px solid #ccc !important;
+            border-radius: 3px !important;
+            box-sizing: border-box !important;
+        }
+
         .container {
             display: flex;
             width: 90%;
             max-width: 1200px;
             margin: 20px;
         }
-        .left, .right {
+
+        .left,
+        .right {
             flex: 1;
             margin: 10px;
             padding: 20px;
@@ -29,23 +47,28 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         .left {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         .right {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         .menu {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
         }
-        .menu button, .menu a {
+
+        .menu button,
+        .menu a {
             width: 200px;
             font-weight: bold;
             text-decoration: none;
@@ -60,33 +83,42 @@
             cursor: pointer;
             margin: 10px 0;
         }
-        .menu button:hover, .menu a:hover {
+
+        .menu button:hover,
+        .menu a:hover {
             background-color: rgba(255, 82, 51, 0.926);
             transform: scale(1.05);
         }
+
         .menu h1 {
             margin-bottom: 20px;
             color: #2d4a81;
         }
+
         .trueque-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-        .trueque-table th, .trueque-table td {
+
+        .trueque-table th,
+        .trueque-table td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         .trueque-table th {
             background-color: #c0bcbce0;
             font-weight: bold;
         }
+
         .trueque-foto {
             max-width: 100px;
             max-height: 100px;
         }
-        .botonVolv{
+
+        .botonVolv {
             font-weight: bold;
             text-decoration: none;
             font-size: 14px;
@@ -99,9 +131,10 @@
             transition: all 0.3s;
             cursor: pointer;
         }
-        .divTrue {
+
+        .exist-trueque {
             width: 100%;
-            max-height: 500px;
+            max-height: 550px;
             overflow-y: auto;
             border: 1px solid #050404;
             background-color: #fff;
@@ -109,8 +142,213 @@
             padding: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Estilos generales del modal */
+        .modal {
+            display: none; /* Por defecto, ocultar el modal */
+            position: fixed; /* Posición fija para mantener el modal en la vista */
+            z-index: 1; /* Colocar el modal por encima del resto del contenido */
+            left: 0;
+            top: 0;
+            width: 100%; /* Ajustar el ancho al 100% de la ventana */
+            height: 100%; /* Ajustar la altura al 100% de la ventana */
+            overflow: auto; /* Agregar desplazamiento si el contenido es más grande que el modal */
+            background-color: rgb(0 0 0 / 69%);; /* Fondo semitransparente para el modal */
+        }
+
+        /* Estilos para el contenido del modal */
+        .modal-content {
+            max-height: fit-content;
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            max-height: 800px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            overflow-y: auto;
+        }
+
+        /* Estilos para el botón de cerrar */
+        .closeModalBtn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .closeModalBtn:hover,
+        .closeModalBtn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Estilos adicionales para el formulario dentro del modal */
+        #crear-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #crear-form input[type="text"],
+        #crear-form input[type="file"],
+        #crear-form textarea {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .buttonSpecial {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .buttonSpecial:hover {
+            background-color: #45a049;
+        }
+
+        .modal-content form {
+            background-color: #f2f2f2;
+            /* Fondo gris claro */
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .modal-content form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .modal-content form input[type="text"],
+        .modal-content form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+            /* Para incluir el padding en el ancho */
+        }
+
+        .modal-content form button {
+            background-color: #4CAF50;
+            /* Color de fondo verde */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .modal-content form button:hover {
+            background-color: #45a049;
+            /* Cambio de color al pasar el ratón */
+        }
+
+        .modal-content form .buttonSpecial {
+            margin-right: 10px;
+        }
+
+        .modal-content form .closeModalBtn {
+            background-color: #f44336;
+            /* Color de fondo rojo */
+        }
+
+        .btn-postular {
+            background-color: #ff7f0e;
+            /* Color de fondo naranja */
+            color: white;
+            /* Color del texto */
+            padding: 10px 20px;
+            /* Relleno */
+            border: none;
+            /* Sin borde */
+            border-radius: 5px;
+            /* Bordes redondeados */
+            cursor: pointer;
+            /* Cursor al pasar el ratón */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* Sombra suave */
+        }
+
+        .btn-postular:hover {
+            background-color: #ff9900;
+            /* Cambio de color al pasar el ratón */
+        }
+
+        .btn-postular:focus {
+            outline: none;
+            /* Elimina el borde al enfocar */
+        }
+
+        search-filter {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 05vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .vertical-center {
+            max-width: 80%;
+            max-height: 50%;
+            display: flex;
+            margin-left: 50px;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+            align-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"],
+        select {
+            padding: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .round-button {
+            background-color: orange;
+            border: none;
+            color: white;
+            padding: 12px;
+            font-size: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            /* position: absolute; */
+            top: 0;
+            margin-right: 6%;
+            /* margin-top: 4%; */
+            right: 0;
+        }
+
+        .round-button:hover {
+            background-color: darkorange;
+        }
+
+        .round-button i {
+            font-size: 24px;
+        }
+
     </style>
 </head>
+
 <body>
     <a href="{% url 'menuPrincipal' %}" style="position: absolute; top: 20px; left: 20px;">
         <button class="botonVolv">
@@ -119,7 +357,7 @@
     </a>
     <div class="container">
         <div class="left">
-            
+
             <div class="menu">
                 <h1>Menú de Intercambios</h1>
                 <a href="{% url 'Historial_De_Intercambios' %}">
@@ -131,39 +369,123 @@
                 <a href="{% url 'intercambio_con_espera_de_ofertas' %}">
                     <button id="Crear_Trueque">Crear intercambio</button>
                 </a>
+                <a href="{% url 'ver_mis_objetos_postulados' %}">
+                    <button id="mis_objetos_postulados">Ver mis postulaciones</button>
+                </a>
             </div>
         </div>
         <div class="right">
             <h3>Intercambios disponibles</h3>
-            <div class="divTrue">
+            <div class="exist-trueque">
+                {% if trueques %}
+                <div class="search-filter">
+                    <form method="GET" action="{% url 'filtrar_productos_por_filtro' %}" style="position: relative;">
+                        {% csrf_token %}
+                        <div class="vertical-center">
+                            <input type="text" name="search_query" placeholder="Buscar productos..." required>
+                            <select name="search_type">
+                                <option value="estado" selected>Buscar por estado</option>
+                                <option value="sucursal">Buscar por sucursal</option>
+                            </select>
+                            <button class="round-button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
                 <table class="trueque-table">
                     <thead>
                         <tr>
                             <th>Nombre usuario</th>
                             <th>Item</th>
+                            <th>Categoria</th>
                             <th>Estado</th>
+                            <th>Sucursal</th>
                             <th>Foto</th>
+                            <th>Accion</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% if trueques %}
-                            {% for trueque in trueques %}
-                                <tr>
-                                    <td>{{ trueque.usuario.user }}</td>
-                                    <td>{{ trueque.nombre }}</td>
-                                    <td>{{ trueque.estado }}</td>
-                                    <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4">No hay intercambios por el momento</td>
-                            </tr>
-                        {% endif %}
+                        {% for trueque in trueques %}
+                        <tr>
+                            <td>{{ trueque.usuario.user }}</td>
+                            <td>{{ trueque.nombre }}</td>
+                            <td>{{ trueque.categoria }}</td>
+                            <td>{{ trueque.estado }}</td>
+                            <td>{{ trueque.sucursal_asignada.address }}, {{ trueque.sucursal_asignada.city }}</td>
+                            <td><img src="{{ trueque.foto.url }}" class="trueque-foto"></td>
+                            <td>
+                                <div>
+                                    {% csrf_token %}
+                                    <!-- Aquí puedes añadir los campos del formulario para el intercambio -->
+                                    <button type="button" class="btn-postular openModalBtn">Proponer
+                                        Intercambio</button>
+                                    <dialog class="modal">
+                                        <div class="modal-content">
+                                            <h1>Postular Objeto Para Intercambio</h1>
+                                            <form action="{% url 'create_trade' trueque.id %}" method="post"
+                                                enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                {{ form.as_p }}
+                                                <button class="buttonSpecial" type="submit">Guardar cambios</button>
+                                                <button class="buttonSpecial closeModalBtn"
+                                                    type="button">Cancelar</button>
+                                            </form>
+                                        </div>
+                                    </dialog>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
                     </tbody>
                 </table>
+                {% else %}
+                <tr>
+                    <td colspan="4">No hay intercambios por el momento</td>
+                </tr>
+                {% endif %}
             </div>
         </div>
+        {% if messages %}
+        <div class="message-container">
+            <ul class="messages">
+                {% for message in messages %}
+                <li class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                    <span class="close" onclick="this.parentElement.style.display='none';">&times;</span>
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const openModalBtns = document.querySelectorAll('.openModalBtn');
+            const closeModalBtns = document.querySelectorAll('.closeModalBtn');
+            const modals = document.querySelectorAll('.modal');
+
+            openModalBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    // Cerrar todos los modales abiertos antes de abrir el nuevo
+                    modals.forEach(function (modal) {
+                        modal.style.display = "none";
+                    });
+
+                    const modal = this.parentElement.querySelector('.modal');
+                    modal.style.display = "block";
+                });
+            });
+
+            closeModalBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const modal = this.closest('.modal');
+                    modal.style.display = "none";
+                });
+            });
+        });
+    </script>
 </body>
+
 </html>

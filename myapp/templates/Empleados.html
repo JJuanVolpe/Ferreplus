@@ -1,26 +1,28 @@
 {% extends "navegacionGerente.html" %}
-
+{% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
+    <link rel="stylesheet" href="{% static 'styles/messages.css' %}">
+    <script src="{% static 'js/messages.js' %}"></script>
     {% block extra_styles %}
     <style>
         main.container {
             flex-direction: column;
         }
+
         dialog[open] {
             display: block;
         }
-        .divModal {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+
         label {
             font-weight: bold;
             margin-top: 10px;
         }
-        input, select {
+
+        input,
+        select {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
@@ -29,31 +31,47 @@
             box-sizing: border-box;
             margin-bottom: 10px;
         }
-        .buttonSpecial, a.buttonSpecial, input[type="submit"].buttonSpecial {
+
+        .buttonSpecial,
+        a.buttonSpecial,
+        input[type="submit"].buttonSpecial {
             font-weight: bold;
             text-decoration: none;
             font-size: 16px;
             color: #ffffff;
             background-color: #003f7f;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
             border: none;
             border-radius: 5px;
             transition: all 0.3s;
             cursor: pointer;
-            margin: 10px 0;
+            margin: 4px 0;
         }
-        .buttonSpecial:hover, a.buttonSpecial:hover, input[type="submit"].buttonSpecial:hover {
+
+        .buttonSpecial:hover,
+        a.buttonSpecial:hover,
+        input[type="submit"].buttonSpecial:hover {
             background-color: #ff5233;
             transform: scale(1.05);
         }
+
+        th,
+        td {
+            border: 1px solid #060606;
+            padding: 5px;
+            text-align: left;
+        }
+
         .alert {
             max-width: 340px;
             margin-top: 10px;
         }
+
         #modal::backdrop {
             background-color: rgba(0, 0, 0, .45);
         }
+
         #modal {
             width: 90%;
             max-width: 500px;
@@ -63,18 +81,19 @@
             border-radius: 8px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
             color: #fff;
-            max-height: 750px;
+            max-height: 780px;
         }
-        
     </style>
     {% endblock %}
 </head>
+
 <body>
     {% block content %}
-    <h1>Menu Empleados</h1>
+
 
     <div class="table-container">
-    {% if sucursales %}
+        <h1>Listado de Empleados</h1>
+        {% if sucursales %}
         <div class="scrollable-table">
             <table>
                 <thead>
@@ -83,39 +102,45 @@
                         <th>Apellido</th>
                         <th>DNI</th>
                         <th>Sucursal</th>
+                        <th>Accion</th>
+                        <th>Accion</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% if empleados %}
-                        {% for empleado in empleados %}
-                            <tr>    
-                                <td>{{ empleado.user.first_name }}</td>
-                                <td>{{ empleado.user.last_name }}</td>
-                                <td>{{ empleado.dni }}</td>
-                                <td>{{ empleado.sucursal.address }}  {{ empleado.sucursal.city }}</td>
-                            </tr>
-                        {% endfor %}
+                    {% for empleado in empleados %}
+                    <tr>
+                        <td>{{ empleado.user.first_name }}</td>
+                        <td>{{ empleado.user.last_name }}</td>
+                        <td>{{ empleado.dni }}</td>
+                        <td>{{ empleado.sucursal.address }} {{ empleado.sucursal.city }}</td>
+                        <td>
+                            <form method="get" action="{% url 'editar_empleado' empleado.id %}">
+                                <button class="buttonSpecial" type="submit">Editar</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="POST" action="{% url 'eliminar_empleado' empleado.user.id %}">
+                                {% csrf_token %}
+                                <button class="buttonSpecial" type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
                     {% else %}
-                        <tr>
-                            <td colspan="3">No se encontraron empleados</td>
-                        </tr>
+                    <tr>
+                        <td colspan="3">No se encontraron empleados</td>
+                    </tr>
                     {% endif %}
                 </tbody>
             </table>
             <br>
             <button class="buttonSpecial" id="openModalBtn">Crear Empleado</button>
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        <a>{{ message }}</a>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% else %}
+            {% else %}
             <a> Debe registar una sucursal para poder registrar Empleados</a>
-        {% endif %}
+            {% endif %}
         </div>
-        
+
     </div>
 
     <dialog id="modal">
@@ -125,57 +150,65 @@
                 {% csrf_token %}
                 <label for="username">Nombre de usuario:</label>
                 <input type="text" id="username" name="username" required>
-    
+                <label for="contraseña">Contraseña:</label>
+                <input type="password" id="contraseña" name="contraseña" required>
                 <label for="email">Correo electrónico:</label>
                 <input type="email" id="email" name="email" required>
-    
                 <label for="first_name">Nombre:</label>
                 <input type="text" id="first_name" name="first_name" onkeypress="validarqueseanletras(event)" required>
-    
                 <label for="last_name">Apellido:</label>
                 <input type="text" id="last_name" name="last_name" onkeypress="validarqueseanletras(event)" required>
-    
                 <label for="edad">Edad:</label>
                 <input type="number" id="edad" name="edad" required>
-                
                 <label for="dni">DNI:</label>
                 <input type="number" id="dni" name="dni" required>
-    
                 <label for="genero">Género:</label>
                 <select id="genero" name="genero" required>
                     <option value="Masculino" selected>Masculino</option>
                     <option value="Femenino">Femenino</option>
                     <option value="Otro">Otro</option>
                 </select>
+                <label for="telefono">Telefono:</label>
+                <input type="number" id="telefono" name="telefono">
+
                 <label for="sucursal">Sucursal</label>
                 <select id="sucursal" name="sucursal" required>
                     {% for sucursal in sucursales %}
-                        <option value="{{ sucursal.id }} " selected>{{ sucursal.address }} {{ sucursal.city }}</option>
-
+                    <option value="{{ sucursal.id }} " selected>{{ sucursal.address }} {{ sucursal.city }}</option>
                     {% endfor %}
-                <label for="telefono">Número:</label>
-                <input type="number" id="telefono" name="telefono">
-    
-                <button class="buttonSpecial",type="submit">Guardar cambios</button>
-                <button class="buttonSpecial",type="button" id="closeModalBtn">Cancelar</button>
+                </select>
+                <button class="buttonSpecial" ,type="submit" name="guardarEmpleado">Guardar cambios</button>
+                <button class="buttonSpecial" ,type="button" id="closeModalBtn">Cancelar</button>
             </form>
         </div>
     </dialog>
+
+    <div class="message-container">
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                <span class="close" onclick="this.parentElement.style.display='none';">&times;</span>
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const openModalBtn = document.getElementById('openModalBtn');
             const closeModalBtn = document.getElementById('closeModalBtn');
             const modal = document.getElementById('modal');
 
-            openModalBtn.addEventListener('click', function() {
+            openModalBtn.addEventListener('click', function () {
                 modal.showModal();
             });
 
-            closeModalBtn.addEventListener('click', function() {
+            closeModalBtn.addEventListener('click', function () {
                 modal.close();
             });
         });
     </script>
     {% endblock %}
-</body> 
+</body>
+
 </html>

@@ -2,12 +2,22 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-#from .models import Category
 
 # Create your models here.
 class Sucursal(models.Model):
     address = models.CharField(max_length=100,default="")
     city = models.CharField(max_length=40, null=True,default="")
+    def delete(self, *args, **kwargs):
+        profiles = Profile.objects.filter(sucursal=self)
+        for profile in profiles:
+            if profile.user:
+                profile.user.delete()
+            profile.delete()
+        super().delete(*args, **kwargs)
+
+    def __str__(self):
+        return "Ciudad:" + self.city  + ", direccion:" + self.address
+    
 
 class Profile(models.Model):
     # otros campos
@@ -18,7 +28,8 @@ class Profile(models.Model):
     telefono = models.CharField(null=True, blank=True, max_length=15)
     es_gerente = models.BooleanField(null=False, blank=False,default=False)
     es_empleado = models.BooleanField(null=False, blank=False,default=False)
-    sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE,related_name="sucursal",null=True) 
+    sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE,related_name="sucursal",null=True,blank=True) 
+
     def __str__(self):
         return "username of prof:" + self.user.username  + " edad:" + str(self.edad) + ", con dni:" + str(self.dni)  + ", genero: "+ str(self.genero)  + "  y celular:" + str(self.telefono)
 
@@ -49,15 +60,21 @@ class intercambios(models.Model):
     foto = models.ImageField(upload_to='static/fotos_intercambios/')
     descripcion = models.CharField(max_length=200, default="")
     modelo = models.CharField(max_length=200, default="")
-    marca = models.CharField(max_length=200,default="")
+    marca = models.CharField(max_length=200, default="")
     usuario = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='intercambios')
-    status = models.CharField(max_length=200, null=True, default="NUEVO", blank=True)
-
+    status = models.CharField(max_length=200, null=True, default="NUEVO", blank=True)  # Campo que identifica estado del trueque
+    sucursal_asignada = models.ForeignKey(Sucursal, on_delete=models.SET_NULL, related_name='intercambios', null=True, blank=True)
+    hora = models.TimeField(blank=True, null=True)  # Permite valores en blanco y nulos
+    fecha = models.DateField(blank=True, null=True)
+    valoradoEmpleado = models.BooleanField(default=False)
+    valoradoUsuario = models.BooleanField(default=False)
+    valoradoPostulante = models.BooleanField(default=False)
+    valorCompra = models.FloatField(default=0)
+    class Meta:
+        ordering = ['fecha', 'hora']
 
     def __str__(self):
-        return "intercambio:" + str(self.nombre) + ", con categoria:" + str(self.categoria)  + ", del usuario: "+ str(self.usuario.dni)  + "  y status:" + str(self.status) 
-
-
+        return "intercambio: " + str(self.nombre) + ", con categoria: " + str(self.categoria) + ", del usuario: " + str(self.usuario.dni) + " y status: " + str(self.status) + " val. creador: " + str(self.valoradoUsuario) + " val. post: " + str(self.valoradoPostulante) + " val. x emp: " + str(self.valoradoEmpleado)
 
 class Product(models.Model):
     nombre = models.CharField(max_length=200)
@@ -65,6 +82,18 @@ class Product(models.Model):
     categoria = models.CharField(max_length=200)
     foto = models.ImageField(upload_to='static/fotos_intercambios/')
     descripcion = models.CharField(max_length=200, default="")
+    marca = models.CharField(max_length=200, default="")
+    modelo = models.CharField(max_length=200, default="")
     postulante = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='postulante', null=True, blank=True)
-    trueque_postulado = models.ForeignKey(intercambios, on_delete=models.CASCADE, null=True, blank=True)
+    trueque_postulado = models.ForeignKey('intercambios', on_delete=models.CASCADE, related_name='productos', null=True, blank=True)
+    hora = models.TimeField(blank=True, null=True)  # Permite valores en blanco y nulos
+    fecha = models.DateField(blank=True, null=True)
+    status = models.CharField(max_length=200, null=True, default="NUEVO")  # Campo que identifica estado del producto
 
+    def __str__(self):
+        return self.nombre
+
+class Rating(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    cantValoraciones = models.IntegerField(default=1) 
