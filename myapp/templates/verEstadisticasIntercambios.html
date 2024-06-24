@@ -1,11 +1,9 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Estadisticas de Intercambios</title>
     <style>
         .scrollable-table {
             max-height: 300px;
@@ -165,34 +163,8 @@
                     <div class="scrollable-table">
                         <table>
                             <thead>
-                                <tr>
-                                    <th>Dirección</th>
-                                    <th>Ciudad</th>
-                                    <th>Valor Total</th>
-                                    <th>Cantidad de intercambios</th>
-                                </tr>
                             </thead>
                             <tbody>
-                                {% if sucursales_con_valor %}
-                                    {% for sucursal, valor_total, cantidad in sucursales_con_valor %}
-                                        <tr>
-                                            <td>{{ sucursal.address }}</td>
-                                            <td>{{ sucursal.city }}</td>
-                                            <td>{{ valor_total }}</td>
-                                            <td>{{ cantidad }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                        <tr>
-                                            <td> </td>
-                                            <td>Total</td>
-                                            <td>{{ total_compra }}</td>
-                                            <td>{{ total_intercambio }}</td>
-                                        </tr>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="3">No se encontraron sucursales</td>
-                                    </tr>
-                                {% endif %}
                             </tbody>
                         </table>   
                     </div>
@@ -202,7 +174,7 @@
         </main>
         <div class="navegacion">
             <ul>
-                <li><a href="{% url 'verEstadisticasSucursal' %}    ">Sucursales</a></li>
+                <li><a href="{% url 'verEstadisticasSucursal' %}">Sucursales</a></li>
                 <li><a href="{% url 'verEstadisticasIntercambio' %}">Intercambios</a></li>
             </ul>
         </div>

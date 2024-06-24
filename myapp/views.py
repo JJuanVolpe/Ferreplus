@@ -597,20 +597,35 @@ def profile_detail(request, profile_id):
     }
     return render(request, 'miPerfil.html', context)
 
-def ver_estadisticas(request):
+def ver_estadisticas_sucursal(request):
     sucursales = Sucursal.objects.all()
     intercambio = intercambios.objects.all()
     
-    valor_por_sucursal=[]   
+    valor_por_sucursal=[]
+    cantidad_inter_lit=[]
+    total_compra = 0
+    total_intercambios=0   
     for sucursal in sucursales:
         valorSucursal = 0
+        cantidad_intercambios = 0
         for inter in intercambio:
             if inter.sucursal_asignada:
                 if inter.sucursal_asignada.id == sucursal.id:
-                    valorSucursal += inter.valorCompra   
+                    valorSucursal += inter.valorCompra
+                    cantidad_intercambios+=1
+                    total_compra += inter.valorCompra  
+        total_intercambios+=cantidad_intercambios
+        cantidad_inter_lit.append(cantidad_intercambios)
         valor_por_sucursal.append(valorSucursal)
-    
+    sucursales_con_valor = zip(sucursales, valor_por_sucursal,cantidad_inter_lit)
     return render(request,'verEstadisticas.html',{
-        'valor_por_sucursal':valor_por_sucursal,
-        'sucursales':sucursales
+        'sucursales_con_valor': sucursales_con_valor,
+        'total_compra':total_compra,
+        'total_intercambio':total_intercambios
     })
+def ver_estadisticas_intercambio(request):
+    intercambio = intercambios.objects.all()
+    
+    return render(request,'verEstadisticasIntercambios.html',{
+    })
+
