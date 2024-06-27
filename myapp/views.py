@@ -1,3 +1,4 @@
+from urllib.parse import quote
 import random
 import string
 from django.http import HttpResponse, JsonResponse
@@ -16,7 +17,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
 from datetime import time,datetime
 from django.db.models import Avg
-
+from django.db.models import Count, F
 import re  # Importación del módulo r
 
 
@@ -592,13 +593,49 @@ def profile_detail(request, profile_id):
     }
     return render(request, 'miPerfil.html', context)
 
+
+
+def obtener_porcentaje_intercambios_por_sucursal():
+    # Consulta para contar los intercambios por sucursal
+    intercambios_por_sucursal = Sucursal.objects.annotate(
+        intercambios_count=Count('intercambios')
+    )
+    
+    # Total de intercambios realizados
+    total_intercambios = intercambios.objects.count()
+    
+    if total_intercambios == 0:
+        return []
+
+    # Lista de pares con el nombre de la sucursal y el porcentaje de intercambios realizados
+    porcentaje_intercambios_por_sucursal = intercambios_por_sucursal.annotate(
+        porcentaje=100 * F('intercambios_count') / total_intercambios
+    ).values('address', 'porcentaje')
+    
+    # Convertir a una lista de pares
+    lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
+    for item in lista_porcentajes:
+        item['label'] = f'aria-label="{item["address"]} - direccion"'
+
+        item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
+    
+        print(item['label']);
+        print(item['height_style']);
+        
+    return lista_porcentajes
+
+
+
 def ver_estadisticas(request):
     sucursales = Sucursal.objects.all()
     intercambio = intercambios.objects.all()
     return render(request,'verEstadisticas.html',{
-        'intercambios':intercambio,
-        'sucursales':sucursales
+        'sucursales_con_valor': sucursales_con_valor,
+        'total_compra':total_compra,
+        'total_intercambio':total_intercambios
     })
+    
+    
 
 
 def mis_objetos_postulados(request):
