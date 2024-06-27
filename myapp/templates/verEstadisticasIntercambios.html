@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadisticas de Intercambios</title>
     <style>
+        .total-row {
+            font-weight: bold;
+            background-color: #ffd700; /* Cambia este color según tus preferencias */
+            color: #000000; /* Cambia este color según tus preferencias */
+        }
         .scrollable-table {
             max-height: 300px;
             overflow-y: auto;
@@ -163,8 +168,28 @@
                     <div class="scrollable-table">
                         <table>
                             <thead>
+                                <tr>
+                                    <th>Genero</th>
+                                    <th>Cantidad Intercambios</th>
+                                </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td>Masculino</td>
+                                    <td>{{ total_masculino }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Femenino</td>
+                                    <td>{{ total_femenino }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Otro</td>
+                                    <td>{{ total_otro }}</td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td>Total</td>
+                                    <td>{{ total }}</td>
+                                </tr>
                             </tbody>
                         </table>   
                     </div>

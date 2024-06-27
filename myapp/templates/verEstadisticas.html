@@ -102,7 +102,11 @@
             color: white;
             border-radius: 10px;
         }
-
+        .total-row {
+            font-weight: bold;
+            background-color: #ffd700; /* Cambia este color según tus preferencias */
+            color: #000000; /* Cambia este color según tus preferencias */
+        }
         .navegacion ul {
             list-style-type: none;
             padding: 0;
@@ -166,8 +170,7 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Dirección</th>
-                                    <th>Ciudad</th>
+                                    <th>Dirección y Ciudad</th>
                                     <th>Valor Total</th>
                                     <th>Cantidad de intercambios</th>
                                 </tr>
@@ -176,14 +179,12 @@
                                 {% if sucursales_con_valor %}
                                     {% for sucursal, valor_total, cantidad in sucursales_con_valor %}
                                         <tr>
-                                            <td>{{ sucursal.address }}</td>
-                                            <td>{{ sucursal.city }}</td>
+                                            <td>{{ sucursal.address }} {{ sucursal.city }}</td>
                                             <td>{{ valor_total }}</td>
                                             <td>{{ cantidad }}</td>
                                         </tr>
                                     {% endfor %}
-                                        <tr>
-                                            <td> </td>
+                                        <tr class="total-row">
                                             <td>Total</td>
                                             <td>{{ total_compra }}</td>
                                             <td>{{ total_intercambio }}</td>

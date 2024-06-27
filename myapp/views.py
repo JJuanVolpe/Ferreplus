@@ -625,7 +625,22 @@ def ver_estadisticas_sucursal(request):
     })
 def ver_estadisticas_intercambio(request):
     intercambio = intercambios.objects.all()
-    
+    cant_femenino=0
+    cant_masculino=0
+    cant_otro=0
+    total=0
+    for inter in intercambio:
+        total+=1
+        if inter.usuario.genero=='Femenino':
+            cant_femenino+=1
+        elif inter.usuario.genero=='Masculino':
+           cant_masculino+=1
+        else: #genero otro
+            cant_otro+=1
     return render(request,'verEstadisticasIntercambios.html',{
+        'total_masculino':cant_masculino,
+        'total_femenino':cant_femenino,
+        'total_otro':cant_otro,
+        'total':total
     })
 
