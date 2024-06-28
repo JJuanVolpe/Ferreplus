@@ -63,7 +63,7 @@
                         <div class="stat-title">
                             <span>Users</span>
                             <span class="stat-percentage green">
-                                <img src="./img/arrow-up-green.svg" alt="" />268%
+                                <img src="./img/arrow-up-green.svg" alt="" />
                             </span>
                         </div>
                         <h1 class="number-fs">
@@ -83,7 +83,7 @@
                         <div class="stat-title">
                             Ciudad con más trueques cancelados
                             <span class="stat-percentage red">
-                                <img src="{% static 'img/arrow-down-red.svg' %}" alt="" />19%
+                                <img src="{% static 'img/arrow-down-red.svg' %}" alt="" />
                             </span>
                         </div>
                         <h1 class="number-fs">
@@ -191,14 +191,15 @@
                     </div>
                 </div>
             </main>
-            <div class="navegacion" style="min-width: fit-content;">
-                <ul>
-                    <li><a href="{% url 'verEstadisticas' %}    ">Sucursales</a></li>
-                    <li><a href="{% url 'verEstadisticasIntercambios' %}">Intercambios</a></li>
-                </ul>
-            </div>
+        </div>
+        <div class="navegacion" style="max-height: 313px; padding: 20px; min-width: fit-content;">
+            <ul>
+                <li><a href="/verEstadisticas/">Sucursales</a></li>
+                <li><a href="/verEstadisticasIntercambio/">Intercambios</a></li>
+            </ul>
         </div>
     </div>
+    
     <script src="{% static 'js/script.js' %}"></script>
 </body>
 
