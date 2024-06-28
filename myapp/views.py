@@ -17,7 +17,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
 from datetime import time,datetime
 from django.db.models import Avg
-from django.db.models import Count, F
+from django.db.models import Count, F, Case, When, IntegerField
 import re  # Importación del módulo r
 
 
@@ -596,10 +596,10 @@ def profile_detail(request, profile_id):
 
 
 def obtener_porcentaje_intercambios_por_sucursal():
-    # Consulta para contar los intercambios por sucursal
+    # Consulta para contar los intercambios por sucursal{{ destacables[0].city }}
     intercambios_por_sucursal = Sucursal.objects.annotate(
         intercambios_count=Count('intercambios')
-    )
+    ).filter(intercambios_count__gt=0)
     
     # Total de intercambios realizados
     total_intercambios = intercambios.objects.count()
@@ -616,26 +616,96 @@ def obtener_porcentaje_intercambios_por_sucursal():
     lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
     for item in lista_porcentajes:
         item['label'] = f'aria-label="{item["address"]} - direccion"'
-
         item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
     
-        print(item['label']);
-        print(item['height_style']);
-        
     return lista_porcentajes
+    
 
 
+def sucursal_popular_y_cancelada():
+    # Obtener la sucursal con más intercambios con status "REALIZADO"
+    sucursal_realizado = Sucursal.objects.annotate(
+        count_realizado=Count(Case(
+            When(intercambios__status='REALIZADO', then=1),
+            output_field=IntegerField()
+        ))
+    ).order_by('-count_realizado').first()
+    # Obtener la sucursal con más intercambios con status "CANCELADO"
+    sucursal_cancelado = Sucursal.objects.annotate(
+        count_cancelado=Count(Case(
+            When(intercambios__status='CANCELADO', then=1),
+            output_field=IntegerField()
+        ))
+    ).order_by('-count_cancelado').first()
 
-def ver_estadisticas(request):
+    # Crear la lista con las sucursales
+    lista_sucursales = []
+    if sucursal_realizado:
+        lista_sucursales.append(sucursal_realizado)
+    if sucursal_cancelado:
+        lista_sucursales.append(sucursal_cancelado)
+    return lista_sucursales
+
+def get_sucursales_table():
     sucursales = Sucursal.objects.all()
     intercambio = intercambios.objects.all()
+    
+    valor_por_sucursal=[]
+    cantidad_inter_lit=[]
+    total_compra = 0
+    total_intercambios=0   
+    for sucursal in sucursales:
+        valorSucursal = 0
+        cantidad_intercambios = 0
+        for inter in intercambio:
+            if inter.sucursal_asignada:
+                if inter.sucursal_asignada.id == sucursal.id:
+                    valorSucursal += inter.valorCompra
+                    cantidad_intercambios+=1
+                    total_compra += inter.valorCompra  
+        total_intercambios+=cantidad_intercambios
+        cantidad_inter_lit.append(cantidad_intercambios)
+        valor_por_sucursal.append(valorSucursal)
+    return  zip(sucursales, valor_por_sucursal,cantidad_inter_lit), total_compra, total_intercambios
+
+def ver_estadisticas(request):
+    sucursales_stats = obtener_porcentaje_intercambios_por_sucursal()
+    destacables = sucursal_popular_y_cancelada()
+    total_usuarios = User.objects.count()  # Total de usuarios
+    total_staff = User.objects.filter(is_staff=True).count()
+    sucursales_con_valor, total_compra, total_intercambios = get_sucursales_table()
     return render(request,'verEstadisticas.html',{
         'sucursales_con_valor': sucursales_con_valor,
         'total_compra':total_compra,
-        'total_intercambio':total_intercambios
+        'total_intercambio':total_intercambios,
+        'sucursales_stats': sucursales_stats,
+        'total_usuarios': total_usuarios,
+        'destacables': destacables,
+        'total_staff': total_staff,
+        'employees': Profile.objects.filter(es_empleado=True)[:7] #Los primeros 7 emp. que encuentre
     })
     
     
+def ver_estadisticas_intercambio(request):
+    intercambio = intercambios.objects.all()
+    cant_femenino=0
+    cant_masculino=0
+    cant_otro=0
+    total=0
+    for inter in intercambio:
+        total+=1
+        if inter.usuario.genero=='Femenino':
+            cant_femenino+=1
+        elif inter.usuario.genero=='Masculino':
+            cant_masculino+=1
+        else: #genero otro
+            cant_otro+=1
+    return render(request,'verEstadisticasIntercambios.html',{
+        'total_masculino':cant_masculino,
+        'total_femenino':cant_femenino,
+        'total_otro':cant_otro,
+        'total':total
+    })
 
 
 def mis_objetos_postulados(request):

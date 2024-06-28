@@ -37,7 +37,9 @@ urlpatterns = [
     path('ver_mis_objetos_postulados/',views.mis_objetos_postulados,name="ver_mis_objetos_postulados"),
     path('rate/<int:intercambio_id>/', views.rate_profile, name='rate_profile'),
     path('rate/<int:profile_id>/', views.profile_detail, name='profile_detail'),
-    path('verEstadisticas/', views.ver_estadisticas,name="verEstadisticas")
+    path('verEstadisticas/', views.ver_estadisticas,name="verEstadisticas"),
+    path('verEstadisticasIntercambio/', views.ver_estadisticas_intercambio,name="verEstadisticasIntercambios")
+
 ] 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
