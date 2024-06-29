@@ -625,22 +625,55 @@ def ver_estadisticas_sucursal(request):
     })
 def ver_estadisticas_intercambio(request):
     intercambio = intercambios.objects.all()
+    cant_nuevo = 0
+    cant_nuevo_fem = 0
+    cant_nuevo_masc = 0
+    cant_nuevo_otro = 0    
+    cant_usado = 0
+    cant_usado_fem = 0
+    cant_usado_masc = 0
+    cant_usado_otro = 0
     cant_femenino=0
     cant_masculino=0
     cant_otro=0
     total=0
     for inter in intercambio:
         total+=1
-        if inter.usuario.genero=='Femenino':
-            cant_femenino+=1
-        elif inter.usuario.genero=='Masculino':
-           cant_masculino+=1
-        else: #genero otro
-            cant_otro+=1
+        if inter.estado=='Nuevo':
+            cant_nuevo+=1
+            if inter.usuario.genero=='Femenino':
+                cant_nuevo_fem+=1
+                cant_femenino+=1
+            elif inter.usuario.genero=='Masculino':
+                cant_masculino+=1
+                cant_nuevo_masc+=1
+            else: #genero otro
+                cant_nuevo_otro+=1
+                cant_otro+=1
+        elif inter.estado=='Usado':
+            cant_usado+=1
+            if inter.usuario.genero=='Femenino':
+                cant_femenino+=1
+                cant_usado_fem+=1
+            elif inter.usuario.genero=='Masculino':
+                cant_masculino+=1
+                cant_usado_masc+=1
+            else: #genero otro
+                cant_otro+=1
+                cant_usado_otro+=1
+        
     return render(request,'verEstadisticasIntercambios.html',{
         'total_masculino':cant_masculino,
         'total_femenino':cant_femenino,
         'total_otro':cant_otro,
+        'cant_nuevo_masc':cant_nuevo_masc,
+        'cant_nuevo_otro':cant_nuevo_otro,
+        'cant_nuevo_fem':cant_nuevo_fem,
+        'cant_usado_fem':cant_usado_fem,
+        'cant_usado_masc':cant_usado_masc,
+        'cant_usado_otro':cant_usado_otro,
+        'cant_usado':cant_usado,
+        'cant_nuevo':cant_nuevo ,
         'total':total
     })
 

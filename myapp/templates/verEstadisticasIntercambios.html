@@ -171,24 +171,34 @@
                                 <tr>
                                     <th>Genero</th>
                                     <th>Cantidad Intercambios</th>
+                                    <th>Cantidad Intercambios con Productos Usados</th> 
+                                    <th>Cantidad Intercambios con Productos Nuevos</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>Masculino</td>
                                     <td>{{ total_masculino }}</td>
+                                    <td>{{ cant_usado_masc }}</td>
+                                    <td>{{ cant_nuevo_masc }}</td>
                                 </tr>
                                 <tr>
                                     <td>Femenino</td>
                                     <td>{{ total_femenino }}</td>
+                                    <td>{{ cant_usado_fem }}</td>
+                                    <td>{{ cant_nuevo_fem }}</td>
                                 </tr>
                                 <tr>
                                     <td>Otro</td>
                                     <td>{{ total_otro }}</td>
+                                    <td>{{ cant_usado_otro }}</td>
+                                    <td>{{ cant_nuevo_otro }}</td>
                                 </tr>
                                 <tr class="total-row">
                                     <td>Total</td>
                                     <td>{{ total }}</td>
+                                    <td>{{ cant_usado }}</td>
+                                    <td>{{ cant_nuevo }}</td>
                                 </tr>
                             </tbody>
                         </table>   

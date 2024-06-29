@@ -304,7 +304,7 @@
         }
 
         .vertical-center {
-            max-width: 80%;
+            max-width: 100%;
             max-height: 50%;
             display: flex;
             margin-left: 50px;
@@ -374,7 +374,7 @@
         <div class="right">
             <h3>Intercambios disponibles</h3>
             <div class="exist-trueque">
-                {% if trueques %}
+               
                 <div class="search-filter">
                     <form method="GET" action="{% url 'filtrar_productos_por_filtro' %}" style="position: relative;">
                         {% csrf_token %}
@@ -389,7 +389,9 @@
                             </button>
                         </div>
                     </form>
+                    <a href="{% url 'Menu_De_Intercambios' %}">Reiniciar filtros</a>
                 </div>
+                {% if trueques %}
                 <table class="trueque-table">
                     <thead>
                         <tr>
