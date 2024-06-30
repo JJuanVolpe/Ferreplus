@@ -1,3 +1,4 @@
+from urllib.parse import quote
 import random
 import string
 from django.http import HttpResponse, JsonResponse
@@ -16,7 +17,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
 from datetime import time,datetime
 from django.db.models import Avg
-
+from django.db.models import Count, F, Case, When, IntegerField
 import re  # Importación del módulo r
 
 
@@ -24,10 +25,7 @@ import re  # Importación del módulo r
 
 
 def index(request):
-    title = 'Django Course!!'
-    return render(request, 'index.html', {
-        'title': title
-    })
+    return render(request, 'index.html')
 
 
 def menuPrincipal(request):
@@ -470,7 +468,6 @@ def historialaceptados(request, intercambio_id=None):
         intercambio = get_object_or_404(intercambios, id=intercambio_id)
         intercambio.status = "REALIZADO"
         monto_gastado = request.POST.get('montoGastado')
-        print( intercambio_id)
         intercambio.valorCompra = monto_gastado  # Ajusta el campo según tu modelo
         print("valor",intercambio.valorCompra)
         intercambio.save()
@@ -592,15 +589,222 @@ def profile_detail(request, profile_id):
     }
     return render(request, 'miPerfil.html', context)
 
-def ver_estadisticas(request):
+
+def obtener_porcentaje_intercambios_por_sucursal():
+    # Consulta para contar los intercambios por sucursal
+    intercambios_por_sucursal = Sucursal.objects.annotate(
+        intercambios_count=Count('intercambios')
+    ).filter(intercambios_count__gt=0)
+    
+    # Total de intercambios realizados
+    total_intercambios = intercambios.objects.count()
+    
+    if total_intercambios == 0:
+        return [], None, None
+
+    # Lista de pares con el nombre de la sucursal, el número de intercambios y el porcentaje de intercambios realizados
+    porcentaje_intercambios_por_sucursal = intercambios_por_sucursal.annotate(
+        porcentaje=100 * F('intercambios_count') / total_intercambios
+    ).values('address', 'intercambios_count', 'porcentaje')
+    
+    # Convertir a una lista de pares
+    lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
+    for item in lista_porcentajes:
+        item['label'] = f'aria-label="{item["address"]} - direccion"'
+        item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
+    
+    # Encontrar el objeto con el mínimo y máximo número de trueques
+    min_trueques = min(lista_porcentajes, key=lambda x: x['intercambios_count'])
+    max_trueques = max(lista_porcentajes, key=lambda x: x['intercambios_count'])
+
+    return lista_porcentajes, min_trueques, max_trueques
+    
+
+
+def sucursal_popular_y_cancelada():
+    # Obtener la sucursal con más intercambios con status "REALIZADO"
+    sucursal_realizado = Sucursal.objects.annotate(
+        count_realizado=Count(Case(
+            When(intercambios__status='REALIZADO', then=1),
+            output_field=IntegerField()
+        ))
+    ).order_by('-count_realizado').first()
+    # Obtener la sucursal con más intercambios con status "CANCELADO"
+    sucursal_cancelado = Sucursal.objects.annotate(
+        count_cancelado=Count(Case(
+            When(intercambios__status='CANCELADO', then=1),
+            output_field=IntegerField()
+        ))
+    ).order_by('-count_cancelado').first()
+
+    # Crear la lista con las sucursales
+    lista_sucursales = []
+    if sucursal_realizado:
+        lista_sucursales.append(sucursal_realizado)
+    if sucursal_cancelado:
+        lista_sucursales.append(sucursal_cancelado)
+    return lista_sucursales
+
+def get_sucursales_table():
     sucursales = Sucursal.objects.all()
     intercambio = intercambios.objects.all()
-    return render(request,'verEstadisticas.html',{
-        'intercambios':intercambio,
-        'sucursales':sucursales
+    
+    valor_por_sucursal=[]
+    cantidad_inter_lit=[]
+    total_compra = 0
+    total_intercambios=0   
+    for sucursal in sucursales:
+        valorSucursal = 0
+        cantidad_intercambios = 0
+        for inter in intercambio:
+            if inter.sucursal_asignada:
+                if inter.sucursal_asignada.id == sucursal.id:
+                    valorSucursal += inter.valorCompra
+                    cantidad_intercambios+=1
+                    total_compra += inter.valorCompra  
+        total_intercambios+=cantidad_intercambios
+        cantidad_inter_lit.append(cantidad_intercambios)
+        valor_por_sucursal.append(valorSucursal)
+    #sucursales_con_valor = zip(sucursales, valor_por_sucursal,cantidad_inter_lit)
+    # return render(request,'verEstadisticas.html',{
+    #     'sucursales_con_valor': sucursales_con_valor,
+    #     'total_compra':total_compra,
+    #     'total_intercambio':total_intercambios
+    return  zip(sucursales, valor_por_sucursal,cantidad_inter_lit), total_compra, total_intercambios
+
+def ver_estadisticas_sucursal(request):
+    sucursales_stats, min_cant_trueques, max_cant_trueques = obtener_porcentaje_intercambios_por_sucursal()
+    destacables = sucursal_popular_y_cancelada()
+    total_usuarios = User.objects.count()  # Total de usuarios
+    total_staff = User.objects.filter(is_staff=True).count()
+    sucursales_con_valor, total_compra, total_intercambios = get_sucursales_table()
+    return render(request,'verEstadisticasSucursal.html',{
+        'sucursales_con_valor': sucursales_con_valor,
+        '':total_compra,
+        'total_intercambio':total_intercambios,
+        'sucursales_stats': sucursales_stats,
+        'total_usuarios': total_usuarios,
+        'destacables': destacables,
+        'total_staff': total_staff,
     })
+    
+    
+# def ver_estadisticas_intercambio(request):
+#     intercambio = intercambios.objects.all()
+#     cant_femenino=0
+#     cant_masculino=0
+#     cant_otro=0
+#     total=0
+#     for inter in intercambio:
+#         total+=1
+#         if inter.usuario.genero=='Femenino':
+#             cant_femenino+=1
+#         elif inter.usuario.genero=='Masculino':
+#             cant_masculino+=1
+#         else: #genero otro
+#             cant_otro+=1
+#     return render(request,'verEstadisticasIntercambios.html',{
+#         'total_masculino':cant_masculino,
+#         'total_femenino':cant_femenino,
+#         'total_otro':cant_otro,
+#         'total':total
+#     })
+
+
+def ver_estadisticas_intercambio(request):
+    intercambio = intercambios.objects.all()
+    cant_nuevo = 0
+    cant_nuevo_fem = 0
+    cant_nuevo_masc = 0
+    cant_nuevo_otro = 0    
+    cant_usado = 0
+    cant_usado_fem = 0
+    cant_usado_masc = 0
+    cant_usado_otro = 0
+    cant_femenino=0
+    cant_masculino=0
+    cant_otro=0
+    total=0
+    for inter in intercambio:
+        total+=1
+        if inter.estado=='Nuevo':
+            cant_nuevo+=1
+            if inter.usuario.genero=='Femenino':
+                cant_nuevo_fem+=1
+                cant_femenino+=1
+            elif inter.usuario.genero=='Masculino':
+                cant_masculino+=1
+                cant_nuevo_masc+=1
+            else: #genero otro
+                cant_nuevo_otro+=1
+                cant_otro+=1
+        elif inter.estado=='Usado':
+            cant_usado+=1
+            if inter.usuario.genero=='Femenino':
+                cant_femenino+=1
+                cant_usado_fem+=1
+            elif inter.usuario.genero=='Masculino':
+                cant_masculino+=1
+                cant_usado_masc+=1
+            else: #genero otro
+                cant_otro+=1
+                cant_usado_otro+=1
+      
+    return render(request,'verEstadisticasIntercambios.html',{
+        'total_masculino':cant_masculino,
+        'total_femenino':cant_femenino,
+        'total_otro':cant_otro,
+        'cant_nuevo_masc':cant_nuevo_masc,
+        'cant_nuevo_otro':cant_nuevo_otro,
+        'cant_nuevo_fem':cant_nuevo_fem,
+        'cant_usado_fem':cant_usado_fem,
+        'cant_usado_masc':cant_usado_masc,
+        'cant_usado_otro':cant_usado_otro,
+        'cant_usado':cant_usado,
+        'cant_nuevo':cant_nuevo ,
+        'total':total
+    })
+
 
 
 def mis_objetos_postulados(request):
     objects = Product.objects.filter(postulante=request.user.profile)
     return render(request,'ver_mis_objetos_postulados.html', context={'postuled': objects})
+
+
+def get_chart(request):
+
+
+    serie = []
+    counter = 0
+
+    while (counter < 7):
+        serie.append(random.randrange(100, 400))
+        counter += 1
+
+    chart = {
+        'tooltip': {
+            'show': True,
+            'trigger': "axis",
+            'triggerOn': "mousemove|click"
+        },
+        'xAxis': [
+            {
+                'type': "category",
+                'data': ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+            }
+        ],
+        'yAxis': [
+            {
+                'type': "value"
+            }
+        ],
+        'series': [
+            {
+                'data': serie,
+                'type': "line"
+            }
+        ]
+    }
+
+    return JsonResponse(chart)
