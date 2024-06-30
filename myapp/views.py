@@ -586,7 +586,7 @@ def profile_detail(request, profile_id):
     average_rating = profile.ratings.aggregate(Avg('rating'))['rating__avg']
 
     context = {
-        'profile': profile,
+        'proFfile': profile,
         'average_rating': average_rating,
         'usuario': profile.user,
     }
