@@ -1,0 +1,31 @@
+body {
+    background-color: #4566d3e5;
+    color: whitesmoke;
+}
+
+.btn{
+    background-color: #9daacf;
+    padding: 20px;
+    border: 3cap;
+    display: center;
+    
+}
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px 10px;
+}
+
+.card {
+    background: whitesmoke;
+    color: black;
+    padding: 10px;
+    margin-bottom: 2px;
+}
+
+.input {
+    background: wheat;
+    padding: 10px;
+    text-align: center;
+    display: block;
+}

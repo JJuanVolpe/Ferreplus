@@ -1,0 +1,137 @@
+{% extends "navegacionGerente.html" %}
+
+{% block title %}Listado de Sucursales{% endblock %}
+{% load static %}
+{% block extra_styles %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'styles/messages.css' %}">
+    <script src="{% static 'js/messages.js' %}"></script>
+</head>
+<style>
+    th,
+    td {
+        border: 1px solid #060606;
+        padding: 5px;
+        text-align: left;
+    }
+
+    .table-container {
+        border: 3px solid #1a1a1a;
+        text-align: center;
+        width: 100%;
+        max-width: 800px;
+        background-color: #ffffffe5;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        position: relative;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <h1>Listado de sucursales</h1>
+    <div class="scrollable-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Dirección</th>
+                    <th>Ciudad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if sucursales %}
+                {% for suc in sucursales %}
+                <tr>
+                    <tdb>{{ suc.id }}</td>
+                    <td>{{ suc.address }}</td>
+                    <td>{{ suc.city }}</td>
+                    <td>
+                        <button class="button-style editar-btn" data-id="{{ suc.id }}" data-address="{{ suc.address }}"
+                            data-city="{{ suc.city }}">Editar</button>
+                        <form class="eliminar-form" action="{% url 'eliminar_sucursal' suc.id %}" method="post"
+                            style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="button-style">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="3">No se encontraron sucursales</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <form id="agregar-form" action="{% url 'agregar_sucursal' %}" method="post">
+        {% csrf_token %}
+        <label for="nuevaSucursal">Dirección de la nueva sucursal:</label><br>
+        <input type="text" id="nuevaSucursal" name="nuevaSucursal" required><br><br>
+        <label for="nueva_ciudad">Ciudad de la nueva sucursal:</label><br>
+        <input type="text" id="nueva_ciudad" name="nueva_ciudad" required><br><br>
+        <button class="button-style" type="submit">Agregar sucursal</button>
+    </form>
+</div>
+
+<dialog id="modal">
+    <div class="divModal">
+        <h1>Modificar Sucursal</h1>
+        <form id="editar-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="modal_form" value="true">
+            <label for="address">Nueva dirección:</label><br>
+            <input type="text" id="address" name="address" required><br>
+            <label for="city">Nueva ciudad:</label><br>
+            <input type="text" id="city" name="city" required><br><br>
+            <button type="submit">Actualizar Sucursal</button>
+            <button type="button" id="Cerrar_modal">Cerrar</button>
+        </form>
+    </div>
+</dialog>
+{% if messages %}
+<div class="message-container">
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+            <span class="close" onclick="this.parentElement.style.display='none';">&times;</span>
+            {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editarForm = document.getElementById('editar-form');
+        const editarButtons = document.querySelectorAll('.editar-btn');
+        const cerrarModalBtn = document.querySelector("#Cerrar_modal");
+        const modal = document.querySelector("#modal");
+        const addressInput = document.getElementById('address');
+        const cityInput = document.getElementById('city');
+
+        editarButtons.forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                const sucursalId = this.getAttribute('data-id');
+                const sucursalAddress = this.getAttribute('data-address');
+                const sucursalCity = this.getAttribute('data-city');
+
+                addressInput.value = sucursalAddress;
+                cityInput.value = sucursalCity;
+
+                modal.showModal();
+                editarForm.action = `{% url 'editar_sucursal' 0 %}`.replace('0', sucursalId);
+            });
+        });
+
+        cerrarModalBtn.addEventListener("click", function () {
+            modal.close();
+        });
+    });
+</script>
+{% endblock %}
