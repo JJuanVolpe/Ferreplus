@@ -655,7 +655,7 @@ def ver_estadisticas_intercambio(request):
             else: #genero otro
                 cant_otro+=1
                 cant_usado_otro+=1
-        
+      
     return render(request,'verEstadisticasIntercambios.html',{
         'total_masculino':cant_masculino,
         'total_femenino':cant_femenino,
