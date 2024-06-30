@@ -37,6 +37,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>N°</th>
                     <th>Dirección</th>
                     <th>Ciudad</th>
                     <th>Acciones</th>
@@ -46,6 +47,7 @@
                 {% if sucursales %}
                 {% for suc in sucursales %}
                 <tr>
+                    <tdb>{{ suc.id }}</td>
                     <td>{{ suc.address }}</td>
                     <td>{{ suc.city }}</td>
                     <td>

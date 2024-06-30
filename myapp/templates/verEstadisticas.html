@@ -75,31 +75,33 @@
                             Sesion de admin
 
                         </div>
-                        <h1 class="number-fs">
+                        <h1 class="number-fs" style="font-display: center;">
                             {{ total_staff }}
                         </h1>
                     </div>
                     <div class="stat-box">
                         <div class="stat-title">
-                            Ciudad con más trueques cancelados
+                            Ciudad con más int. cancelados
                             <span class="stat-percentage red">
                                 <img src="{% static 'img/arrow-down-red.svg' %}" alt="" />
                             </span>
                         </div>
-                        <h1 class="number-fs">
-                            {{ destacables.1.city }}
-                        </h1>
+                        <h2>
+                            Suc. N°{{ destacables.1.id }}
+                        </h2>
+                        <p style="font-size: small;"> {{ destacables.1.city }} </p>
                     </div>
                     <div class="stat-box">
                         <div class="stat-title">
-                            Ciudad con más trueques realizados
+                            Ciudad con más int. realizados
                             <span class="stat-percentage green">
                                 <img src="{% static 'img/arrow-up-green.svg' %}" alt="" />
                             </span>
                         </div>
-                        <h1 class="number-fs">
-                            {{ destacables.0.city }}
-                        </h1>
+                        <h2>
+                            Suc. N°{{ destacables.0.id }}
+                        </h2>
+                        <p style="font-size: small;"> {{ destacables.0.city }} </p>
                     </div>
                 </div>
 
@@ -124,9 +126,22 @@
                 <!-- Row 4 - Devices -->
                 <div class="row-4">
                     <div class="box device-box">
-                        <div class="box-title">Buscar por fechas </div>
+                        <div class="box-title">Intercambios Pactados Por Sucursal<br>
+                            <span style="font-display: center;">
+                                Buscar por fechas:
+                            </span>
+                        </div>
                         <div class="select-months">
-                            <div class="select-month active">
+                            <form method="get" action="{% url 'verEstadisticas' %}" style="display: inline-flex; font-display: center; align-items: center;">
+                                <label for="fecha_inicio">Desde:</label>
+                                <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+                                <label for="fecha_fin" style="margin-left: 5px;">Hasta:</label>
+                                <input type="date" id="fecha_fin" name="fecha_fin" required>
+                                <button style="background-color: cadetblue; border: 2px solid white; color: white; padding: 5px 10px; font-size: 12px; border-radius: 5px; margin-left: 5px;">
+                                    Filtrar
+                                </button>
+                            </form>
+                            <!-- <div class="select-month active">
                                 May
                             </div>
                             <div class="select-month">
@@ -137,7 +152,7 @@
                             </div>
                             <div class="select-month">
                                 August
-                            </div>
+                            </div> -->
                         </div>
                         <div class="month-info">
                             <div class="month-info-box">

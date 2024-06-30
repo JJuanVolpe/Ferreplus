@@ -595,8 +595,33 @@ def profile_detail(request, profile_id):
 
 
 
+# def obtener_porcentaje_intercambios_por_sucursal():
+#     # Consulta para contar los intercambios por sucursal{{ destacables[0].city }}
+#     intercambios_por_sucursal = Sucursal.objects.annotate(
+#         intercambios_count=Count('intercambios')
+#     ).filter(intercambios_count__gt=0)
+    
+#     # Total de intercambios realizados
+#     total_intercambios = intercambios.objects.count()
+    
+#     if total_intercambios == 0:
+#         return []
+
+#     # Lista de pares con el nombre de la sucursal y el porcentaje de intercambios realizados
+#     porcentaje_intercambios_por_sucursal = intercambios_por_sucursal.annotate(
+#         porcentaje=100 * F('intercambios_count') / total_intercambios
+#     ).values('address', 'porcentaje')
+    
+#     # Convertir a una lista de pares
+#     lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
+#     for item in lista_porcentajes:
+#         item['label'] = f'aria-label="{item["address"]} - direccion"'
+#         item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
+    
+#     return lista_porcentajes
+
 def obtener_porcentaje_intercambios_por_sucursal():
-    # Consulta para contar los intercambios por sucursal{{ destacables[0].city }}
+    # Consulta para contar los intercambios por sucursal
     intercambios_por_sucursal = Sucursal.objects.annotate(
         intercambios_count=Count('intercambios')
     ).filter(intercambios_count__gt=0)
@@ -605,12 +630,12 @@ def obtener_porcentaje_intercambios_por_sucursal():
     total_intercambios = intercambios.objects.count()
     
     if total_intercambios == 0:
-        return []
+        return [], None, None
 
-    # Lista de pares con el nombre de la sucursal y el porcentaje de intercambios realizados
+    # Lista de pares con el nombre de la sucursal, el número de intercambios y el porcentaje de intercambios realizados
     porcentaje_intercambios_por_sucursal = intercambios_por_sucursal.annotate(
         porcentaje=100 * F('intercambios_count') / total_intercambios
-    ).values('address', 'porcentaje')
+    ).values('address', 'intercambios_count', 'porcentaje')
     
     # Convertir a una lista de pares
     lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
@@ -618,7 +643,11 @@ def obtener_porcentaje_intercambios_por_sucursal():
         item['label'] = f'aria-label="{item["address"]} - direccion"'
         item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
     
-    return lista_porcentajes
+    # Encontrar el objeto con el mínimo y máximo número de trueques
+    min_trueques = min(lista_porcentajes, key=lambda x: x['intercambios_count'])
+    max_trueques = max(lista_porcentajes, key=lambda x: x['intercambios_count'])
+
+    return lista_porcentajes, min_trueques, max_trueques
     
 
 
@@ -669,20 +698,19 @@ def get_sucursales_table():
     return  zip(sucursales, valor_por_sucursal,cantidad_inter_lit), total_compra, total_intercambios
 
 def ver_estadisticas(request):
-    sucursales_stats = obtener_porcentaje_intercambios_por_sucursal()
+    sucursales_stats, min_cant_trueques, max_cant_trueques = obtener_porcentaje_intercambios_por_sucursal()
     destacables = sucursal_popular_y_cancelada()
     total_usuarios = User.objects.count()  # Total de usuarios
     total_staff = User.objects.filter(is_staff=True).count()
     sucursales_con_valor, total_compra, total_intercambios = get_sucursales_table()
     return render(request,'verEstadisticas.html',{
         'sucursales_con_valor': sucursales_con_valor,
-        'total_compra':total_compra,
+        '':total_compra,
         'total_intercambio':total_intercambios,
         'sucursales_stats': sucursales_stats,
         'total_usuarios': total_usuarios,
         'destacables': destacables,
         'total_staff': total_staff,
-        'employees': Profile.objects.filter(es_empleado=True)[:7] #Los primeros 7 emp. que encuentre
     })
     
     
