@@ -32,6 +32,7 @@ body {
 
 .postuled-section {
     width: 100%;
+    max-height: 800px;
     max-width: 1200px;
     padding: 20px;
     background-color: #ffffff;
@@ -59,7 +60,7 @@ body {
 /* Nuevo contenedor para la tabla */
 .table-container {
     width: 100%;
-    max-height: calc(100vh - 250px); /* Ajusta la altura máxima de la tabla */
+    max-height: 500px; /* Ajusta la altura máxima de la tabla */
     overflow: auto; /* Permite desplazamiento tanto horizontal como vertical */
     -webkit-overflow-scrolling: touch; /* Suaviza el desplazamiento en dispositivos móviles */
     padding-right: 8px; /* Sin padding para evitar desplazamiento adicional */

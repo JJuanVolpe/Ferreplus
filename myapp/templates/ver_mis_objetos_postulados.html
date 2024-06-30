@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'styles/mis_objetos_postulados.css' %}">
     <title>Mis objetos Postulados</title>
 </head>
+
 <div class="container">
     <a href="javascript:history.back()" class="back-button">Volver Atrás</a>
     <section class="postuled-section">
@@ -39,7 +40,8 @@
                         <td>{{ obj.status }}</td>
                         <td><img class="trueque-foto" src="{{ obj.foto.url }}" alt="Imagen de ofrecido"></td>
                         <td><img class="trueque-foto" src="{{ obj.trueque_postulado.foto.url }}" alt="Imagen del postulado">
-                        <p>{{ obj.trueque_postulado.nombre }}</p>
+                        <p>Nombre de producto: {{ obj.trueque_postulado.nombre }}</p>
+                        <p>Nombre de usuario: {{ obj.trueque_postulado.usuario.user.username }}</p>   
                         </td>
                     </tr>
                     {% endfor %}
