@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Projects</title>
+    <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
+    <link rel="stylesheet" href="../static/styles/menuPrincipal.css">
+</head>
+<style>
+    .contenedor {
+        display: flex;
+        flex-direction: column;
+        /* Alinea los elementos al final del eje transversal (horizontal) */
+    }
+    
+    .cerrar-sesion {
+        margin: 1%;
+        position: absolute;
+        top: 5;
+        right: 0;
+    }
+</style> 
+</style>
+<form action="{% url 'menuPrincipal' %}" class="contenedor">
+    <button type="submit">Volver</button>
+    <div class="cerrar-sesion">
+        <a class="nav-link"  href="/logout">Cerrar sesion</a>
+    </div>
+</form>
+{% block content %}
+{% endblock %}
