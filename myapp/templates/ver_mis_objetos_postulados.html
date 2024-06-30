@@ -38,7 +38,9 @@
                         <td>{{ obj.fecha }}</td>
                         <td>{{ obj.status }}</td>
                         <td><img class="trueque-foto" src="{{ obj.foto.url }}" alt="Imagen de ofrecido"></td>
-                        <td><img class="trueque-foto" src="{{ obj.trueque_postulado.foto.url }}" alt="Imagen del postulado"></td>
+                        <td><img class="trueque-foto" src="{{ obj.trueque_postulado.foto.url }}" alt="Imagen del postulado">
+                        <p>{{ obj.trueque_postulado.nombre }}</p>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
