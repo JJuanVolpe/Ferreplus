@@ -683,7 +683,7 @@ def ver_estadisticas_sucursal(request):
     sucursales_con_valor, total_compra, total_intercambios = get_sucursales_table()
     return render(request,'verEstadisticasSucursal.html',{
         'sucursales_con_valor': sucursales_con_valor,
-        '':total_compra,
+        'total_compra':total_compra,
         'total_intercambio':total_intercambios,
         'sucursales_stats': sucursales_stats,
         'total_usuarios': total_usuarios,
