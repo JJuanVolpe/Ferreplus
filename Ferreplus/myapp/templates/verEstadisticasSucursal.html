@@ -13,6 +13,19 @@
     <!--customCSS-->
     <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
     <link rel="stylesheet" href="{% static 'styles/stats.css' %}">
+
+    <style>
+        
+        .chart {
+            text-align: center;
+        }
+        .chart-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+
+
 </head>
 
 <body>
@@ -224,9 +237,13 @@
         </div>
     </div>
     <div class="container">
-        <div class="chart">
+        <div class="chart" >
+            
             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mx-auto">
-                <div id="chart" class="chart"></div>
+                <span class="chart-title">Porcentajes de intercambios realizados en las distintas sucursales</span>
+                <div id="chart" class="chart">
+                    
+                </div>
             </div>
         </div>
     </div>
