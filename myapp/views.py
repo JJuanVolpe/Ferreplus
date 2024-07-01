@@ -471,7 +471,7 @@ def historialaceptados(request, intercambio_id=None):
     if intercambio_id:
         intercambio = get_object_or_404(intercambios, id=intercambio_id)
         intercambio.status = "REALIZADO"
-        postuled = get_object_or_404(Product, trueque_postulado=intercambio)
+        postuled = Product.objects.filter(status='ACEPTADO',trueque_postulado=intercambio).get()
         postuled.status = "REALIZADO"
         postuled.save()
         monto_gastado = request.POST.get('montoGastado')
