@@ -773,36 +773,48 @@ def mis_objetos_postulados(request):
 
 
 def get_chart(request):
-
-
-    serie = []
-    counter = 0
-
-    while (counter < 7):
-        serie.append(random.randrange(100, 400))
-        counter += 1
+    lista_porcentajes = obtener_porcentaje_intercambios_por_sucursal()[0]
+    
+    data = [
+        {"value": item["porcentaje"], "name": item["address"]}
+        for item in lista_porcentajes
+    ]
 
     chart = {
         'tooltip': {
-            'show': True,
-            'trigger': "axis",
-            'triggerOn': "mousemove|click"
+            'trigger': 'item',
+            'formatter': '{a}<br>{b} {c}%'
         },
-        'xAxis': [
-            {
-                'type': "category",
-                'data': ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-            }
-        ],
-        'yAxis': [
-            {
-                'type': "value"
-            }
-        ],
+        'legend': {
+            'top': '5%',
+            'left': 'center'
+        },
         'series': [
             {
-                'data': serie,
-                'type': "line"
+                'name': 'Sucursal',
+                'type': 'pie',
+                'radius': ['40%', '70%'],
+                'avoidLabelOverlap': False,
+                'itemStyle': {
+                    'borderRadius': 10,
+                    'borderColor': '#fff',
+                    'borderWidth': 2
+                },
+                'label': {
+                    'show': False,
+                    'position': 'center'
+                },
+                'emphasis': {
+                    'label': {
+                        'show': True,
+                        'fontSize': 40,
+                        'fontWeight': 'bold'
+                    }
+                },
+                'labelLine': {
+                    'show': False
+                },
+                'data': data
             }
         ]
     }
