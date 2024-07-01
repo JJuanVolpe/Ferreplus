@@ -174,14 +174,13 @@
                             </div> -->
                             {% if data_by_date %}
                             <div class="box page-views">
-                                <h2 class="box-title">Trueques por Sucursal</h2>
-                                <div class="graph">
+                                <div class="graph" style="margin-top:35px;">
                                     {% for sucu in data_by_date %}
                                     <div {{ sucu.label|safe }} {{ sucu.height_style|safe }}></div>
                                     {% endfor %}
                                 </div>
                                 <div class="box-footer">
-                                    <a> &#8733 Intercambios efectuados Por Sucursal</a>
+                                    <a> &#8733 Intercambios en fechas ingresadas    </a>
                                 </div>
                             </div>
                             {% endif %}
