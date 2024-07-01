@@ -287,6 +287,7 @@ def Sucursales(request):
     
     # Si el usuario es gerente, obtener todas las sucursales
     sucursales = Sucursal.objects.all()
+    print("suscursales",sucursales)
     return render(request, 'Sucursales.html', {'sucursales': sucursales})
 
   
@@ -505,6 +506,7 @@ def aceptar_trueque(request, obj_id):
                 offer.status = 'RECHAZADO'
                 offer.save()
         postuled.status = 'ACEPTADO'
+        postuled.save()
         trueque = postuled.trueque_postulado
         trueque.hora = postuled.hora
         trueque.fecha = postuled.fecha
