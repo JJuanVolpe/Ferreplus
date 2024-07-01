@@ -1,23 +1,26 @@
-const getOptionChart = async () => {
+const getOptionChart = async (url) => {
     try {
-        const response = await fetch("http://127.0.0.1:8000/get_chart/");
+        const response = await fetch(url);
         return await response.json();
     } catch (ex) {
         alert(ex);
     }
 };
 
-const initChart = async () => {
-    const myChart = echarts.init(document.getElementById("chart"));
-
-    myChart.setOption(await getOptionChart());
-
+const initChart = async (chartId, url) => {
+    const myChart = echarts.init(document.getElementById(chartId));
+    myChart.setOption(await getOptionChart(url));
     myChart.resize();
 };
 
+const initAllCharts = async () => {
+    await initChart("chart", "http://127.0.0.1:8000/get_chart/");
+    await initChart("sucursales_chart", "http://127.0.0.1:8000/get_sucursales_chart/");
+};
+
 window.addEventListener("load", async () => {
-    await initChart();
+    await initAllCharts();
     setInterval(async () => {
-        await initChart();
+        await initAllCharts();
     }, 2000);
 });

@@ -820,3 +820,54 @@ def get_chart(request):
     }
 
     return JsonResponse(chart)
+
+
+def get_sucursales_chart(request):
+    sucursales_data, total_compra, total_intercambios = get_sucursales_table()
+    
+    data = [
+        {"value": valor, "name": Sucursal.city}
+        for Sucursal, valor, _ in sucursales_data
+    ]
+
+    
+    chart = {
+        'tooltip': {
+            'trigger': 'item',
+            'formatter': '{a}<br>{b}: {c} ({d}%)'
+        },
+        'legend': {
+            'top': '5%',
+            'left': 'center'
+        },
+        'series': [
+            {
+                'name': 'Sucursal',
+                'type': 'pie',
+                'radius': ['40%', '70%'],
+                'avoidLabelOverlap': False,
+                'itemStyle': {
+                    'borderRadius': 10,
+                    'borderColor': '#fff',
+                    'borderWidth': 2
+                },
+                'label': {
+                    'show': False,
+                    'position': 'center'
+                },
+                'emphasis': {
+                    'label': {
+                        'show': True,
+                        'fontSize': 40,
+                        'fontWeight': 'bold'
+                    }
+                },
+                'labelLine': {
+                    'show': False
+                },
+                'data': data
+            }
+        ]
+    }
+
+    return JsonResponse(chart)
