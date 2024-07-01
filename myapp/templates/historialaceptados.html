@@ -31,7 +31,6 @@
             margin: 20px;
         }
 
-        .left,
         .right {
             flex: 1;
             margin: 10px;
@@ -39,6 +38,11 @@
             background-color: #ffffff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container {
+            max-height: 800px;
+            overflow-y: auto;
         }
 
         .trueque-table {
@@ -114,42 +118,44 @@
     <div class="container">
         <div class="right">
             {% if aceptados %}
-                <table class="trueque-table">
-                    <thead>
-                        <tr>
-                            <th>Nombre usuario</th>
-                            <th>Item</th>
-                            <th>Categori­a</th>
-                            <th>Estado</th>
-                            <th>Marca</th>
-                            <th>Modelo</th>
-                            <th>Fecha y Hora</th>
-                            <th>Foto</th>
-                            <th>Valoracion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for intercambio in aceptados %}
-                        <tr>
-                            <td>{{ intercambio.usuario.user.username }}</td>
-                            <td>{{ intercambio.nombre }}</td>
-                            <td>{{ intercambio.categoria }}</td>
-                            <td>{{ intercambio.estado }}</td>
-                            <td>{{ intercambio.marca }}</td>
-                            <td>{{ intercambio.modelo }}</td>
-                            <td>{{ intercambio.fecha }} & {{ intercambio.hora }} </td>
-                            <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>
-                            <td>
-                                {% if not intercambio.valoradoEmpleado %}
-                                    <a href="{% url 'rate_profile' intercambio.id %}" class="botonValorar">Valorar este perfil</a>
-                                {% else %}
-                                    <span>Ya valorado</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table class="trueque-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre usuario</th>
+                                <th>Item</th>
+                                <th>Categori­a</th>
+                                <th>Estado</th>
+                                <th>Marca</th>
+                                <th>Modelo</th>
+                                <th>Fecha y Hora</th>
+                                <th>Foto</th>
+                                <th>Valoracion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for intercambio in aceptados %}
+                            <tr>
+                                <td>{{ intercambio.usuario.user.username }}</td>
+                                <td>{{ intercambio.nombre }}</td>
+                                <td>{{ intercambio.categoria }}</td>
+                                <td>{{ intercambio.estado }}</td>
+                                <td>{{ intercambio.marca }}</td>
+                                <td>{{ intercambio.modelo }}</td>
+                                <td>{{ intercambio.fecha }} & {{ intercambio.hora }} </td>
+                                <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>
+                                <td>
+                                    {% if not intercambio.valoradoEmpleado %}
+                                        <a href="{% url 'rate_profile' intercambio.id %}" class="botonValorar">Valorar este perfil</a>
+                                    {% else %}
+                                        <span>Ya valorado</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             {% else %}
                 <p>No hay intercambios aceptados.</p>
             {% endif %}

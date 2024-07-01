@@ -89,7 +89,8 @@ class Product(models.Model):
     hora = models.TimeField(blank=True, null=True)  # Permite valores en blanco y nulos
     fecha = models.DateField(blank=True, null=True)
     status = models.CharField(max_length=200, null=True, default="NUEVO")  # Campo que identifica estado del producto
-
+    class Meta:
+        ordering = ['fecha', 'hora']
     def __str__(self):
         return self.nombre
 

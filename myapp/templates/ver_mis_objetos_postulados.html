@@ -5,10 +5,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="../static/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}">
     <link rel="stylesheet" href="{% static 'styles/mis_objetos_postulados.css' %}">
     <title>Mis objetos Postulados</title>
 </head>
+<style> 
+/* Section Title */
+.section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    background: linear-gradient(45deg, #b8cefa, #3c79ff);
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+thead {
+    background-color: #007bff;
+    color: #fff;
+}
+
+thead th, thead td {
+    padding: 10px;
+    text-align: left;
+}
+
+tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tbody td {
+    padding: 10px;
+}
+
+tbody img.trueque-foto {
+    max-width: 100px;
+    border-radius: 5px;
+}
+
+tbody td p {
+    margin: 5px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tbody tr {
+        display: block;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+    }
+
+    tbody td {
+        display: block;
+        padding: 10px;
+        text-align: right;
+        position: relative;
+    }
+
+    tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: bold;
+    }
+
+    tbody img.trueque-foto {
+        display: block;
+        margin: 0 auto 10px;
+    }
+}
+
+.modal {
+    display: none; /* Ocultar por defecto */
+    position: fixed; /* Fijo para mantener el modal visible */
+    z-index: 1; /* Colocar encima de otros elementos */
+    left: 0;
+    top: 0;
+    width: 100%; /* Ancho completo de la ventana */
+    height: 100%; /* Alto completo de la ventana */
+    overflow: auto; /* Desplazamiento si es necesario */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+}
+
+.modal-content {
+    margin: 15% auto; /* Centrar el modal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: #2d4a81;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    max-height: 500px;
+}
+
+.modal-content strong {
+    font-size: 18px;
+    color: #0f0f0e; /* Cambia el color del texto a un amarillo brillante */
+    background-color: rgba(255, 255, 255, 0.2); /* Añade un fondo semitransparente */
+    padding: 2px 4px; /* Añade un poco de espacio alrededor del texto */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+.boton-abrir {
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #2d4a81;
+    padding: 10px 20px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.boton-abrir:hover {
+    background-color: rgb(107, 59, 51);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.close-modal-btn {
+    color: #ca2b2b;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal-btn:hover,
+.close-modal-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+</style>
+<body>
 <div class="container">
     <a href="javascript:history.back()" class="back-button">Volver Atrás</a>
     <section class="postuled-section">
@@ -23,7 +181,7 @@
                         <td>Categoria</td>
                         <td>Descripcion</td>
                         <td>Fecha</td>
-                        <td>Estado</td>
+                        <td>Estado de la propuesta</td>
                         <td>Imagen</td>
                         <td>Postulado a</td>
                     </tr>
@@ -31,27 +189,65 @@
                 <tbody>
                     {% for obj in postuled %}
                     <tr>
-                        <td>{{ obj.nombre }}</td>
-                        <td>{{ obj.estado }}</td>
-                        <td>{{ obj.categoria }}</td>
-                        <td>{{ obj.descripcion }}</td>
-                        <td>{{ obj.fecha }}</td>
-                        <td>{{ obj.status }}</td>
-                        <td><img class="trueque-foto" src="{{ obj.foto.url }}" alt="Imagen de ofrecido"></td>
-                        <td><img class="trueque-foto" src="{{ obj.trueque_postulado.foto.url }}" alt="Imagen del postulado">
-                        <p>{{ obj.trueque_postulado.nombre }}</p>
+                        <td data-label="Nombre">{{ obj.nombre }}</td>
+                        <td data-label="Estado">{{ obj.estado }}</td>
+                        <td data-label="Categoria">{{ obj.categoria }}</td>
+                        <td data-label="Descripcion">{{ obj.descripcion }}</td>
+                        <td data-label="Fecha">{{ obj.fecha }}</td>
+                        <td data-label="Estado">{{ obj.status }}</td>
+                        <td data-label="Imagen"><img class="trueque-foto" src="{{ obj.foto.url }}" alt="Imagen de ofrecido"></td>
+                        <td data-label="Postulado a">
+                            <img class="trueque-foto" src="{{ obj.trueque_postulado.foto.url }}" alt="Imagen del postulado">
+                            <p>Nombre de producto: {{ obj.trueque_postulado.nombre }}</p>
+                            <p>Nombre de usuario: {{ obj.trueque_postulado.usuario.user.username }}</p>   
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        <br>
+        <button class="btn open-modal-btn boton-abrir">Ayuda estado de postulacion</button>
         {% else %}
             <p>No existen objetos postulados en el tiempo</p>
         {% endif %}
     </section>
 </div>
 
+<!-- Modal -->
+<div class="modal">
+    <div class="modal-content">
+        <span class="close-modal-btn">&times;</span>
+        <h2>Información sobre el Estado del Producto</h2>
+        <p><strong>Nuevo:</strong> El producto a sido ofertado al creador del intercambio y esta en espera de ser aceptado o rechazado</p>
+        <p><strong>Aceptado:</strong> El producto ha sido aceptado por el creador del intercambio y será intercambiado en sucursal especificada</p>
+        <p><strong>Rechazado:</strong> El producto ha sido rechazado  por el creador del intercambio y no será intercambiado.</p>
+        <p><strong>Cancelado:</strong> El producto ha sido cancelado por un empleado de la sucursal en la que se iba a desarrollar el intercambio</p>
+        <p><strong>Realizado:</strong> El producto ha sido intercambiado correctamente en la sucursal elegida</p>
+        <!-- Aquí puedes agregar más estados y sus descripciones si es necesario -->
+    </div>
+</div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const openModalBtn = document.querySelector('.open-modal-btn');
+        const closeModalBtn = document.querySelector('.close-modal-btn');
+        const modal = document.querySelector('.modal');
+
+        openModalBtn.addEventListener('click', function () {
+            modal.style.display = "block";
+        });
+
+        closeModalBtn.addEventListener('click', function () {
+            modal.style.display = "none";
+        });
+
+        window.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    });
+</script>
 </body>
 </html>

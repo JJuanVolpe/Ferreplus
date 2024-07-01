@@ -288,6 +288,7 @@ def Sucursales(request):
     
     # Si el usuario es gerente, obtener todas las sucursales
     sucursales = Sucursal.objects.all()
+    print("suscursales",sucursales)
     return render(request, 'Sucursales.html', {'sucursales': sucursales})
 
   
@@ -508,6 +509,7 @@ def aceptar_trueque(request, obj_id):
                 offer.status = 'RECHAZADO'
                 offer.save()
         postuled.status = 'ACEPTADO'
+        postuled.save()
         trueque = postuled.trueque_postulado
         trueque.hora = postuled.hora
         trueque.fecha = postuled.fecha
@@ -589,7 +591,7 @@ def profile_detail(request, profile_id):
     average_rating = profile.ratings.aggregate(Avg('rating'))['rating__avg']
 
     context = {
-        'profile': profile,
+        'proFfile': profile,
         'average_rating': average_rating,
         'usuario': profile.user,
     }

@@ -199,6 +199,28 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+        .reiniciar-filtros-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .reiniciar-filtros-btn {
+            background-color: #ff7f0e;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .reiniciar-filtros-btn:hover {
+            background-color: rgba(255, 82, 51, 0.926);
+            transform: scale(1.05);
+        }
 
         .buttonSpecial {
             background-color: #4CAF50;
@@ -333,8 +355,6 @@
             transition: background-color 0.3s ease;
             /* position: absolute; */
             top: 0;
-            margin-right: 6%;
-            /* margin-top: 4%; */
             right: 0;
         }
 
@@ -390,9 +410,9 @@
                             <button class="round-button">
                                 <i class="fas fa-search"></i>
                             </button>
+                            <a href="{% url 'Menu_De_Intercambios' %}" class="reiniciar-filtros-btn">Reiniciar filtro</a>
                         </div>
                     </form>
-                    <a href="{% url 'Menu_De_Intercambios' %}">Reiniciar filtros</a>
                 </div>
                 {% if trueques %}
                 <table class="trueque-table">
