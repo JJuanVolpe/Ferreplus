@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Statistic Dashboard</title>
     <link rel="stylesheet" href="{% static 'styles/stats.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/messages.css' %}">
+    <script src="{% static 'js/messages.js' %}"></script>
 </head>
 
 <body>
@@ -132,12 +134,15 @@
                             </span>
                         </div>
                         <div class="select-months">
-                            <form method="get" action="{% url 'verEstadisticasSucursal' %}" style="display: inline-flex; font-display: center; align-items: center;">
-                                <label for="fecha_inicio">Desde:</label>
-                                <input type="date" id="fecha_inicio" name="fecha_inicio" required>
-                                <label for="fecha_fin" style="margin-left: 5px;">Hasta:</label>
-                                <input type="date" id="fecha_fin" name="fecha_fin" required>
-                                <button style="background-color: cadetblue; border: 2px solid white; color: white; padding: 5px 10px; font-size: 12px; border-radius: 5px; margin-left: 5px;">
+                            <form method="post"style="display: inline-flex; font-display: center; align-items: center;">
+                                {% csrf_token %}
+                                Desde: 
+                                {{ form.fecha_inicio }}
+                                Hasta:
+                                {{ form.fecha_fin }}
+                                <button style="background-color: cadetblue; border: 2px solid white;
+                                                 color: white; padding: 5px 10px; font-size: 12px;
+                                                 border-radius: 5px; margin-left: 5px;">
                                     Filtrar
                                 </button>
                             </form>
@@ -155,9 +160,9 @@
                             </div> -->
                         </div>
                         <div class="month-info">
-                            <div class="month-info-box">
-                                Desktop | 52%
-                                <div class="month-bar" style="width: 62%;"></div>
+                            <!-- <div class="month-info-box">
+                                Desktop | 92%
+                                <div class="month-bar" style="width: 100%;"></div>
                             </div>
                             <div class="month-info-box">
                                 Tablet | 15%
@@ -166,7 +171,20 @@
                             <div class="month-info-box">
                                 Mobile | 36%
                                 <div class="month-bar" style="width: 46%;"></div>
+                            </div> -->
+                            {% if data_by_date %}
+                            <div class="box page-views">
+                                <h2 class="box-title">Trueques por Sucursal</h2>
+                                <div class="graph">
+                                    {% for sucu in data_by_date %}
+                                    <div {{ sucu.label|safe }} {{ sucu.height_style|safe }}></div>
+                                    {% endfor %}
+                                </div>
+                                <div class="box-footer">
+                                    <a> &#8733 Intercambios efectuados Por Sucursal</a>
+                                </div>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="box device-box">
@@ -214,6 +232,18 @@
             </ul>
         </div>
     </div>
+    {% if messages %}
+    <div class="message-container">
+      <ul class="messages">
+          {% for message in messages %}
+          <li class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+              <span class="close" onclick="this.parentElement.style.display='none';">&times;</span>
+              {{ message }}
+          </li>
+          {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
     
     <script src="{% static 'js/script.js' %}"></script>
 </body>

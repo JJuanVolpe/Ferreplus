@@ -10,15 +10,16 @@ from django.db import Error, IntegrityError
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import Profile, Rating, Sucursal, intercambios, Product
-from .forms import CrearIntercambioForm, RecoveryForm, ProductForm
+from .forms import CrearIntercambioForm, RecoveryForm, ProductForm, DateSelector
 from django.core.mail import EmailMessage
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash
 from datetime import time,datetime
 from django.db.models import Avg
-from django.db.models import Count, F, Case, When, IntegerField
+from django.db.models import Count, F, Q, Case, When, IntegerField
 import re  # Importación del módulo r
+from django.utils.dateparse import parse_date
 
 
 # Create your views here.
@@ -470,6 +471,9 @@ def historialaceptados(request, intercambio_id=None):
     if intercambio_id:
         intercambio = get_object_or_404(intercambios, id=intercambio_id)
         intercambio.status = "REALIZADO"
+        postuled = Product.objects.filter(status='ACEPTADO',trueque_postulado=intercambio).get()
+        postuled.status = "REALIZADO"
+        postuled.save()
         monto_gastado = request.POST.get('montoGastado')
         intercambio.valorCompra = monto_gastado  # Ajusta el campo según tu modelo
         print("valor",intercambio.valorCompra)
@@ -479,7 +483,6 @@ def historialaceptados(request, intercambio_id=None):
     aceptados = intercambios.objects.filter(sucursal_asignada=suc, status="REALIZADO")
     context = {'aceptados': aceptados}
     return render(request, 'historialaceptados.html', context)
-
 
 def filtrar_productos_por_filtro(request):
         query = request.GET.get('search_query')
@@ -676,19 +679,66 @@ def get_sucursales_table():
     return  zip(sucursales, valor_por_sucursal,cantidad_inter_lit), total_compra, total_intercambios
 
 def ver_estadisticas_sucursal(request):
+    
+    def get_value_by_dates(fecha_inicio, fecha_fin):
+        # Validar fechas
+        if not fecha_inicio or not fecha_fin:
+            return [], None, None
+
+        # Consulta para contar los intercambios por sucursal entre las fechas especificadas
+        intercambios_por_sucursal = Sucursal.objects.annotate(
+            intercambios_count=Count('intercambios', filter=Q(intercambios__fecha__range=(fecha_inicio, fecha_fin)))
+        ).filter(intercambios_count__gt=0)
+        
+        # Total de intercambios realizados entre las fechas especificadas
+        total_intercambios = intercambios.objects.filter(fecha__range=(fecha_inicio, fecha_fin)).count()
+        
+        if total_intercambios == 0:
+            return [], None, None
+
+        # Lista de pares con el nombre de la sucursal, el número de intercambios y el porcentaje de intercambios realizados
+        porcentaje_intercambios_por_sucursal = intercambios_por_sucursal.annotate(
+            porcentaje=100 * F('intercambios_count') / total_intercambios
+        ).values('address', 'intercambios_count', 'porcentaje')
+        
+        # Convertir a una lista de pares
+        lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
+        for item in lista_porcentajes:
+            item['label'] = f'aria-label="{item["address"]} - direccion"'
+            item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
+        
+        return lista_porcentajes
+    
+    
     sucursales_stats, min_cant_trueques, max_cant_trueques = obtener_porcentaje_intercambios_por_sucursal()
     destacables = sucursal_popular_y_cancelada()
     total_usuarios = User.objects.count()  # Total de usuarios
     total_staff = User.objects.filter(is_staff=True).count()
     sucursales_con_valor, total_compra, total_intercambios = get_sucursales_table()
+    form = DateSelector()
+    data_by_date = []
+    if request.method == 'POST':
+        form = DateSelector(request.POST)
+        if form.is_valid():
+            # Procesar los datos del formulario
+            data_by_date = get_value_by_dates(form.cleaned_data['fecha_inicio'], form.cleaned_data['fecha_fin'])
+        else:
+            # Capturar y mostrar los mensajes de error
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.warning(request, error)
+    
+    
     return render(request,'verEstadisticasSucursal.html',{
         'sucursales_con_valor': sucursales_con_valor,
-        '':total_compra,
+        'total_compra':total_compra,
         'total_intercambio':total_intercambios,
         'sucursales_stats': sucursales_stats,
         'total_usuarios': total_usuarios,
         'destacables': destacables,
         'total_staff': total_staff,
+        'form': form,
+        'data_by_date': data_by_date
     })
     
     

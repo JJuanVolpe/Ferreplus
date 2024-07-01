@@ -1,6 +1,7 @@
 from django import forms
 from .models import Product, Rating, Sucursal
 from datetime import time,datetime
+from datetime import date
 
 
 class CrearIntercambioForm(forms.Form):
@@ -44,6 +45,28 @@ class ProductForm(forms.ModelForm):
         self.fields['marca'].required = False
         self.fields['modelo'].required = False
 
+
+class DateSelector(forms.Form):
+    fecha_inicio = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    fecha_fin = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_inicio = cleaned_data.get('fecha_inicio')
+        fecha_fin = cleaned_data.get('fecha_fin')
+
+        if fecha_inicio and fecha_fin:
+            # Check if the end date is before the start date
+            if fecha_fin <= fecha_inicio:
+                raise forms.ValidationError('La fecha de fin no puede ser anterior a la fecha de inicio.')
+
+            # Check if the start date or end date is in the future
+            if fecha_inicio >= date.today() or fecha_fin > date.today():
+                raise forms.ValidationError('La fecha de inicio/fin no puede ser una fecha futura.')
+        
+        return cleaned_data
+    
+    
 class CreateNewProject(forms.Form):
     name = forms.CharField(label="Nombre del Proyect", max_length=200, widget=forms.TextInput(attrs={'class': 'input'}))
 
