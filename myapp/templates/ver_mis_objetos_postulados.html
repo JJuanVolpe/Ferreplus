@@ -10,10 +10,6 @@
     <title>Mis objetos Postulados</title>
 </head>
 <style> 
-.back-button:hover {
-    background-color: #0056b3;
-}
-
 /* Section Title */
 .section-title {
     font-size: 24px;
@@ -70,11 +66,6 @@ tbody td p {
         padding: 10px;
     }
 
-    .back-button {
-        width: 100%;
-        text-align: center;
-    }
-
     thead {
         display: none;
     }
@@ -118,17 +109,49 @@ tbody td p {
 }
 
 .modal-content {
-    background-color: #fefefe;
     margin: 15% auto; /* Centrar el modal */
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
     max-width: 600px;
-    border-radius: 10px;
+    padding: 20px;
+    background-color: #2d4a81;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    max-height: 500px;
+}
+
+.modal-content strong {
+    font-size: 18px;
+    color: #0f0f0e; /* Cambia el color del texto a un amarillo brillante */
+    background-color: rgba(255, 255, 255, 0.2); /* Añade un fondo semitransparente */
+    padding: 2px 4px; /* Añade un poco de espacio alrededor del texto */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+.boton-abrir {
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #2d4a81;
+    padding: 10px 20px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.boton-abrir:hover {
+    background-color: rgb(107, 59, 51);
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .close-modal-btn {
-    color: #aaa;
+    color: #ca2b2b;
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -141,6 +164,7 @@ tbody td p {
     text-decoration: none;
     cursor: pointer;
 }
+
 </style>
 <body>
 <div class="container">
@@ -157,7 +181,7 @@ tbody td p {
                         <td>Categoria</td>
                         <td>Descripcion</td>
                         <td>Fecha</td>
-                        <td>Estado</td>
+                        <td>Estado de la propuesta</td>
                         <td>Imagen</td>
                         <td>Postulado a</td>
                     </tr>
@@ -182,7 +206,8 @@ tbody td p {
                 </tbody>
             </table>
         </div>
-        <button class="btn open-modal-btn">Ver estado</button>
+        <br>
+        <button class="btn open-modal-btn boton-abrir">Ayuda estado de postulacion</button>
         {% else %}
             <p>No existen objetos postulados en el tiempo</p>
         {% endif %}
