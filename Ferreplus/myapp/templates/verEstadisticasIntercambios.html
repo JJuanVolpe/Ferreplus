@@ -1,44 +1,55 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadisticas de Intercambios</title>
-
-    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <!-- customCSS -->
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
     <style>
         .total-row {
             font-weight: bold;
-            background-color: #ffd700; /* Cambia este color según tus preferencias */
-            color: #000000; /* Cambia este color según tus preferencias */
+            background-color: #ffd700;
+            color: #000000;
         }
         .scrollable-table {
             max-height: 300px;
             overflow-y: auto;
         }
-
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 5px 6px 13px 8px rgba(0, 0, 0, 0.1);
+        }
+        #intercambios_chart {
+            width: 600px;  /* Ajusta según tus necesidades */
+            height: 400px; /* Ajusta según tus necesidades */
+        }
         table {
             width: 100%;
             border-collapse: collapse;
             border-radius: 10px;
         }
-
         th, td {
             border: 1px solid #060606;
             padding: 10px;
             text-align: left;
             width: 120px;
         }
-
         th {
             background-color: #2d4a81;
             color: white;
         }
-
         tbody tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-        
         body {
             font-family: Arial, Helvetica, sans-serif;
             margin: 0;
@@ -50,7 +61,6 @@
             background-color: #4566d3e5;
             height: 100vh;
         }
-
         .navbar {
             width: 100%;
             background-color: #2d4a81;
@@ -58,7 +68,6 @@
             color: aliceblue;
             box-shadow: inset 0px 6px 13px 3px rgba(0, 0, 0, 0.2);
         }
-
         .navbar ul {
             list-style-type: none;
             padding: 0;
@@ -67,22 +76,18 @@
             justify-content: flex-end;
             align-items: center;
         }
-
         .navbar ul li {
             margin: 0 10px;
         }
-
         .navbar ul li a {
             color: #ffffff;
             text-decoration: none;
             font-weight: bold;
             transition: color 0.3s;
         }
-
         .navbar ul li a:hover {
             color: rgba(219, 28, 28, 0.926);
         }
-
         .container {
             display: flex;
             width: 90%;
@@ -94,12 +99,10 @@
             box-shadow: 5px 6px 13px 8px rgba(0, 0, 0, 0.1);
             flex-direction: row-reverse;
         }
-
         .estadistica {
             flex: 1;
             padding: 20px;
         }
-
         .navegacion {
             width: 10%;
             padding: 20px;
@@ -107,39 +110,31 @@
             color: white;
             border-radius: 10px;
         }
-
         .navegacion ul {
             list-style-type: none;
             padding: 0;
         }
-
         .navegacion ul li {
             margin: 20px 0;
         }
-
         .navegacion ul li a {
             color: #ffffff;
             text-decoration: none;
             font-weight: bold;
         }
-
         .navegacion ul li a:hover {
             color: rgba(219, 28, 28, 0.926);
         }
-
         .estadistica h1 {
             margin-top: 0;
         }
-
         .estadistica div {
             display: flex;
             justify-content: space-between;
         }
-
         .estadistica .costado {
             width: 30%;
         }
-
         .estadistica .main-content {
             width: 70%;
         }
@@ -148,18 +143,10 @@
 <body>
     <nav class="navbar">
         <ul>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'verEstadisticasSucursal' %}">Ver Estadísticas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'Sucursales' %}">Gestionar Sucursales</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'gestionarEmpleados' %}">Gestionar Empleados</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'verEstadisticasSucursal' %}">Ver Estadísticas</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'Sucursales' %}">Gestionar Sucursales</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'gestionarEmpleados' %}">Gestionar Empleados</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a></li>
         </ul>
     </nav>
     <div class="container">
@@ -173,8 +160,10 @@
                                 <tr>
                                     <th>Genero</th>
                                     <th>Cantidad Intercambios</th>
-                                    <th>Cantidad Intercambios con Productos Usados</th> 
+                                    <th>Cantidad Intercambios con Productos Usados</th>
                                     <th>Cantidad Intercambios con Productos Nuevos</th>
+                                    <th>Cantidad Intercambios Finalizado</th>
+                                    <th>Cantidad Intercambios Cancelados</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -183,29 +172,36 @@
                                     <td>{{ total_masculino }}</td>
                                     <td>{{ cant_usado_masc }}</td>
                                     <td>{{ cant_nuevo_masc }}</td>
+                                    <td>{{ cant_realizado_masc }}</td>
+                                    <td>{{ cant_cancelado_masc }}</td>
                                 </tr>
                                 <tr>
                                     <td>Femenino</td>
                                     <td>{{ total_femenino }}</td>
                                     <td>{{ cant_usado_fem }}</td>
                                     <td>{{ cant_nuevo_fem }}</td>
+                                    <td>{{ cant_realizado_fem }}</td>
+                                    <td>{{ cant_cancelado_fem }}</td>
                                 </tr>
                                 <tr>
                                     <td>Otro</td>
                                     <td>{{ total_otro }}</td>
                                     <td>{{ cant_usado_otro }}</td>
                                     <td>{{ cant_nuevo_otro }}</td>
+                                    <td>{{ cant_realizado_otro }}</td>
+                                    <td>{{ cant_cancelado_otro }}</td>
                                 </tr>
                                 <tr class="total-row">
                                     <td>Total</td>
                                     <td>{{ total }}</td>
                                     <td>{{ cant_usado }}</td>
                                     <td>{{ cant_nuevo }}</td>
+                                    <td>{{ cant_realizado }}</td>
+                                    <td>{{ cant_cancelado }}</td>
                                 </tr>
                             </tbody>
-                        </table>   
+                        </table>
                     </div>
-                   
                 </div>
             </div>
         </main>
@@ -216,6 +212,13 @@
             </ul>
         </div>
     </div>
-
+    <div class="chart-container">
+        <div id="intercambios_chart" class="intercambios_chart"></div>
+    </div>
+    <!-- Apache Echarts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.1/echarts.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>
+

@@ -40,6 +40,7 @@ urlpatterns = [
     path('verEstadisticasSucursal/', views.ver_estadisticas_sucursal,name="verEstadisticasSucursal"),
     path('verEstadisticasIntercambio/',views.ver_estadisticas_intercambio,name="verEstadisticasIntercambio"),
     path('get_sucursales_chart/', views.get_sucursales_chart, name='get_sucursales_chart'),
+    path('get_intercambios_chart/', views.get_intercambios_chart, name='get_intercambios_chart'),
     path('get_chart/', views.get_chart, name='get_chart')
 ] 
 if settings.DEBUG:

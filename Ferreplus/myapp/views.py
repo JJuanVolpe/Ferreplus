@@ -724,31 +724,67 @@ def ver_estadisticas_intercambio(request):
     cant_femenino=0
     cant_masculino=0
     cant_otro=0
+    cant_cancelado=0
+    cant_realizado=0
+    cant_cancelado_masc=0
+    cant_realizado_masc=0
+    cant_cancelado_fem=0
+    cant_realizado_fem=0
+    cant_cancelado_otro=0
+    cant_realizado_otro=0
     total=0
     for inter in intercambio:
         total+=1
         if inter.estado=='Nuevo':
             cant_nuevo+=1
             if inter.usuario.genero=='Femenino':
+                if inter.status=="CANCELADO":
+                    cant_cancelado_fem+=1
+                elif inter.status=='REALIZADO':
+                    cant_realizado_fem+=1
                 cant_nuevo_fem+=1
                 cant_femenino+=1
             elif inter.usuario.genero=='Masculino':
                 cant_masculino+=1
                 cant_nuevo_masc+=1
+                if inter.status=="CANCELADO":
+                    cant_cancelado_masc+=1
+                elif inter.status=='REALIZADO':
+                    cant_realizado_masc+=1
             else: #genero otro
                 cant_nuevo_otro+=1
                 cant_otro+=1
+                if inter.status=="CANCELADO":
+                    cant_cancelado_otro+=1
+                elif inter.status=='REALIZADO':
+                    cant_realizado_otro+=1
         elif inter.estado=='Usado':
             cant_usado+=1
             if inter.usuario.genero=='Femenino':
+                if inter.status=="CANCELADO":
+                    cant_cancelado_fem+=1
+                elif inter.status=='REALIZADO':
+                    cant_realizado_fem+=1
                 cant_femenino+=1
                 cant_usado_fem+=1
             elif inter.usuario.genero=='Masculino':
                 cant_masculino+=1
                 cant_usado_masc+=1
+                if inter.status=="CANCELADO":
+                    cant_cancelado_masc+=1
+                elif inter.status=='REALIZADO':
+                    cant_realizado_masc+=1
             else: #genero otro
                 cant_otro+=1
                 cant_usado_otro+=1
+                if inter.status=="CANCELADO":
+                    cant_cancelado_otro+=1
+                elif inter.status=='REALIZADO':
+                    cant_realizado_otro+=1
+        if inter.status=="CANCELADO":
+            cant_cancelado+=1
+        elif inter.status=='REALIZADO':
+            cant_realizado+=1
       
     return render(request,'verEstadisticasIntercambios.html',{
         'total_masculino':cant_masculino,
@@ -762,9 +798,16 @@ def ver_estadisticas_intercambio(request):
         'cant_usado_otro':cant_usado_otro,
         'cant_usado':cant_usado,
         'cant_nuevo':cant_nuevo ,
+        'cant_cancelado':cant_cancelado,
+        'cant_realizado':cant_realizado,
+        'cant_cancelado_masc':cant_cancelado_masc,
+        'cant_realizado_masc':cant_realizado_masc,
+        'cant_realizado_fem':cant_cancelado_fem,
+        'cant_cancelado_fem':cant_realizado_fem,
+        'cant_realizado_otro':cant_cancelado_otro,
+        'cant_cancelado_otro':cant_realizado_otro,
         'total':total
     })
-
 
 
 def mis_objetos_postulados(request):
@@ -866,6 +909,82 @@ def get_sucursales_chart(request):
                     'show': False
                 },
                 'data': data
+            }
+        ]
+    }
+
+    return JsonResponse(chart)
+
+
+
+def get_intercambios_chart(request):
+    cant_cancelado_masc = cant_realizado_masc = 0
+    cant_cancelado_fem = cant_realizado_fem = 0
+    cant_cancelado_otro = cant_realizado_otro = 0
+
+    intercambio = intercambios.objects.all()
+    for inter in intercambio:
+        if inter.usuario.genero == 'Femenino':
+            if inter.status == "CANCELADO":
+                cant_cancelado_fem += 1
+            elif inter.status == 'REALIZADO':
+                cant_realizado_fem += 1
+        elif inter.usuario.genero == 'Masculino':
+            if inter.status == "CANCELADO":
+                cant_cancelado_masc += 1
+            elif inter.status == 'REALIZADO':
+                cant_realizado_masc += 1
+        else:  # genero otro
+            if inter.status == "CANCELADO":
+                cant_cancelado_otro += 1
+            elif inter.status == 'REALIZADO':
+                cant_realizado_otro += 1
+
+    chart = {
+        'title': {
+            'text': 'Estado de intercambios por género',
+            'left': 'center',
+            'top': '3%'  # Ajuste de posición del título
+        },
+        'tooltip': {
+            'trigger': 'axis',
+            'axisPointer': {
+                'type': 'shadow'
+            }
+        },
+        'legend': {
+            'top': '8%'  # Ajuste de posición de la leyenda
+        },
+        'grid': {
+            'left': '3%',
+            'right': '4%',
+            'bottom': '3%',
+            'top': '20%',  # Ajuste del espacio superior para evitar que el título tape las opciones
+            'containLabel': True
+        },
+        'xAxis': {
+            'type': 'value',
+            'boundaryGap': [0, 0.01]
+        },
+        'yAxis': {
+            'type': 'category',
+            'data': ['Cancelado', 'Finalizado']
+        },
+        'series': [
+            {
+                'name': 'Masculino',
+                'type': 'bar',
+                'data': [cant_cancelado_masc, cant_realizado_masc]
+            },
+            {
+                'name': 'Femenino',
+                'type': 'bar',
+                'data': [cant_cancelado_fem, cant_realizado_fem]
+            },
+            {
+                'name': 'Otro',
+                'type': 'bar',
+                'data': [cant_cancelado_otro, cant_realizado_otro]
             }
         ]
     }
