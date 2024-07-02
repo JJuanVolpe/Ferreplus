@@ -111,7 +111,6 @@ def intercambio_con_espera_de_ofertas(request):
             messages.success(request, "El intercambio se ha creado correctamente.")    
             # Redirige a la página de Mis_Trueques
             return render(request, 'Mis_Trueques.html', {'listadointercambios': intercambios.objects.filter(usuario=request.user.profile, status='NUEVO')})
-            redirect()
     else:
         return render(request, 'intercambio_con_espera_de_ofertas.html', context=context)
     
@@ -686,7 +685,7 @@ def get_sucursales_table():
 
 def ver_estadisticas_sucursal(request):
     
-    def get_value_by_dates(fecha_inicio, fecha_fin):
+    def get_value_by_dates(fecha_inicio, fecha_fin, request, messages):
         # Validar fechas
         if not fecha_inicio or not fecha_fin:
             return [], None, None
@@ -700,6 +699,7 @@ def ver_estadisticas_sucursal(request):
         total_intercambios = intercambios.objects.filter(fecha__range=(fecha_inicio, fecha_fin)).count()
         
         if total_intercambios == 0:
+            messages.warning(request, "No hay intercambios registrados en las fechas ingresadas")
             return []
 
         # Lista de pares con el nombre de la sucursal, el número de intercambios y el porcentaje de intercambios realizados
@@ -727,7 +727,7 @@ def ver_estadisticas_sucursal(request):
         form = DateSelector(request.POST)
         if form.is_valid():
             # Procesar los datos del formulario
-            data_by_date = get_value_by_dates(form.cleaned_data['fecha_inicio'], form.cleaned_data['fecha_fin'])
+            data_by_date = get_value_by_dates(form.cleaned_data['fecha_inicio'], form.cleaned_data['fecha_fin'], request, messages)
         else:
             # Capturar y mostrar los mensajes de error
             for field, errors in form.errors.items():
