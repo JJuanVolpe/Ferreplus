@@ -621,6 +621,7 @@ def obtener_porcentaje_intercambios_por_sucursal():
         item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
     
     # Encontrar el objeto con el mínimo y máximo número de trueques
+    
     min_trueques = min(lista_porcentajes, key=lambda x: x['intercambios_count'])
     max_trueques = max(lista_porcentajes, key=lambda x: x['intercambios_count'])
 
@@ -636,7 +637,6 @@ def sucursal_popular_y_cancelada():
         ))
     ).order_by('-count_realizado').first()
     
-    print("sucursal con mas realizados====>" + str(sucursal_realizado))
 
     # Obtener la sucursal con más intercambios con status "CANCELADO"
     sucursal_cancelado = Sucursal.objects.annotate(
@@ -646,7 +646,6 @@ def sucursal_popular_y_cancelada():
         ))
     ).order_by('-count_cancelado').first()
     
-    print("sucursal con mas cancelados====>" + str(sucursal_cancelado))
 
     # Crear la lista con las sucursales
     lista_sucursales = []
@@ -717,7 +716,7 @@ def ver_estadisticas_sucursal(request):
         return lista_porcentajes
     
     
-    sucursales_stats, min_cant_trueques, max_cant_trueques = obtener_porcentaje_intercambios_por_sucursal()
+    sucursales_stats = obtener_porcentaje_intercambios_por_sucursal()
     destacables = sucursal_popular_y_cancelada()
     total_usuarios = User.objects.count()  # Total de usuarios
     total_staff = User.objects.filter(is_staff=True).count()
