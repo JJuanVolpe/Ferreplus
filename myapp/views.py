@@ -695,6 +695,7 @@ def ver_estadisticas_sucursal(request):
         total_intercambios = intercambios.objects.filter(fecha__range=(fecha_inicio, fecha_fin)).count()
         
         if total_intercambios == 0:
+            messages.warning(request, "No se registraron intercambios en las fechas ingresadas")
             return []
 
         # Lista de pares con el nombre de la sucursal, el número de intercambios y el porcentaje de intercambios realizados
@@ -727,7 +728,7 @@ def ver_estadisticas_sucursal(request):
             # Capturar y mostrar los mensajes de error
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.warning(request, error)
+                    messages.error(request, error)
     
     
     return render(request,'verEstadisticasSucursal.html',{
