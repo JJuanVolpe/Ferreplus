@@ -695,7 +695,7 @@ def ver_estadisticas_sucursal(request):
         total_intercambios = intercambios.objects.filter(fecha__range=(fecha_inicio, fecha_fin)).count()
         
         if total_intercambios == 0:
-            return [], None, None
+            return []
 
         # Lista de pares con el nombre de la sucursal, el número de intercambios y el porcentaje de intercambios realizados
         porcentaje_intercambios_por_sucursal = intercambios_por_sucursal.annotate(
@@ -705,7 +705,7 @@ def ver_estadisticas_sucursal(request):
         # Convertir a una lista de pares
         lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
         for item in lista_porcentajes:
-            item['label'] = f'aria-label=" Dirección: {item["address"]}. Trueques realizados: {item["intercambios_count"]}"'
+            item['label'] = f'aria-label=" Dirección: {item["address"]}. Trueques totales: {item["intercambios_count"]} ({item["porcentaje"]}%)"'
             item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
         
         return lista_porcentajes
