@@ -706,7 +706,7 @@ def ver_estadisticas_sucursal(request):
         # Convertir a una lista de pares
         lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
         for item in lista_porcentajes:
-            item['label'] = f'aria-label="{item["address"]} - direccion"'
+            item['label'] = f'aria-label=" Dirección: {item["address"]}. Trueques realizados: {item["intercambios_count"]}"'
             item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
         
         return lista_porcentajes
