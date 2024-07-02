@@ -38,7 +38,10 @@ urlpatterns = [
     path('rate/<int:intercambio_id>/', views.rate_profile, name='rate_profile'),
     path('rate/<int:profile_id>/', views.profile_detail, name='profile_detail'),
     path('verEstadisticasSucursal/', views.ver_estadisticas_sucursal,name="verEstadisticasSucursal"),
-    path('verEstadisticasIntercambio/',views.ver_estadisticas_intercambio,name="verEstadisticasIntercambio")
+    path('verEstadisticasIntercambio/',views.ver_estadisticas_intercambio,name="verEstadisticasIntercambio"),
+    path('get_sucursales_chart/', views.get_sucursales_chart, name='get_sucursales_chart'),
+    path('get_intercambios_chart/', views.get_intercambios_chart, name='get_intercambios_chart'),
+    path('get_chart/', views.get_chart, name='get_chart')
 ] 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

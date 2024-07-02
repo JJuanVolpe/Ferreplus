@@ -288,7 +288,6 @@ def Sucursales(request):
     
     # Si el usuario es gerente, obtener todas las sucursales
     sucursales = Sucursal.objects.all()
-    print("suscursales",sucursales)
     return render(request, 'Sucursales.html', {'sucursales': sucursales})
 
   
@@ -591,7 +590,7 @@ def profile_detail(request, profile_id):
     average_rating = profile.ratings.aggregate(Avg('rating'))['rating__avg']
 
     context = {
-        'proFfile': profile,
+        'profile': profile,
         'average_rating': average_rating,
         'usuario': profile.user,
     }
@@ -869,3 +868,180 @@ def ver_estadisticas_intercambio(request):
 def mis_objetos_postulados(request):
     objects = Product.objects.filter(postulante=request.user.profile)
     return render(request,'ver_mis_objetos_postulados.html', context={'postuled': objects})
+
+
+def get_chart(request):
+    lista_porcentajes = obtener_porcentaje_intercambios_por_sucursal()[0]
+    
+    data = [
+        {"value": item["porcentaje"], "name": item["address"]}
+        for item in lista_porcentajes
+    ]
+
+    chart = {
+        'tooltip': {
+            'trigger': 'item',
+            'formatter': '{a}<br>{b} {c}%'
+        },
+        'legend': {
+            'top': '5%',
+            'left': 'center'
+        },
+        'series': [
+            {
+                'name': 'Sucursal',
+                'type': 'pie',
+                'radius': ['40%', '70%'],
+                'avoidLabelOverlap': False,
+                'itemStyle': {
+                    'borderRadius': 10,
+                    'borderColor': '#fff',
+                    'borderWidth': 2
+                },
+                'label': {
+                    'show': False,
+                    'position': 'center'
+                },
+                'emphasis': {
+                    'label': {
+                        'show': True,
+                        'fontSize': 40,
+                        'fontWeight': 'bold'
+                    }
+                },
+                'labelLine': {
+                    'show': False
+                },
+                'data': data
+            }
+        ]
+    }
+
+    return JsonResponse(chart)
+
+
+def get_sucursales_chart(request):
+    sucursales_data, total_compra, total_intercambios = get_sucursales_table()
+    
+    data = [
+        {"value": valor, "name": Sucursal.address}
+        for Sucursal, valor, _ in sucursales_data
+    ]
+
+    
+    chart = {
+        'tooltip': {
+            'trigger': 'item',
+            'formatter': '{a}<br>{b}: {c} ({d}%)'
+        },
+        'legend': {
+            'top': '5%',
+            'left': 'center'
+        },
+        'series': [
+            {
+                'name': 'Sucursal',
+                'type': 'pie',
+                'radius': ['40%', '70%'],
+                'avoidLabelOverlap': False,
+                'itemStyle': {
+                    'borderRadius': 10,
+                    'borderColor': '#fff',
+                    'borderWidth': 2
+                },
+                'label': {
+                    'show': False,
+                    'position': 'center'
+                },
+                'emphasis': {
+                    'label': {
+                        'show': True,
+                        'fontSize': 40,
+                        'fontWeight': 'bold'
+                    }
+                },
+                'labelLine': {
+                    'show': False
+                },
+                'data': data
+            }
+        ]
+    }
+
+    return JsonResponse(chart)
+
+
+
+def get_intercambios_chart(request):
+    cant_cancelado_masc = cant_realizado_masc = 0
+    cant_cancelado_fem = cant_realizado_fem = 0
+    cant_cancelado_otro = cant_realizado_otro = 0
+
+    intercambio = intercambios.objects.all()
+    for inter in intercambio:
+        if inter.usuario.genero == 'Femenino':
+            if inter.status == "CANCELADO":
+                cant_cancelado_fem += 1
+            elif inter.status == 'REALIZADO':
+                cant_realizado_fem += 1
+        elif inter.usuario.genero == 'Masculino':
+            if inter.status == "CANCELADO":
+                cant_cancelado_masc += 1
+            elif inter.status == 'REALIZADO':
+                cant_realizado_masc += 1
+        else:  # genero otro
+            if inter.status == "CANCELADO":
+                cant_cancelado_otro += 1
+            elif inter.status == 'REALIZADO':
+                cant_realizado_otro += 1
+
+    chart = {
+        'title': {
+            'text': 'Estado de intercambios por género',
+            'left': 'center',
+            'top': '3%'  # Ajuste de posición del título
+        },
+        'tooltip': {
+            'trigger': 'axis',
+            'axisPointer': {
+                'type': 'shadow'
+            }
+        },
+        'legend': {
+            'top': '8%'  # Ajuste de posición de la leyenda
+        },
+        'grid': {
+            'left': '3%',
+            'right': '4%',
+            'bottom': '3%',
+            'top': '20%',  # Ajuste del espacio superior para evitar que el título tape las opciones
+            'containLabel': True
+        },
+        'xAxis': {
+            'type': 'value',
+            'boundaryGap': [0, 0.01]
+        },
+        'yAxis': {
+            'type': 'category',
+            'data': ['Cancelado', 'Finalizado']
+        },
+        'series': [
+            {
+                'name': 'Masculino',
+                'type': 'bar',
+                'data': [cant_cancelado_masc, cant_realizado_masc]
+            },
+            {
+                'name': 'Femenino',
+                'type': 'bar',
+                'data': [cant_cancelado_fem, cant_realizado_fem]
+            },
+            {
+                'name': 'Otro',
+                'type': 'bar',
+                'data': [cant_cancelado_otro, cant_realizado_otro]
+            }
+        ]
+    }
+
+    return JsonResponse(chart)
