@@ -617,11 +617,11 @@ def obtener_porcentaje_intercambios_por_sucursal():
     # Convertir a una lista de pares
     lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
     for item in lista_porcentajes:
-        item['label'] = f'aria-label="Dir. {item["address"]} - Total intercambios:{item["intercambios_count"]}"'
+        item['label'] = f'aria-label="{item["address"]} - direccion"'
         item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
-    
+
     # Encontrar el objeto con el mínimo y máximo número de trueques
-    
+
     #min_trueques = min(lista_porcentajes, key=lambda x: x['intercambios_count'])
     #max_trueques = max(lista_porcentajes, key=lambda x: x['intercambios_count'])
 
@@ -877,7 +877,7 @@ def mis_objetos_postulados(request):
 
 
 def get_chart(request):
-    lista_porcentajes = obtener_porcentaje_intercambios_por_sucursal()[0]
+    lista_porcentajes = obtener_porcentaje_intercambios_por_sucursal()
     
     data = [
         {"value": item["porcentaje"], "name": item["address"]}
