@@ -98,11 +98,13 @@
                     </div>
                     <div class="box page-views">
                         <h2 class="box-title">Intercambios por Sucursal</h2>
+                        {% if sucursales_stats %}
                         <div class="graph">
                             {% for sucu in sucursales_stats %}
                             <div {{ sucu.label|safe }} {{ sucu.height_style|safe }}></div>
                             {% endfor %}
                         </div>
+                        {% endif %}
                         <div class="box-footer">
                             <a> &#8733 Intercambios efectuados Por Sucursal</a>
                         </div>

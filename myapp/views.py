@@ -602,11 +602,12 @@ def obtener_porcentaje_intercambios_por_sucursal():
         intercambios_count=Count('intercambios')
     ).filter(intercambios_count__gt=0)
     
+    
     # Total de intercambios realizados
     total_intercambios = intercambios.objects.count()
-    
+    print("EL TOTAL D INTERCAMBIOS ES ==============>", str(total_intercambios))
     if total_intercambios == 0:
-        return [], None, None
+        return []
 
     # Lista de pares con el nombre de la sucursal, el número de intercambios y el porcentaje de intercambios realizados
     porcentaje_intercambios_por_sucursal = intercambios_por_sucursal.annotate(
@@ -697,7 +698,6 @@ def ver_estadisticas_sucursal(request):
         
         # Total de intercambios realizados entre las fechas especificadas
         total_intercambios = intercambios.objects.filter(fecha__range=(fecha_inicio, fecha_fin)).count()
-        print("TOTAL DE INTERCAMBIOS HAYADOS ???=========================>", str(total_intercambios))
         if total_intercambios == 0:
             messages.warning(request, "No hay intercambios registrados en las fechas ingresadas")
             return []
@@ -878,8 +878,41 @@ def mis_objetos_postulados(request):
 
 
 
+
+
+def obtener_porcentajes_para_grafico():
+    # Consulta para contar los intercambios por sucursal
+    intercambios_por_sucursal = Sucursal.objects.annotate(
+        intercambios_count=Count('intercambios')
+    ).filter(intercambios_count__gt=0)
+    
+    
+    # Total de intercambios realizados
+    total_intercambios = intercambios.objects.count()
+    if total_intercambios == 0:
+        return [], None, None
+
+    # Lista de pares con el nombre de la sucursal, el número de intercambios y el porcentaje de intercambios realizados
+    porcentaje_intercambios_por_sucursal = intercambios_por_sucursal.annotate(
+        porcentaje=100 * F('intercambios_count') / total_intercambios
+    ).values('address', 'intercambios_count', 'porcentaje')
+    
+    # Convertir a una lista de pares
+    lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
+    for item in lista_porcentajes:
+        item['label'] = f'aria-label="{item["address"]} - direccion"'
+        item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
+
+    # Encontrar el objeto con el mínimo y máximo número de trueques
+
+    #min_trueques = min(lista_porcentajes, key=lambda x: x['intercambios_count'])
+    #max_trueques = max(lista_porcentajes, key=lambda x: x['intercambios_count'])
+
+    return lista_porcentajes
+    
+
 def get_chart(request):
-    lista_porcentajes = obtener_porcentaje_intercambios_por_sucursal()[0]
+    lista_porcentajes = obtener_porcentajes_para_grafico()[0]
 
     data = [
         {"value": item["porcentaje"], "name": item["address"]}
