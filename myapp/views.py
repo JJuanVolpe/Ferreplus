@@ -627,7 +627,6 @@ def obtener_porcentaje_intercambios_por_sucursal():
     return lista_porcentajes, min_trueques, max_trueques
     
 
-
 def sucursal_popular_y_cancelada():
     # Obtener la sucursal con más intercambios con status "REALIZADO"
     sucursal_realizado = Sucursal.objects.annotate(
@@ -636,6 +635,9 @@ def sucursal_popular_y_cancelada():
             output_field=IntegerField()
         ))
     ).order_by('-count_realizado').first()
+    
+    print("sucursal con mas realizados====>" + str(sucursal_realizado))
+
     # Obtener la sucursal con más intercambios con status "CANCELADO"
     sucursal_cancelado = Sucursal.objects.annotate(
         count_cancelado=Count(Case(
@@ -643,14 +645,18 @@ def sucursal_popular_y_cancelada():
             output_field=IntegerField()
         ))
     ).order_by('-count_cancelado').first()
+    
+    print("sucursal con mas cancelados====>" + str(sucursal_cancelado))
 
     # Crear la lista con las sucursales
     lista_sucursales = []
-    if sucursal_realizado:
+    if sucursal_realizado and sucursal_realizado.count_realizado > 0:
         lista_sucursales.append(sucursal_realizado)
-    if sucursal_cancelado:
+    if sucursal_cancelado and sucursal_cancelado.count_cancelado > 0:
         lista_sucursales.append(sucursal_cancelado)
+    
     return lista_sucursales
+
 
 def get_sucursales_table():
     sucursales = Sucursal.objects.all()
@@ -695,7 +701,6 @@ def ver_estadisticas_sucursal(request):
         total_intercambios = intercambios.objects.filter(fecha__range=(fecha_inicio, fecha_fin)).count()
         
         if total_intercambios == 0:
-            messages.warning(request, "No se registraron intercambios en las fechas ingresadas")
             return []
 
         # Lista de pares con el nombre de la sucursal, el número de intercambios y el porcentaje de intercambios realizados
@@ -728,7 +733,7 @@ def ver_estadisticas_sucursal(request):
             # Capturar y mostrar los mensajes de error
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, error)
+                    messages.warning(request, error)
     
     
     return render(request,'verEstadisticasSucursal.html',{
@@ -740,7 +745,8 @@ def ver_estadisticas_sucursal(request):
         'destacables': destacables,
         'total_staff': total_staff,
         'form': form,
-        'data_by_date': data_by_date
+        'data_by_date': data_by_date,
+        'sucursales_totales': Sucursal.objects.all().count()
     })
     
     

@@ -92,13 +92,13 @@
                         <span class="stat-percentage red">
                             En actividad
                         </span>
-                        <h1 class="number-fs">{{ sucursales_stats|length }}</h1>
+                        <h1 class="number-fs">{{ sucursales_totales }}</h1>
                         <div class="box-footer">
                             <a style="margin-bottom: 10px;">&#169 Ferreplus</a>
                         </div>
                     </div>
                     <div class="box page-views">
-                        <h2 class="box-title">Trueques por Sucursal</h2>
+                        <h2 class="box-title">Intercambios por Sucursal</h2>
                         <div class="graph">
                             {% for sucu in sucursales_stats %}
                             <div {{ sucu.label|safe }} {{ sucu.height_style|safe }}></div>
