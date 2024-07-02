@@ -171,8 +171,10 @@
                                 <tr>
                                     <th>Genero</th>
                                     <th>Cantidad Intercambios</th>
-                                    <th>Cantidad Intercambios con Productos Usados</th> 
-                                    <th>Cantidad Intercambios con Productos Nuevos</th>
+                                    <th>Cantidad Intercambios Totales con Productos Usados</th> 
+                                    <th>Cantidad Intercambios Totales con Productos Nuevos</th>
+                                    <th>Cantidad Intercambios Finalizado</th>
+                                    <th>Cantidad Intercambios Cancelados</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -181,24 +183,32 @@
                                     <td>{{ total_masculino }}</td>
                                     <td>{{ cant_usado_masc }}</td>
                                     <td>{{ cant_nuevo_masc }}</td>
+                                    <td>{{ cant_realizado_masc }}</td>
+                                    <td>{{ cant_cancelado_masc }}</td>
                                 </tr>
                                 <tr>
                                     <td>Femenino</td>
                                     <td>{{ total_femenino }}</td>
                                     <td>{{ cant_usado_fem }}</td>
                                     <td>{{ cant_nuevo_fem }}</td>
+                                    <td>{{ cant_realizado_fem }}</td>
+                                    <td>{{ cant_cancelado_fem }}</td>
                                 </tr>
                                 <tr>
                                     <td>Otro</td>
                                     <td>{{ total_otro }}</td>
                                     <td>{{ cant_usado_otro }}</td>
                                     <td>{{ cant_nuevo_otro }}</td>
+                                    <td>{{ cant_realizado_otro }}</td>
+                                    <td>{{ cant_cancelado_otro }}</td>
                                 </tr>
                                 <tr class="total-row">
                                     <td>Total</td>
                                     <td>{{ total }}</td>
                                     <td>{{ cant_usado }}</td>
                                     <td>{{ cant_nuevo }}</td>
+                                    <td>{{ cant_realizado }}</td>
+                                    <td>{{ cant_cancelado }}</td>
                                 </tr>
                             </tbody>
                         </table>   
