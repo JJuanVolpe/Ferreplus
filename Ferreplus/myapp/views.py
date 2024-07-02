@@ -826,7 +826,7 @@ def get_sucursales_chart(request):
     sucursales_data, total_compra, total_intercambios = get_sucursales_table()
     
     data = [
-        {"value": valor, "name": Sucursal.city}
+        {"value": valor, "name": Sucursal.address}
         for Sucursal, valor, _ in sucursales_data
     ]
 
