@@ -688,7 +688,7 @@ def ver_estadisticas_sucursal(request):
     def get_value_by_dates(fecha_inicio, fecha_fin, request, messages):
         # Validar fechas
         if not fecha_inicio or not fecha_fin:
-            return [], None, None
+            return []
 
         # Consulta para contar los intercambios por sucursal entre las fechas especificadas
         intercambios_por_sucursal = Sucursal.objects.annotate(
@@ -697,7 +697,7 @@ def ver_estadisticas_sucursal(request):
         
         # Total de intercambios realizados entre las fechas especificadas
         total_intercambios = intercambios.objects.filter(fecha__range=(fecha_inicio, fecha_fin)).count()
-        
+        print("TOTAL DE INTERCAMBIOS HAYADOS ???=========================>", str(total_intercambios))
         if total_intercambios == 0:
             messages.warning(request, "No hay intercambios registrados en las fechas ingresadas")
             return []
@@ -732,7 +732,7 @@ def ver_estadisticas_sucursal(request):
             # Capturar y mostrar los mensajes de error
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.warning(request, error)
+                    messages.error(request, error)
     
     
     return render(request,'verEstadisticasSucursal.html',{
@@ -876,9 +876,11 @@ def mis_objetos_postulados(request):
     return render(request,'ver_mis_objetos_postulados.html', context={'postuled': objects})
 
 
+
+
 def get_chart(request):
-    lista_porcentajes = obtener_porcentaje_intercambios_por_sucursal()
-    
+    lista_porcentajes = obtener_porcentaje_intercambios_por_sucursal()[0]
+
     data = [
         {"value": item["porcentaje"], "name": item["address"]}
         for item in lista_porcentajes
@@ -928,13 +930,13 @@ def get_chart(request):
 
 def get_sucursales_chart(request):
     sucursales_data, total_compra, total_intercambios = get_sucursales_table()
-    
+
     data = [
         {"value": valor, "name": Sucursal.address}
         for Sucursal, valor, _ in sucursales_data
     ]
 
-    
+
     chart = {
         'tooltip': {
             'trigger': 'item',
