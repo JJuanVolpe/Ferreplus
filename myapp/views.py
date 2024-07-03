@@ -636,16 +636,15 @@ def sucursal_popular_y_cancelada():
             When(intercambios__status='REALIZADO', then=1),
             output_field=IntegerField()
         ))
-    ).order_by('-count_realizado').first()
+    ).filter(count_realizado__gt=0).order_by('-count_realizado').first()
     result[0] = sucursal_realizado
-
     # Obtener la sucursal con más intercambios con status "CANCELADO"
     sucursal_cancelado = Sucursal.objects.annotate(
         count_cancelado=Count(Case(
             When(intercambios__status='CANCELADO', then=1),
             output_field=IntegerField()
         ))
-    ).order_by('-count_cancelado').first()
+    ).filter(count_cancelado__gt=0).order_by('-count_cancelado').first()
     result[1] = sucursal_cancelado
     
     return result
