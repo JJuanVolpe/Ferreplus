@@ -617,7 +617,7 @@ def obtener_porcentaje_intercambios_por_sucursal():
     # Convertir a una lista de pares
     lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
     for item in lista_porcentajes:
-        item['label'] = f'aria-label="{item["address"]} - direccion"'
+        item['label'] = f'aria-label=" Dirección: {item["address"]}. Trueques totales: {item["intercambios_count"]} ({item["porcentaje"]}%)"'
         item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
 
     # Encontrar el objeto con el mínimo y máximo número de trueques
@@ -630,13 +630,14 @@ def obtener_porcentaje_intercambios_por_sucursal():
 
 def sucursal_popular_y_cancelada():
     # Obtener la sucursal con más intercambios con status "REALIZADO"
+    result = [[], []]
     sucursal_realizado = Sucursal.objects.annotate(
         count_realizado=Count(Case(
             When(intercambios__status='REALIZADO', then=1),
             output_field=IntegerField()
         ))
     ).order_by('-count_realizado').first()
-    
+    result[0] = sucursal_realizado
 
     # Obtener la sucursal con más intercambios con status "CANCELADO"
     sucursal_cancelado = Sucursal.objects.annotate(
@@ -645,16 +646,9 @@ def sucursal_popular_y_cancelada():
             output_field=IntegerField()
         ))
     ).order_by('-count_cancelado').first()
+    result[1] = sucursal_cancelado
     
-
-    # Crear la lista con las sucursales
-    lista_sucursales = []
-    if sucursal_realizado and sucursal_realizado.count_realizado > 0:
-        lista_sucursales.append(sucursal_realizado)
-    if sucursal_cancelado and sucursal_cancelado.count_cancelado > 0:
-        lista_sucursales.append(sucursal_cancelado)
-    
-    return lista_sucursales
+    return result
 
 
 def get_sucursales_table():
