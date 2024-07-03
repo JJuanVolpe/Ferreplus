@@ -912,7 +912,7 @@ def obtener_porcentajes_para_grafico():
     
 
 def get_chart(request):
-    lista_porcentajes = obtener_porcentajes_para_grafico()[0]
+    lista_porcentajes = obtener_porcentajes_para_grafico()
 
     data = [
         {"value": item["porcentaje"], "name": item["address"]}
