@@ -908,11 +908,11 @@ def obtener_porcentajes_para_grafico():
     #min_trueques = min(lista_porcentajes, key=lambda x: x['intercambios_count'])
     #max_trueques = max(lista_porcentajes, key=lambda x: x['intercambios_count'])
 
-    return lista_porcentajes
+    return lista_porcentajes, None, None
     
 
 def get_chart(request):
-    lista_porcentajes = obtener_porcentajes_para_grafico()
+    lista_porcentajes = obtener_porcentajes_para_grafico()[0]
 
     data = [
         {"value": item["porcentaje"], "name": item["address"]}
