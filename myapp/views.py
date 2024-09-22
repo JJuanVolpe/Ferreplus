@@ -31,11 +31,11 @@ def index(request):
     })
 
 
-def menuPrincipal(request):
-    return render(request, 'menuPrincipal.html')
+def menu_principal(request):
+    return render(request, 'menu_principal.html')
 
 
-def miPerfil(request):
+def user_perfil(request):
     previous_page = request.META.get('HTTP_REFERER')
     usuario = request.user  # Obtenemos el usuario autenticado
     if request.method == 'POST':
@@ -85,7 +85,7 @@ def miPerfil(request):
             except ValueError:
                 messages.error(request, 'Por favor, ingrese una edad válida.')
 
-    return render(request, 'miPerfil.html', {
+    return render(request, 'user_perfil.html', {
         'previous_page': previous_page, 
         'usuario': usuario}
     )
@@ -109,19 +109,13 @@ def intercambio_con_espera_de_ofertas(request):
             )
             messages.success(request, "El intercambio se ha creado correctamente.")    
             # Redirige a la página de Mis_Trueques
-            return render(request, 'Mis_Trueques.html', {'listadointercambios': intercambios.objects.filter(usuario=request.user.profile, status='NUEVO')})
-            redirect()
+            return render(request, 'mis_trueques.html', {'listadointercambios': intercambios.objects.filter(usuario=request.user.profile, status='NUEVO')})
     else:
         return render(request, 'intercambio_con_espera_de_ofertas.html', context=context)
     
 def incorrect_password(password):
-        if len(password) < 8:
-            return True
-        else:
-            for i in password:
-                if (not i.isdigit() and i.isupper()):   #no es un número y es mayuscula? cumple
-                    return False
-        return True
+        return all(map(lambda i: i.isdigit() or not i.isupper(), password)) and (len(password) > 8)
+        
         
 def signup(request):
     if request.method == 'GET':
@@ -149,17 +143,16 @@ def signup(request):
             return render(request, 'signup.html', {"form": UserCreationForm, "error": "Nombre de usuario ya existente en el sistema."})
 
 
-
 def signin(request):
     if request.user.is_authenticated:
         # Si el usuario ya está autenticado, redirige según su perfil
         profile = Profile.objects.get(user=request.user)
         if profile.es_gerente:
-            return redirect('Sucursales')
+            return redirect('gestionar_sucursales')
         elif profile.es_empleado:
-            return redirect('menuEmpleado') 
+            return redirect('menu_empleado') 
         else:
-             return redirect('menuPrincipal')
+             return redirect('menu_principal')
 
     if request.method == 'GET':
         return render(request, 'signin.html', {"form": AuthenticationForm()})
@@ -172,11 +165,11 @@ def signin(request):
             # Accede al perfil del usuario
             profile = Profile.objects.get(user=user)
             if profile.es_gerente:  # Verifica si el usuario es gerente
-                return redirect('Sucursales')
+                return redirect('gestionar_sucursales')
             elif profile.es_empleado:
-                return redirect('menuEmpleado')
+                return redirect('menu_empleado')
             else:    
-                return redirect('menuPrincipal')
+                return redirect('menu_principal')
         else:
             # Verifica si el error fue debido a un nombre de usuario no válido o contraseña incorrecta
             try:
@@ -187,7 +180,14 @@ def signin(request):
                 
             return render(request, 'signin.html', {"form": AuthenticationForm(), "error": error_message})
 
-def editarEmpleado(request,empleado_id):
+
+@login_required
+def signout(request):
+    logout(request)
+    return redirect('/')
+
+
+def editar_empleado(request,empleado_id):
     empleado = Profile.objects.get(id=empleado_id)
     sucursales = Sucursal.objects.all()
     if 'guardarEdicion' in request.POST:
@@ -201,18 +201,19 @@ def editarEmpleado(request,empleado_id):
         empleado.user.save()
         empleado.save()
         messages.success(request, "Empleado Editado Exitosamente")
-        return redirect('gestionarEmpleados')
-    return render(request, 'editarEmpleado.html',{"empleado":empleado,
-                                                "sucursales":sucursales})
-    
+        return redirect('gestionar_empleados')
+    return render(request, 'editar_empleado.html',{"empleado":empleado, "sucursales":sucursales})
+
+
 def eliminar_empleado(request, user_id):
     if request.method == 'POST':
         user = get_object_or_404(User, id=user_id)
         user.delete()
         messages.success(request, "Empleado eliminado exitosamente.")
-    return redirect('gestionarEmpleados')   
+    return redirect('gestionar_empleados')   
 
-def gestionarEmpleados(request):
+
+def gestionar_empleados(request):
     if 'guardarEmpleado' in request.POST:
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -243,14 +244,7 @@ def gestionarEmpleados(request):
     # Manejar la obtención de empleados
     empleados = Profile.objects.filter(es_empleado=True)
     sucursales = Sucursal.objects.all()
-    return render(request, 'Empleados.html', {'empleados': empleados,
-                                              "sucursales": sucursales})
-
-@login_required
-def signout(request):
-    logout(request)
-    return redirect('/')
-
+    return render(request, 'gestionar_empleados.html', {'empleados': empleados, "sucursales": sucursales})
 
 
 def contact(request):
@@ -279,18 +273,18 @@ def contact(request):
         
         
 @login_required
-def Sucursales(request):
+def gestionar_sucursales(request):
     profile = Profile.objects.get(user=request.user)  # Obtener el perfil del usuario actual
     if not profile.es_gerente:
         # Si el usuario no es gerente, mostrar un mensaje de error
-        return render(request, 'Sucursales.html', {'error': 'No tienes permisos para acceder a esta página.'})
+        return render(request, 'gestionar_sucursales.html', {'error': 'No tienes permisos para acceder a esta página.'})
     
     # Si el usuario es gerente, obtener todas las sucursales
     sucursales = Sucursal.objects.all()
-    return render(request, 'Sucursales.html', {'sucursales': sucursales})
+    return render(request, 'gestionar_sucursales.html', {'sucursales': sucursales})
 
   
-def Ver_trueques(request):
+def ver_trueques(request):
     # Obtener la lista de intercambios del usuario
     usuario = request.user
     trueques = intercambios.objects.filter(usuario=usuario.profile, status='NUEVO')
@@ -304,7 +298,7 @@ def Ver_trueques(request):
         trueque = intercambios.objects.get(id=request.POST['trueque_id'])
         trueque.delete()
         messages.success(request, '¡El intercambio se ha eliminado correctamente!')
-        return redirect('Mis_Trueques')
+        return redirect('mis_trueques')
     elif request.method == 'POST':
         trueque = intercambios.objects.get(id=request.POST['trueque_id'])
         trueque.categoria= request.POST['categoria']
@@ -319,13 +313,15 @@ def Ver_trueques(request):
             trueque.foto = request.FILES['foto']
         trueque.save()
     
-    return render(request, 'Mis_Trueques.html', context)
+    return render(request, 'mis_trueques.html', context)
+
 
 def eliminar_sucursal(request, sucursal_id):
     sucursal = Sucursal.objects.get(id=sucursal_id)
     sucursal.delete()
     messages.success(request, '¡La sucursal se ha eliminado correctamente!')
-    return redirect('Sucursales')
+    return redirect('ver_sucursales')
+
 
 def editar_sucursal(request, sucursal_id):
     if request.method == 'POST':
@@ -341,7 +337,8 @@ def editar_sucursal(request, sucursal_id):
             messages.success(request,"¡La sucursal se editó exitosamente!")
         else:
             messages.error(request, '¡La direccion y ciudad que se quiere ingresar ya pertenece a otra sucursal!')
-    return redirect('Sucursales')
+    return redirect('gestionar_sucursales')
+
 
 def agregar_sucursal(request):
     if request.method == 'POST':
@@ -353,29 +350,29 @@ def agregar_sucursal(request):
         else:
                 
             messages.error(request, '¡La direccion que se quiere ingresar ya pertenece a otra sucursal de la misma ciudad!')
-    return redirect('Sucursales')
+    return redirect('gestionar_sucursales')
 
 
-def verSucursales(request):
+def ver_sucursales(request):
     sucursales = Sucursal.objects.all()
-    return render(request,'verSucursales.html',{
+    return render(request,'ver_sucursales.html',{
         'sucursales':sucursales
     })
 
 
-def Menu_intercambios(request):
+def menu_intercambios(request):
     title = 'Menu Intercambio'
     trueques = intercambios.objects.filter(status='NUEVO')
     context = {'title': title,
                'trueques':trueques,
                 'form': ProductForm()}
-    return render(request, 'Menu_De_Intercambios.html', context)
+    return render(request, 'menu_de_intercambios.html', context)
 
 
-def Historial_Intercambios(request):
+def historial_intercambios(request):
     
     def permitir_visualizar_trueque(profile, intercambio, prod):
-        return profile == intercambio.usuario or ((prod != None and prod.postulante == profile))
+        return profile == intercambio.usuario or (prod != None and prod.postulante == profile)
     
     title = 'Historial de intercambios'
     trueques = intercambios.objects.order_by('status')
@@ -396,10 +393,7 @@ def Historial_Intercambios(request):
         prod_by_postuler = Product.objects.filter(trueque_postulado=intercambio)
         if (request.user.profile == intercambio.usuario):
             cancelados_por_usuario.append(intercambio)
-        #else: Si descomento esto filtro y obtengo paraa el postulante del trueque cancelado el mismo asi lo ve. 
-        #    for prod in prod_by_postuler:
-        #        if permitir_visualizar_trueque(profile=request.user.profile, postulante=prod.postulante, intercambio=intercambio, prod=prod):
-        #            cancelados_por_usuario.append(intercambio)
+
     context = {
         'title': title,
         'trueques_pendientes': pendientes_por_usuario,
@@ -408,7 +402,7 @@ def Historial_Intercambios(request):
         'valorables_ids': valorables_ids
         
     }
-    return render(request, 'Historial_De_Intercambios.html', context)
+    return render(request, 'historial_de_intercambios.html', context)
 
 
 def create_trade(request, trueque_id):
@@ -432,10 +426,10 @@ def create_trade(request, trueque_id):
                                        descripcion=form.cleaned_data['descripcion'], postulante=request.user.profile,
                                        trueque_postulado=trueque)
                 
-                #form.save()
                 messages.success(request, 'El objeto ha sido creado y postulado con éxito.')
                 #Aquí se debe enviar mail al usuario de que se generó postulación al trueque que hizo?
-    return Menu_intercambios(request=request)
+    return menu_intercambios(request=request)
+
 
 def ver_objetos_postulados(request, trueque_id):
     trueque = get_object_or_404(intercambios, id=trueque_id)
@@ -449,24 +443,23 @@ def ver_objetos_postulados(request, trueque_id):
     return render(request, 'ver_objetos_postulados.html', context)
 
 
-
-def Menu_Sucursales(request):
+def menu_sucursales(request):
     context = {'sucursales': Sucursal.objects.all()}
-    return render(request, 'Menu_Sucursales.html', context)
+    return render(request, 'menu_sucursales.html', context)
+
 
 def menu_empleado(request):
     usuario = request.user.profile
     suc = usuario.sucursal
-    intercambiossuc = intercambios.objects.filter(sucursal_asignada=suc, status="PENDIENTE")
-    
+    intercambiossuc = intercambios.objects.filter(sucursal_asignada=suc, status="PENDIENTE")    
     if request.method == 'POST':
-        return redirect('intercambiosaceptados')
+        return redirect('intercambios_aceptados')
     
     context = {'sucursal': suc, 'intercambios': intercambiossuc}
-    return render(request, 'menuEmpleado.html', context)
+    return render(request, 'menu_empleado.html', context)
 
 
-def historialaceptados(request, intercambio_id=None):
+def historial_aceptados(request, intercambio_id=None):
     if intercambio_id:
         intercambio = get_object_or_404(intercambios, id=intercambio_id)
         intercambio.status = "REALIZADO"
@@ -479,7 +472,7 @@ def historialaceptados(request, intercambio_id=None):
     suc = usuario.sucursal
     aceptados = intercambios.objects.filter(sucursal_asignada=suc, status="REALIZADO")
     context = {'aceptados': aceptados}
-    return render(request, 'historialaceptados.html', context)
+    return render(request, 'historial_aceptados.html', context)
 
 
 def filtrar_productos_por_filtro(request):
@@ -496,7 +489,7 @@ def filtrar_productos_por_filtro(request):
             if  not productos:
                 messages.error(request, 'No existen objetos con el estado o sucursal ingresado.')
                 productos = []
-        return render(request, 'Menu_De_Intercambios.html', {'trueques': productos, 'form': ProductForm()})
+        return render(request, 'menu_de_intercambios.html', {'trueques': productos, 'form': ProductForm()})
 
 
 def aceptar_trueque(request, obj_id):
@@ -511,7 +504,7 @@ def aceptar_trueque(request, obj_id):
         trueque.fecha = postuled.fecha
         trueque.status = 'PENDIENTE'
         trueque.save()
-        return Historial_Intercambios(request)
+        return historial_intercambios(request)
 
 
 def rechazar_trueque(request, obj_id):
@@ -519,8 +512,8 @@ def rechazar_trueque(request, obj_id):
     postuled.status = "RECHAZADO"
     trueque_id = postuled.trueque_postulado.id
     postuled.save()
-    
     return ver_objetos_postulados(request, trueque_id=trueque_id)
+
 
 def cancelar_trueque(request, trueque_id):
         trueque = get_object_or_404(intercambios, id=trueque_id)
@@ -534,8 +527,7 @@ def cancelar_trueque(request, trueque_id):
         if request.user.profile.es_empleado:
             return menu_empleado(request)
 
-        return Historial_Intercambios(request)
-
+        return historial_intercambios(request)
 
 
 def can_rate(profile, intercambio):
@@ -576,7 +568,7 @@ def rate_profile(request, intercambio_id):
             rating_obj.save()
         redirect_url = '/historial-intercambios/'
         if user_actual.es_empleado:
-            redirect_url = '/menuEmpleado'
+            redirect_url = '/menu_empleado'
         return JsonResponse({'success': True, 'redirect_url': redirect_url})
     else:
         return render(request, 'rate_profile.html', context=context)
@@ -591,34 +583,8 @@ def profile_detail(request, profile_id):
         'average_rating': average_rating,
         'usuario': profile.user,
     }
-    return render(request, 'miPerfil.html', context)
+    return render(request, 'user_perfil.html', context)
 
-
-
-# def obtener_porcentaje_intercambios_por_sucursal():
-#     # Consulta para contar los intercambios por sucursal{{ destacables[0].city }}
-#     intercambios_por_sucursal = Sucursal.objects.annotate(
-#         intercambios_count=Count('intercambios')
-#     ).filter(intercambios_count__gt=0)
-    
-#     # Total de intercambios realizados
-#     total_intercambios = intercambios.objects.count()
-    
-#     if total_intercambios == 0:
-#         return []
-
-#     # Lista de pares con el nombre de la sucursal y el porcentaje de intercambios realizados
-#     porcentaje_intercambios_por_sucursal = intercambios_por_sucursal.annotate(
-#         porcentaje=100 * F('intercambios_count') / total_intercambios
-#     ).values('address', 'porcentaje')
-    
-#     # Convertir a una lista de pares
-#     lista_porcentajes = list(porcentaje_intercambios_por_sucursal)
-#     for item in lista_porcentajes:
-#         item['label'] = f'aria-label="{item["address"]} - direccion"'
-#         item['height_style'] = f'style="height: {item["porcentaje"]}%;"'
-    
-#     return lista_porcentajes
 
 def obtener_porcentaje_intercambios_por_sucursal():
     # Consulta para contar los intercambios por sucursal
@@ -650,7 +616,6 @@ def obtener_porcentaje_intercambios_por_sucursal():
     return lista_porcentajes, min_trueques, max_trueques
     
 
-
 def sucursal_popular_y_cancelada():
     # Obtener la sucursal con más intercambios con status "REALIZADO"
     sucursal_realizado = Sucursal.objects.annotate(
@@ -666,7 +631,6 @@ def sucursal_popular_y_cancelada():
             output_field=IntegerField()
         ))
     ).order_by('-count_cancelado').first()
-
     # Crear la lista con las sucursales
     lista_sucursales = []
     if sucursal_realizado:
@@ -674,6 +638,7 @@ def sucursal_popular_y_cancelada():
     if sucursal_cancelado:
         lista_sucursales.append(sucursal_cancelado)
     return lista_sucursales
+
 
 def get_sucursales_table():
     sucursales = Sucursal.objects.all()
@@ -697,13 +662,14 @@ def get_sucursales_table():
         valor_por_sucursal.append(valorSucursal)
     return  zip(sucursales, valor_por_sucursal,cantidad_inter_lit), total_compra, total_intercambios
 
+
 def ver_estadisticas(request):
     sucursales_stats, min_cant_trueques, max_cant_trueques = obtener_porcentaje_intercambios_por_sucursal()
     destacables = sucursal_popular_y_cancelada()
     total_usuarios = User.objects.count()  # Total de usuarios
     total_staff = User.objects.filter(is_staff=True).count()
     sucursales_con_valor, total_compra, total_intercambios = get_sucursales_table()
-    return render(request,'verEstadisticas.html',{
+    return render(request,'ver_estadisticas.html',{
         'sucursales_con_valor': sucursales_con_valor,
         '':total_compra,
         'total_intercambio':total_intercambios,
@@ -728,7 +694,7 @@ def ver_estadisticas_intercambio(request):
             cant_masculino+=1
         else: #genero otro
             cant_otro+=1
-    return render(request,'verEstadisticasIntercambios.html',{
+    return render(request,'ver_estadisticas_intercambios.html',{
         'total_masculino':cant_masculino,
         'total_femenino':cant_femenino,
         'total_otro':cant_otro,

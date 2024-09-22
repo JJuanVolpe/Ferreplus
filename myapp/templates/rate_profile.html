@@ -88,11 +88,11 @@
     <button type="submit" class="button">Enviar valoración</button>
   </form>
   {% if actual_user.es_empleado %}
-  <form action="{% url 'intercambiosaceptados' %}" class="volverF">
+  <form action="{% url 'intercambios_aceptados' %}" class="volverF">
     <button type="submit" class="button">Volver</button>
   </form>
   {% else %}
-  <form action="{% url 'Historial_De_Intercambios' %}" class="volverF">
+  <form action="{% url 'historial_de_intercambios' %}" class="volverF">
     <button type="submit" class="button">Volver</button>
   </form>
   {% endif %}

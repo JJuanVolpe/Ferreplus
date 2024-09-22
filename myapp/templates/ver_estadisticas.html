@@ -13,13 +13,13 @@
     <nav class="navbar">
         <ul>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'verEstadisticas' %}">Ver Estadísticas</a>
+                <a class="nav-link" href="{% url 'ver_estadisticas' %}">Ver Estadísticas</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'Sucursales' %}">Gestionar Sucursales</a>
+                <a class="nav-link" href="{% url 'gestionar_sucursales' %}">Gestionar Sucursales</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'gestionarEmpleados' %}">Gestionar Empleados</a>
+                <a class="nav-link" href="{% url 'gestionar_empleados' %}">Gestionar Empleados</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
@@ -132,7 +132,7 @@
                             </span>
                         </div>
                         <div class="select-months">
-                            <form method="get" action="{% url 'verEstadisticas' %}" style="display: inline-flex; font-display: center; align-items: center;">
+                            <form method="get" action="{% url 'ver_estadisticas' %}" style="display: inline-flex; font-display: center; align-items: center;">
                                 <label for="fecha_inicio">Desde:</label>
                                 <input type="date" id="fecha_inicio" name="fecha_inicio" required>
                                 <label for="fecha_fin" style="margin-left: 5px;">Hasta:</label>
@@ -209,8 +209,8 @@
         </div>
         <div class="navegacion" style="max-height: 313px; padding: 20px; min-width: fit-content;">
             <ul>
-                <li><a href="/verEstadisticas/">Sucursales</a></li>
-                <li><a href="/verEstadisticasIntercambio/">Intercambios</a></li>
+                <li><a href="/ver_estadisticas/">Sucursales</a></li>
+                <li><a href="/estadisticas_intercambios/">Intercambios</a></li>
             </ul>
         </div>
     </div>

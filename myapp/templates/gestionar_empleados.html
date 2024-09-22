@@ -1,4 +1,4 @@
-{% extends "navegacionGerente.html" %}
+{% extends "navegacion_gerente.html" %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -146,7 +146,7 @@
     <dialog id="modal">
         <div class="divModal">
             <h1>Registrar Empleado</h1>
-            <form id="crear-form" method="post" action="{% url 'gestionarEmpleados' %}">
+            <form id="crear-form" method="post" action="{% url 'gestionar_empleados' %}">
                 {% csrf_token %}
                 <label for="username">Nombre de usuario:</label>
                 <input type="text" id="username" name="username" required>

@@ -1,4 +1,4 @@
-{% extends "navegacionGerente.html" %}
+{% extends "navegacion_gerente.html" %}
 
 {% block title %}Listado de Sucursales{% endblock %}
 {% load static %}
@@ -47,7 +47,7 @@
                 {% if sucursales %}
                 {% for suc in sucursales %}
                 <tr>
-                    <tdb>{{ suc.id }}</td>
+                    <td>{{ suc.id }}</td>
                     <td>{{ suc.address }}</td>
                     <td>{{ suc.city }}</td>
                     <td>

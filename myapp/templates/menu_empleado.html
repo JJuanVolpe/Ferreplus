@@ -296,7 +296,7 @@
                                 <td><img src="{{ intercambio.foto.url }}" class="trueque-foto"></td>                                               
                                 <td>{{ intercambio.fecha }} {{ intercambio.hora }}</td>
                                 <td>
-                                    <form method="POST" action="{% url 'intercambiosaceptados' intercambio.id %}" style="position: relative;">
+                                    <form method="POST" action="{% url 'intercambios_aceptados' intercambio.id %}" style="position: relative;">
                                         {% csrf_token %}
                                         <input type="hidden" name="montoGastado" class="montoGastado">
                                         <button type="submit" class="btn-aceptar">Aceptar</button>
@@ -318,7 +318,7 @@
     {% else %}
         <p>No hay intercambios a aprobar en tu sucursal.</p>
     {% endif %}
-    <a href="{% url 'intercambiosaceptados' %}">
+    <a href="{% url 'intercambios_aceptados' %}">
         <button type="button" class="btn-aceptar">Historial de Intercambios aceptados</button>
     </a>
     

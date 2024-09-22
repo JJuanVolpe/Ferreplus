@@ -350,7 +350,7 @@
 </head>
 
 <body>
-    <a href="{% url 'menuPrincipal' %}" style="position: absolute; top: 20px; left: 20px;">
+    <a href="{% url 'menu_principal' %}" style="position: absolute; top: 20px; left: 20px;">
         <button class="botonVolv">
             Volver
         </button>
@@ -360,11 +360,11 @@
 
             <div class="menu">
                 <h1>Menú de Intercambios</h1>
-                <a href="{% url 'Historial_De_Intercambios' %}">
+                <a href="{% url 'historial_de_intercambios' %}">
                     <button id="Historial">Ver historial de Intercambios</button>
                 </a>
-                <a href="{% url 'Mis_Trueques' %}">
-                    <button id="Mis_Trueques">Ver mis intercambios</button>
+                <a href="{% url 'mis_trueques' %}">
+                    <button id="mis_trueques">Ver mis intercambios</button>
                 </a>
                 <a href="{% url 'intercambio_con_espera_de_ofertas' %}">
                     <button id="Crear_Trueque">Crear intercambio</button>

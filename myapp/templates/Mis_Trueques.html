@@ -148,8 +148,8 @@
 </head>
 
 <body>
-    <a href="{% url 'Menu_De_Intercambios' %}" style="position: absolute; top: 20px; left: 20px;">
-        <button class="botonVolv">volver</button>
+    <a href="{% url 'menu_de_intercambios' %}" style="position: absolute; top: 20px; left: 20px;">
+        <button class="botonVolv">Volver</button>
     </a>
     <h1>Mis intercambios</h1>
     <!-- Agrega este bloque en tu template -->
@@ -189,7 +189,7 @@
                             data-marca="{{ trueque.marca }}">Editar</button>
                     </td>
                     <td>
-                        <form method="POST" action="{% url 'Mis_Trueques' %}" style="display: inline;">
+                        <form method="POST" action="{% url 'mis_trueques' %}" style="display: inline;">
                             <input type="hidden" name="trueque_id" value="{{ trueque.id }}">
                             {% csrf_token %}
                             <input type="hidden" name="trueque_id" value="{{ trueque.id }}">
@@ -221,7 +221,7 @@
     <dialog id="modal">
         <div class="divModal">
             <h1>Editar Trueque</h1>
-            <form id="editForm" method="POST" action="{% url 'Mis_Trueques' %}" enctype="multipart/form-data">
+            <form id="editForm" method="POST" action="{% url 'mis_trueques' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="hidden" id="truequeId" name="trueque_id">
                 <div class="form-group">
